@@ -1,0 +1,221 @@
+<br />
+<div align="center">
+        <font color="#006666" size="3"><strong>รายการฎีกาเบิกตามใบงวดที่ <?php echo $_GET['num']?></strong></font>
+      </div>
+<br>
+<?php
+$t_month['01']="มค";
+$t_month['02']="กพ";
+$t_month['03']="มีค";
+$t_month['04']="เมย";
+$t_month['05']="พค";
+$t_month['06']="มิย";
+$t_month['07']="กค";
+$t_month['08']="สค";
+$t_month['09']="กย";
+$t_month['10']="ตค";
+$t_month['11']="พย";
+$t_month['12']="ธค";
+
+//ปีงบประมาณ
+$year_index=$_REQUEST['year_index'];
+if($year_index!=""){
+$year_active_result['budget_year']=$year_index;
+}
+else{
+$sql = "select * from  budget_year where year_active='1' order by budget_year desc limit 1";
+$dbquery = mysqli_query($connect,$sql);
+$year_active_result = mysqli_fetch_array($dbquery);
+			if($year_active_result['budget_year']==""){
+			echo "<br />";
+			echo "<div align='center'>ยังไม่ได้กำหนดทำงานในปีงบประมาณใด ๆ  กรุณาไปที่เมนูตั้งค่าระบบ เพื่อกำหนดปีงบประมาณ</div>";
+			exit();
+			}
+}
+
+$sql = "select * from  budget_deega where receive_num='$_GET[num]' and budget_year='$year_active_result[budget_year]' order by deega_num";
+$dbquery = mysqli_query($connect,$sql);
+$num_rows = mysqli_num_rows($dbquery );
+
+$sum_withdraw=0;
+$sum_tax=0;
+$sum_pay=0;
+
+While ($result = mysqli_fetch_array($dbquery))
+	{
+		$id = $result['id'];
+		$withdraw= $result['withdraw'];
+		$sum_withdraw=$sum_withdraw+$withdraw;
+		$withdraw=number_format($withdraw,2);
+		$tax= $result['tax'];
+		$sum_tax=$sum_tax+$tax;
+		$tax=number_format($tax,2);
+		$pay= $result['pay'];
+		$sum_pay=$sum_pay+$pay;
+		$pay=number_format($pay,2);
+$sum_withdraw_ar[$id]=number_format($sum_withdraw,2);
+$sum_tax_ar[$id]=number_format($sum_tax,2);
+$sum_pay_ar[$id]=number_format($sum_pay,2);
+	}
+
+//ส่วนของการแยกหน้า
+$pagelen=20;  //จำนวนข้อมูลต่อหน้า
+$url_link="option=budget&task=main/report_10_2";  // 2_กำหนดลิงค์ฺ
+
+$totalpages=ceil($num_rows/$pagelen);
+
+if($_REQUEST['page']==""){
+$page=$totalpages;
+		if($page<2){
+		$page=1;
+		}
+}
+else{
+		if($totalpages<$_REQUEST['page']){
+		$page=$totalpages;
+					if($page<1){
+					$page=1;
+					}
+		}
+		else{
+		$page=$_REQUEST['page'];
+		}
+}
+
+$start=($page-1)*$pagelen;
+
+if(($totalpages>1) and ($totalpages<16)){
+echo "<div align=center>";
+echo "หน้า	";
+			for($i=1; $i<=$totalpages; $i++)	{
+					if($i==$page){
+					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
+					}
+					else {
+					echo "<a href=$PHP_SELF?$url_link&page=$i&num=$_GET[num]&year_index=$_REQUEST[year_index]>[$i]</a>";
+					}
+			}
+echo "</div>";
+}
+if($totalpages>15){
+			if($page <=8){
+			$e_page=15;
+			$s_page=1;
+			}
+			if($page>8){
+					if($totalpages-$page>=7){
+					$e_page=$page+7;
+					$s_page=$page-7;
+					}
+					else{
+					$e_page=$totalpages;
+					$s_page=$totalpages-15;
+					}
+			}
+			echo "<div align=center>";
+			if($page!=1){
+			$f_page1=$page-1;
+			echo "<<a href=$PHP_SELF?$url_link&page=1>หน้าแรก </a>";
+			echo "<<<a href=$PHP_SELF?$url_link&page=$f_page1>หน้าก่อน </a>";
+			}
+			else {
+			echo "หน้า	";
+			}
+			for($i=$s_page; $i<=$e_page; $i++){
+					if($i==$page){
+					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
+					}
+					else {
+					echo "<a href=$PHP_SELF?$url_link&page=$i&num=$_GET[num]&year_index=$_REQUEST[year_index]>[$i]</a>";
+					}
+			}
+			if($page<$totalpages)	{
+			$f_page2=$page+1;
+			echo "<a href=$PHP_SELF?$url_link&page=$f_page2> หน้าถัดไป</a>>>";
+			echo "<a href=$PHP_SELF?$url_link&page=$totalpages> หน้าสุดท้าย</a>>";
+			}
+			echo " <select onchange=\"location.href=this.options[this.selectedIndex].value;\" size=\"1\" name=\"select\">";
+			echo "<option  value=\"\">หน้า</option>";
+				for($p=1;$p<=$totalpages;$p++){
+				echo "<option  value=\"?$url_link&page=$p\">$p</option>";
+				}
+			echo "</select>";
+echo "</div>";
+}
+//จบแยกหน้า
+
+$sql = "select  * from  budget_deega where receive_num='$_GET[num]' and  budget_year='$year_active_result[budget_year]' order by deega_num limit $start,$pagelen ";
+$dbquery = mysqli_query($connect,$sql);
+echo  "<table width=95% border=0 align=center>";
+echo "<Tr><Td colspan='9' align='right'><INPUT TYPE='button' name='smb' value='<<กลับหน้า่ก่อน' onclick='location.href=\"?option=budget&task=main/report_10&year_index=$year_active_result[budget_year]\"'</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td><Td width='100'>ว/ด/ป</Td><Td width='70'>เลขที่ฎีกา</Td><Td width='100'>เลขที่เอกสาร</Td><Td>รายการ</Td><Td width='100'>ขอเบิก</Td><Td width='100'>ภาษี</Td><Td width='100'>รับจริง</Td><Td width='40'></Td></Tr>";
+$N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
+$M=1;
+While ($result = mysqli_fetch_array($dbquery))
+	{
+		$id = $result['id'];
+		$deega_num= $result['deega_num'];
+		$doc= $result['doc'];
+		$item= $result['item'];
+		$withdraw= $result['withdraw'];
+		$sum_withdraw=$sum_withdraw+$withdraw;
+		$withdraw=number_format($withdraw,2);
+		$tax= $result['tax'];
+		$sum_tax=$sum_tax+$tax;
+		$tax=number_format($tax,2);
+		$pay= $result['pay'];
+		$sum_pay=$sum_pay+$pay;
+		$pay=number_format($pay,2);
+		$rec_date= $result['rec_date'];
+list($rec_year,$rec_month,$rec_day) = explode("-",$rec_date);
+$t_year=($rec_year+543)-2500;
+
+			if(($M%2) == o)
+			$color="#FFFFC";
+			else  	$color="#FFFFFF";
+		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td><Td>$rec_day $t_month[$rec_month] $t_year</Td><Td>$deega_num</Td><Td>$doc</Td><Td align='left'>$item</Td><Td align='right'>$withdraw</Td><Td align='right'>$tax</Td><Td align='right'>$pay</Td>
+		<Td><a href=?option=budget&task=main/report_10_3&id=$id&page=$page&year_index=$year_active_result[budget_year]&num=$_GET[num]><img src=images/browse.png border='0' alt='รายละเอียด'></a></Td>
+	</Tr>";
+$M++;
+$N++;  //*เกี่ยวข้องกับการแยกหน้า
+}
+echo "<tr bgcolor='#FFCCCC'><td></td><td></td><td></td><td></td><td align='center'>รวม</td><td align='center'>$sum_withdraw_ar[$id]</td><td align='center'>$sum_tax_ar[$id]</td><td align='center'>$sum_pay_ar[$id]</td><td></td></tr>";
+echo "</Table>";
+echo "<br>";
+echo "<br>";
+
+
+echo  "<div align='center'><font color='#006666' size='3'><strong>รายการคืนเงินคลังใบงวดที่ $_GET[num]</strong></font></div>";
+echo "<br />";
+
+$sql = "select  * from  budget_return_deega where receive_num='$_GET[num]' and  budget_year='$year_active_result[budget_year]'";
+$dbquery = mysqli_query($connect,$sql);
+echo  "<table width='70%' border='0' align='center'>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td align='100'>ที่</Td><Td width='100'>ว/ด/ป</Td><Td  width='100'>เลขที่เอกสาร</Td><Td>รายการ</Td><Td width='100'>จำนวนเงิน</Td><Td  width='40'></Td></Tr>";
+$X=1;
+$sum_return_money=0;
+While ($result = mysqli_fetch_array($dbquery))
+	{
+		$id = $result['id'];
+		$document= $result['document'];
+		$receive_num= $result['receive_num'];
+		$item= $result['item'];
+		$money= $result['money'];
+		$sum_return_money=$sum_return_money+$money;
+		$money=number_format($money,2);
+		$rec_date= $result['rec_date'];
+list($rec_year,$rec_month,$rec_day) = explode("-",$rec_date);
+$t_year=($rec_year+543)-2500;
+			if(($X%2) == 0)
+			$color="#FFFFC";
+			else  	$color="#FFFFFF";
+		echo "<Tr bgcolor=$color align='center'><Td>$X</Td><Td>$rec_day $t_month[$rec_month] $t_year</Td><Td>$document</Td><Td align='left'>$item</Td><Td align='right'>$money</Td>
+		<Td><div align='center'><font size=3><a href=?option=budget&task=main/report_10_4&id=$id&page=$page&year_index=$year_active_result[budget_year]&num=$_GET[num]><img src=images/browse.png border='0'></a></font></div></Td>
+					</Tr>";
+$X++;
+}
+$sum_return_money=number_format($sum_return_money,2);
+echo "<tr bgcolor='#FFCCCC'><td></td><td></td><td></td><td align='center'>รวม</td><td align='center'>$sum_return_money</td><td></td></tr>";
+
+echo "</Table>";
+?>

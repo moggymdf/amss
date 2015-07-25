@@ -8,7 +8,7 @@ exit();
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ตำแหน่งครูและบุคลากรในสำนักงานเขตพื้นที่การศึกษา</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>ตำแหน่งบุคลากรใน สพฐ.</strong></font></td></tr>";
 echo "</table>";
 }
 //ส่วนเพิ่มข้อมูล

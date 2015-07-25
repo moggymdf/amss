@@ -7,7 +7,7 @@ exit();
 
 echo "<br />";
 echo "<table width='50%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>นำเข้าข้อมูลครูและบุคลากรในสำนักงานเขตพื้นที่การศึกษา</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>นำเข้าข้อมูลบุคลากรใน สพฐ.</strong></font></td></tr>";
 echo "</table>";
 
 if($_FILES){
@@ -59,8 +59,8 @@ function uploadfile () {
 echo  "<form name ='frm1' Enctype = 'multipart/form-data'>";
 echo  "<br>";
 echo  "<table align='center' width='50%' border='0'>";
-echo  "<tr>";
-echo  "<td align='right'><strong><font color='#003366' size='2'>ไฟล์เอกสาร</font></strong></td>";
+echo  "<tr align='center'>";
+echo  "<td align='right' width='45%'><strong><font color='#003366' size='2'>ไฟล์เอกสาร</font></strong></td>";
 echo  "<td align='left'><input name = 'userfile'  type = 'file'><font color='#003366' size='2'></font></td>";
 echo  "</tr>";
 echo  "<tr><td></td><td></td></tr> ";

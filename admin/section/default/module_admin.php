@@ -1,7 +1,23 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-//sd page
+?>
+<script type="text/javascript" src="../jquery/jquery-1.5.1.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("select#department").change(function(){
+		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
+			  url: "section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
+			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
+			  async: false
+		}).responseText;
+		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
+		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
+	});
+});
+
+</script>
+<?php
 
 //อาเรย์ชื่อ module
 $sql = "select  * from system_module";
@@ -38,18 +54,21 @@ While ($result = mysqli_fetch_array($dbquery))
 	}
 echo "</select>";
 echo "</Td></Tr>";
+
 echo "<Tr><Td align='right'>ผู้ดูแล(Admin)&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status<'1' order by name,position_code";
+echo "<td><div align='left'><Select name='department' id='department' size='1'>";
+echo  "<option  value = ''>เลือกสำนัก</option>" ;
+$sql = "select * from  system_department order by department";
 $dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
-   {
-		$person_id = $result['person_id'];
-		$name = $result['name'];
-		$surname = $result['surname'];
-		echo  "<option value = $person_id>$name $surname</option>" ;
-	}
+While ($result_department = mysqli_fetch_array($dbquery)){
+echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+}
+echo "</select>";
+echo "</div></td></tr>";
+
+echo "<Tr><Td align='right'>&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
+echo  "<option  value = ''>เลือกบุคลากร</option>" ;
 echo "</select>";
 echo "</div></td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -91,7 +110,7 @@ echo "<Font color='#006666' Size=3><B>แก้ไข ผู้ดูแล(Admi
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
-$sql = "select * from system_module_admin where id='$_GET[id]'";
+$sql = "select * from system_module_admin left join person_main on system_module_admin.person_id=person_main.person_id where system_module_admin.id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
 echo "<Tr><Td align='right'>ระบบงานย่อย&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Select name='module' size='1'>";
@@ -111,10 +130,27 @@ While ($result = mysqli_fetch_array($dbquery))
 	}
 echo "</select>";
 echo "</Td></Tr>";
+
 echo "<Tr><Td align='right'>ผู้ดูแล(Admin)&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
+echo "<td><div align='left'><Select name='department' id='department' size='1'>";
+echo  "<option  value = ''>เลือกสำนัก</option>" ;
+$sql = "select * from  system_department order by department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result_department = mysqli_fetch_array($dbquery)){
+		if($result_department['department']==$ref_result['department']){
+		echo  "<option  value ='$result_department[department]' selected>$result_department[department] $result_department[department_name]</option>" ;
+		}
+		else{
+		echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+		}
+}
+echo "</select>";
+echo "</div></td></tr>";
+
+echo "<Tr><Td align='right'>&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main order by position_code";
+$sql = "select  * from person_main where department='$ref_result[department]' and status='0' order by name";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {

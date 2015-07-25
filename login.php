@@ -1,7 +1,6 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-
 $user_agent = $_SERVER['HTTP_USER_AGENT'];
 function getOS() {
     global $user_agent;
@@ -60,33 +59,26 @@ $user_os = getOS();
 </head>
 <body onLoad="setFocus();">
 <!-- Div ของ login -->
-<div id="ctr" align="center">
-	<div class="login">
-		<div class="login-form">
+<form action="index.php" method="post" name="loginForm" id="loginForm">
+<table class="login" align="center">
+<tr><td>
+<div class="ctr"><img src="images/login/x-obec.jpg" alt="security" /></div>
+</td><td width="60%">
 			<img src="images/login/login.gif" alt="Login" />
-        	<form action="index.php" method="post" name="loginForm" id="loginForm">
 			<div class="form-block">
 	        	<div class="inputlabel">Username</div>
 		    	<div><input name="username" type="text" class="inputbox" size="15" /></div>
 	        	<div class="inputlabel">Password</div>
 		    	<div><input name="pass" type="password" class="inputbox" size="15" /></div>
+				<input name="user_os" type="hidden" value="<?php echo $user_os ?>">
 	        	<div align="left"><input type="submit" name="login_submit" class="button" value="Login" />
 				&nbsp;<input type="reset" class="button" value="Reset" /></div>
         	</div>
-			<input name="user_os" type="hidden" value="<?php echo $user_os ?>">
-			</form>
-    	</div>
-		<div class="login-text">
-			<div class="ctr"><img src="images/login/pic_school.jpg" alt="security" /></div>
-        	<p>ระบบสนับสนุนการบริหารจัดการสำนักงานเขตพื้นที่การศึกษา</p>
-			<p>Education Area Management Support System : AMSS++</p>
-    	</div>
-		<div class="clr"></div>
-	</div>
-</div>
-<br><BR>
-<div align='center'>หากเป็นบุคลากรในหน่วยงาน ถ้ายังไม่มี Username และ Password<br>
-สามารถ Login ด้วยเลขประจำตัวประชาชน</div>
+</td></tr>
+<tr><td colspan="2" align="center">
+<font color="#FFFFFF">ระบบสนับสนุนการบริหารจัดการสำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน</font><br><br></td></tr>
+</table>
+</form>
 <!-- จบ Login -->
 <noscript>
 !Warning! Javascript must be enabled for proper operation of the Administrator

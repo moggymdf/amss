@@ -4,8 +4,36 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 if(!(($_SESSION['admin_person']=="person") or ($_SESSION['login_status']==99) or ($_SESSION['login_status']<=4 and $result_permission['p1']==1))){
 exit();
 }
+?>
+<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("select#department").change(function(){
+		var datalist2 = $.ajax({
+			  url: "modules/person/return_ajax_department.php",
+			  data:"department="+$(this).val(),
+			  async: false
+		}).responseText;
+		$("select#position_other_code").html(datalist2);
+	});
+});
+</script>
+<?php
 
 $officer=$_SESSION['login_user_id'];
+
+if(!isset($_REQUEST['department'])){
+$_REQUEST['department']="";
+}
+
+if(!isset($_REQUEST['page_var1'])){
+$_REQUEST['page_var1']="";
+}
+
+if(!isset($_REQUEST['name_search'])){
+$_REQUEST['name_search']="";
+}
+
 
 $sql = "select * from  person_position order by position_code";
 $dbquery = mysqli_query($connect,$sql);
@@ -13,16 +41,16 @@ While ($result = mysqli_fetch_array($dbquery)){
 $position_ar[$result['position_code']]=$result['position_name'];
 }
 
-$sql = "select * from  system_workgroup order by workgroup_order";
+$sql = "select * from  system_department order by department_order";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery)){
-$department_ar[$result['workgroup']]=$result['workgroup_desc'];
+$department_ar[$result['department']]=$result['department_name'];
 }
 
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==2.1) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ข้อมูลครูและบุคลากรในสำนักงานเขตพื้นที่การศึกษา (ปัจจุบัน)</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>ข้อมูลบุคลากรใน สพฐ. (ปัจจุบัน)</strong></font></td></tr>";
 echo "</table>";
 }
 
@@ -75,7 +103,7 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มข้อมูลครูและบุคลากร</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='60%' Border='0'>";
+echo "<Table width='80%' Border='0'>";
 echo "<Tr align='left'><Td width=30></Td><Td align='right'>เลขประจำตัวประชาชน&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_id' Size='13' maxlenght='13' onkeydown='integerOnly()'></Td></Tr>";
 echo "<Tr align='left'><Td width=30></Td><Td align='right'>คำนำหน้าชื่อ&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='prename' Size='15'></Td></Tr>";
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อ&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='name'  Size='40'></Td></Tr>";
@@ -92,16 +120,22 @@ echo  "<option  value ='$person_result[position_code]'>$person_result[position_c
 echo "</select>";
 echo "</Td></Tr>";
 
-echo "<Tr align='left'><Td ></Td><Td align='right'>ลำดับบุคคลในตำแหน่ง&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_order'  Size='4'></Td></Tr>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>ลำดับบุคคลในตำแหน่ง(ถ้ากำหนด)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_order'  Size='4'></Td></Tr>";
 
-echo "<Tr align='left'><Td ></Td><Td align='right'>กลุ่ม(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
-echo "<Select  name='department' size='1'>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>สำนัก(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
+echo "<Select  name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from  system_workgroup order by workgroup_order";
+$sql = "select * from  system_department order by department";
 $dbquery = mysqli_query($connect,$sql);
-While ($work_group_result = mysqli_fetch_array($dbquery)){
-echo  "<option  value ='$work_group_result[workgroup]'>$work_group_result[workgroup_desc]</option>" ;
+While ($result_department = mysqli_fetch_array($dbquery)){
+echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
 }
+echo "</select>";
+echo "</Td></Tr>";
+
+echo "<Tr align='left'><Td ></Td><Td align='right'>ตำแหน่งอื่น(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
+echo "<Select  name='position_other_code' id='position_other_code' size='1'>";
+echo  "<option  value = ''>เลือก</option>" ;
 echo "</select>";
 echo "</Td></Tr>";
 
@@ -123,8 +157,8 @@ if($index==2) {
 echo "<table width='500' border='0' align='center'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=person&task=person&index=3&id=$_GET[id]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=person&task=person\"'";
+echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=person&task=person&index=3&id=$_GET[id]&page=$_REQUEST[page]\"'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=person&task=person&page=$_REQUEST[page]\"'";
 echo "</td></tr></table>";
 }
 
@@ -162,14 +196,14 @@ if(!isset($changed_name)){
 $changed_name="";
 }
 
-$sql = "insert into person_main (person_id,prename,name,surname,position_code,pic,department,status,person_order,officer,rec_date) values ( '$_POST[person_id]','$_POST[prename]','$_POST[name]','$_POST[surname]','$_POST[position_code]','$changed_name','$_POST[department]','0','$_POST[person_order]','$officer','$rec_date')";
+$sql = "insert into person_main (person_id,prename,name,surname,position_code,position_other_code,pic,department,status,person_order,officer,rec_date) values ( '$_POST[person_id]','$_POST[prename]','$_POST[name]','$_POST[surname]','$_POST[position_code]','$_POST[position_other_code]','$changed_name','$_POST[department]','0','$_POST[person_order]','$officer','$rec_date')";
 $dbquery = mysqli_query($connect,$sql);
 }
 //ส่วนฟอร์มแก้ไขข้อมูล
 if ($index==5){
 echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>แก้ไขข้อมูลครูและมูลบุคลากร</B></Font>";
+echo "<Font color='#006666' Size=3><B>แก้ไขข้อมูลบุคลากร</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 $sql = "select * from  person_main where id='$_GET[id]'";
@@ -198,17 +232,41 @@ echo "</Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ลำดับบุคคลในตำแหน่ง&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_order'  Size='4' value='$result[person_order]'></Td></Tr>";
 
-echo "<Tr align='left'><Td ></Td><Td align='right'>กลุ่ม(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
-echo "<Select  name='department' size='1'>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>สำนัก(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
+echo "<Select  name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from  system_workgroup order by workgroup_order";
+$sql = "select * from  system_department order by department";
 $dbquery = mysqli_query($connect,$sql);
-While ($work_group_result = mysqli_fetch_array($dbquery)){
-		if($work_group_result['workgroup']==$result['department']){
-		echo  "<option  value ='$work_group_result[workgroup]' selected>$work_group_result[workgroup_desc]</option>" ;
+While ($result_department = mysqli_fetch_array($dbquery)){
+		if($result_department['department']==$result['department']){
+		echo  "<option  value ='$result_department[department]' selected>$result_department[department] $result_department[department_name]</option>" ;
 		}
 		else{
-		echo  "<option value ='$work_group_result[workgroup]'>$work_group_result[workgroup_desc]</option>" ;
+		echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+		}
+}
+echo "</select>";
+echo "</Td></Tr>";
+
+echo "<Tr align='left'><Td ></Td><Td align='right'>ตำแหน่งอื่น(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
+echo "<Select  name='position_other_code' id='position_other_code' size='1'>";
+$sql = "select * from system_subdepartment where department='$result[department]' order by sub_department";
+$query_sub = mysqli_query($connect,$sql);
+echo  "<option  value = ''>เลือก</option>" ;
+	if($result['position_other_code']==9999){
+	echo  "<option  value ='9999' selected>รองผู้อำนวยการสำนัก</option>" ;
+	}
+	else{
+	echo  "<option  value ='9999'>รองผู้อำนวยการสำนัก</option>" ;
+	}
+while($result_sub = mysqli_fetch_array($query_sub)){
+	$sub_department = $result_sub['sub_department'];
+	$sub_department_name = $result_sub['sub_department_name'];
+		if($result['position_other_code']==$result_sub['sub_department']){
+		echo "<option value=$sub_department selected>หัวหน้า$sub_department_name</option>";
+		}
+		else{
+		echo "<option value=$sub_department>หัวหน้า$sub_department_name</option>";
 		}
 }
 echo "</select>";
@@ -222,7 +280,8 @@ echo  "</tr>";
 echo "</Table>";
 echo "<Br />";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
+echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>
 		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'>";
 echo "</form>";
 }
@@ -241,25 +300,177 @@ exit();
 			if(!isset($changed_name)){
 			$changed_name="";
 			}
-		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', pic='$changed_name', position_code='$_POST[position_code]', person_order='$_POST[person_order]',department='$_POST[department]',officer='$officer' where id='$_POST[id]'";
+		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', pic='$changed_name', position_code='$_POST[position_code]', position_other_code='$_POST[position_other_code]', person_order='$_POST[person_order]',department='$_POST[department]',officer='$officer' where id='$_POST[id]'";
 		}
 		else{
-		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', position_code='$_POST[position_code]', person_order='$_POST[person_order]',department='$_POST[department]',officer='$officer' where id='$_POST[id]'";
+		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', position_code='$_POST[position_code]', position_other_code='$_POST[position_other_code]', person_order='$_POST[person_order]',department='$_POST[department]',officer='$officer' where id='$_POST[id]'";
 		}
 $dbquery = mysqli_query($connect,$sql);
+$index="";
 }
 
 //ส่วนการแสดงผล
 if(!(($index==1) or ($index==2) or ($index==2.1) or ($index==5))){
+
+	//เกี่ยวการส่งค่ารหัสโรงเรียนตอนเลือกหน้า
+	if(($_REQUEST['department']=="") and ($_REQUEST['page_var1']!="")){
+	$_REQUEST['department']=$_REQUEST['page_var1'];
+	}
+
+//ส่วนของการแยกหน้า
+$pagelen=50;  // 1_กำหนดแถวต่อหน้า
+$url_link="option=person&task=person&page_var1=$_REQUEST[department]&index=$index&name_search=$_REQUEST[name_search]";
+
+if($index==8 and ($_REQUEST['name_search']!="")){
+$sql_page =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.pic, person_main.person_order from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0' ";
+$_REQUEST['department']="";
+}
+else if($_REQUEST['department']==""){
+$sql_page = "select id from person_main where status='0' ";
+}
+else{
+$sql_page = "select id from person_main where status='0' and department='$_REQUEST[department]'";
+}
+
+$dbquery = mysqli_query($connect,$sql_page);
+$num_rows = mysqli_num_rows($dbquery );
+$totalpages=ceil($num_rows/$pagelen);
+
+if(!isset($_REQUEST['page'])){
+$_REQUEST['page']="";
+}
+
+if($_REQUEST['page']==""){
+$page=$totalpages;
+		if($page<2){
+		$page=1;
+		}
+}
+else{
+		if($totalpages<$_REQUEST['page']){
+		$page=$totalpages;
+					if($page<1){
+					$page=1;
+					}
+		}
+		else{
+		$page=$_REQUEST['page'];
+		}
+}
+
+$start=($page-1)*$pagelen;
+
+if(($totalpages>1) and ($totalpages<16)){
+echo "<div align=center>";
+echo "หน้า	";
+			for($i=1; $i<=$totalpages; $i++)	{
+					if($i==$page){
+					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
+					}
+					else {
+					echo "<a href=$PHP_SELF?$url_link&page=$i>[$i]</a>";
+					}
+			}
+echo "</div>";
+}
+if($totalpages>15){
+			if($page <=8){
+			$e_page=15;
+			$s_page=1;
+			}
+			if($page>8){
+					if($totalpages-$page>=7){
+					$e_page=$page+7;
+					$s_page=$page-7;
+					}
+					else{
+					$e_page=$totalpages;
+					$s_page=$totalpages-15;
+					}
+			}
+			echo "<div align=center>";
+			if($page!=1){
+			$f_page1=$page-1;
+			echo "<<a href=$PHP_SELF?$url_link&page=1>หน้าแรก </a>";
+			echo "<<<a href=$PHP_SELF?$url_link&page=$f_page1>หน้าก่อน </a>";
+			}
+			else {
+			echo "หน้า	";
+			}
+			for($i=$s_page; $i<=$e_page; $i++){
+					if($i==$page){
+					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
+					}
+					else {
+					echo "<a href=$PHP_SELF?$url_link&page=$i>[$i]</a>";
+					}
+			}
+			if($page<$totalpages)	{
+			$f_page2=$page+1;
+			echo "<a href=$PHP_SELF?$url_link&page=$f_page2> หน้าถัดไป</a>>>";
+			echo "<a href=$PHP_SELF?$url_link&page=$totalpages> หน้าสุดท้าย</a>>";
+			}
+			echo " <select onchange=\"location.href=this.options[this.selectedIndex].value;\" size=\"1\" name=\"select\">";
+			echo "<option  value=\"\">หน้า</option>";
+				for($p=1;$p<=$totalpages;$p++){
+				echo "<option  value=\"?$url_link&page=$p\">$p</option>";
+				}
+			echo "</select>";
+echo "</div>";
+}
+//จบแยกหน้า
+
 echo "<form id='frm1' name='frm1'>";
-$sql = "select * from person_main where status='0' order by department, position_code,person_order";
+echo  "<table width='95%' border='0' align='center'>";
+echo "<Tr><Td colspan='9' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=person&task=person&index=1\"'></Td><td align='right'>";
+
+//ค้นหาบุคคล
+echo "ค้นหาด้วยชื่อ หรือนามสกุล&nbsp;";
+		if($index==8){
+		echo "<Input Type='Text' Name='name_search' value='$_REQUEST[name_search]'>";
+		}
+		else{
+		echo "<Input Type='Text' Name='name_search'>";
+		}
+echo "&nbsp;<INPUT TYPE='button' name='smb'  value='ค้น' onclick='goto_display(2)'>";
+echo "&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;";
+
+echo "เลือกสำนัก&nbsp";
+echo "<Select  name='department' size='1'>";
+echo  '<option value ="" >ทั้งหมด</option>' ;
+$sql = "select * from  system_department order by department_order,department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result = mysqli_fetch_array($dbquery)){
+			if($_REQUEST['department']==""){
+			echo "<option value=$result[department]>$result[department] $result[department_name]</option>";
+			}
+			else{
+					if($_REQUEST['department']==$result['department']){
+					echo "<option value=$result[department] selected>$result[department] $result[department_name]</option>";
+					}
+					else{
+					echo "<option value=$result[department]>$result[department] $result[department_name]</option>";
+					}
+			}
+}
+	echo "</select>";
+	echo "&nbsp;<INPUT TYPE='button' name='smb' value='เลือก' onclick='goto_display(1)' class='entrybutton'>";
+echo "</td></tr></table>";
+
+if($index==8 and ($_REQUEST['name_search']!="")){
+$sql =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.pic, person_main.person_order from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0'  order by person_main.position_code limit $start,$pagelen";
+$_REQUEST['department']="";
+}
+else if($_REQUEST['department']==""){
+$sql = "select * from person_main where status='0' order by position_code,person_order limit $start,$pagelen";
+}
+else{
+$sql = "select * from person_main where status='0' and department='$_REQUEST[department]' order by department, position_code,person_order limit $start,$pagelen";
+}
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width='95%' border='0' align='center'>";
-echo "<Tr><Td colspan='9' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=person&task=person&index=1\"'></Td>";
-echo "</Tr>";
-
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='70'>ที่</Td><Td width='120'>เลขประชาชน</Td><Td width='150'>ชื่อ</Td><Td width='300'>ตำแหน่ง</Td><Td width='50'>ลำดับ</Td><Td width='200'>กลุ่ม</Td><Td width='50'>รูปภาพ</Td><Td width='60'>ลบ</Td><Td width='60'>แก้ไข</Td></Tr>";
-$N=1;
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='70'>ที่</Td><Td width='120'>เลขประชาชน</Td><Td width='200'>ชื่อ</Td><Td>ตำแหน่ง</Td><Td width='50'>ลำดับ</Td><Td>สำนัก</Td><Td width='50'>รูปภาพ</Td><Td width='60'>ลบ</Td><Td width='60'>แก้ไข</Td></Tr>";
+$N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
 	{
@@ -269,6 +480,7 @@ While ($result = mysqli_fetch_array($dbquery))
 		$name= $result['name'];
 		$surname = $result['surname'];
 		$position_code= $result['position_code'];
+		$position_other_code= $result['position_other_code'];
 		$person_order= $result['person_order'];
 		$department= $result['department'];
 			if(($M%2) == 0)
@@ -279,6 +491,17 @@ While ($result = mysqli_fetch_array($dbquery))
 		if(isset($position_ar[$position_code])){
 		echo $position_ar[$position_code];
 		}
+
+if($result['position_other_code']==9999){
+echo " (รองผู้อำนวยการสำนัก)";
+}
+$sql = "select * from system_subdepartment where sub_department='$result[position_other_code]'";
+$query_sub = mysqli_query($connect,$sql);
+while($result_sub = mysqli_fetch_array($query_sub)){
+	$sub_department_name = $result_sub['sub_department_name'];
+	echo " (หัวหน้า$sub_department_name)";
+}
+
 echo "</Td>";
 if($person_order!=0){
 echo "<Td align='center'>$person_order</Td>";
@@ -300,11 +523,11 @@ echo "<Td align='center'><a href='modules/person/pic_show.php?&person_id=$person
 else{
 echo "<Td align='center'>&nbsp;</Td>";
 }
-echo "<Td><div align='center'><a href=?option=person&task=person&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></div></Td>
-		<Td><a href=?option=person&task=person&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></div></Td>
+echo "<Td><div align='center'><a href=?option=person&task=person&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></a></div></Td>
+		<Td><a href=?option=person&task=person&index=5&id=$id&page=$page><img src=images/edit.png border='0' alt='แก้ไข'></a></div></Td>
 	</Tr>";
 $M++;
-$N++;
+$N++;  //*เกี่ยวข้องกับการแยกหน้า
 	}
 echo "<Tr bgcolor='#FFCCCC'><Td colspan='9'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือกทั้งหมด &nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='smb' value='ลบทั้งหมดที่เลือก' onclick='goto_delete_all()'></Td></Tr>";
 echo "</Table>";
@@ -349,6 +572,15 @@ function goto_url_update(val){
 			callfrm("?option=person&task=person&index=6");   //page ประมวลผล
 		}
 	}
+}
+
+function goto_display(val){
+	if(val==1){
+		callfrm("?option=person&task=person");
+		}
+	else if(val==2){
+		callfrm("?option=person&task=person&index=8");
+		}
 }
 
 function goto_delete_all(){

@@ -1,7 +1,6 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-//sd page
 
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
@@ -17,7 +16,7 @@ echo "<Font color='#006666' Size=3><B>เพิ่มสถานศึกษา
 echo "</Cener>";
 echo "<Br>";
 echo "<Table   width=60% Border='0'>";
-echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัสสถานศึกษา&nbsp;</Td><Td><Input Type='Text' Name='school_code' Size='5' onkeydown='integerOnly()'>&nbsp;*ควรใช้รหัส smiss 8 หลัก</Td></Tr>";
+echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัสสถานศึกษา&nbsp;</Td><Td><Input Type='Text' Name='school_code' Size='5' onkeydown='integerOnly()'>&nbsp;*ใช้รหัส smiss 8 หลัก</Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อสถานศึกษา&nbsp;</Td><Td><Input Type='Text' Name='school_name' Size='40'></Td></Tr>";
 
@@ -29,14 +28,14 @@ echo  "<option  value = '2'>สถานศึกษาเอกชน</option>"
 echo "</select>";
 echo "</Td></Tr>";
 
-echo "<Tr align='left'><Td ></Td><Td align='right'>กลุ่มสถานศึกษา&nbsp;</Td><Td>";
-echo "<Select  name='school_group' size='1'>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>สพท.&nbsp;</Td><Td>";
+echo "<Select  name='khet' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 
-$sql = "select * from system_school_group order by code";
+$sql = "select * from system_khet order by khet_type,khet_code";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery)) {
-echo  "<option  value = '$result[code]'>$result[code] $result[name]</option>" ;
+echo  "<option  value = '$result[khet_code]'>$result[khet_code] $result[khet_name]</option>" ;
 }
 
 echo "</select>";
@@ -45,8 +44,8 @@ echo "</Td></Tr>";
 echo "<Br>";
 echo "</Table>";
 echo "<Br>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)'>";
 
 echo "</form>";
 }
@@ -55,8 +54,8 @@ if($index==2) {
 echo "<table width='500' border='0' align='center'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?file=school&task=school&index=3&id=$_GET[id]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?file=school&task=school\"'";
+echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?file=school&task=school&index=3&id=$_GET[id]&page=$_REQUEST[page]\"'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?file=school&task=school&page=$_REQUEST[page]\"'";
 echo "</td></tr></table>";
 }
 //ส่วนลบข้อมูล
@@ -67,7 +66,7 @@ $dbquery = mysqli_query($connect,$sql);
 
 //ส่วนเพิ่มข้อมูล
 if($index==4){
-$sql = "insert into system_school (school_code, school_name, school_type, school_group) values ( '$_POST[school_code]','$_POST[school_name]','$_POST[school_type]', '$_POST[school_group]')";
+$sql = "insert into system_school (school_code, school_name, school_type, khet_code) values ( '$_POST[school_code]','$_POST[school_name]','$_POST[school_type]', '$_POST[khet]')";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -108,18 +107,18 @@ echo  "<option  value = '2' $seclect2>สถานศึกษาเอกชน
 echo "</select>";
 echo "</Td></Tr>";
 
-echo "<Tr align='left'><Td ></Td><Td align='right'>กลุ่มสถานศึกษา&nbsp;</Td><Td>";
-echo "<Select  name='school_group' size='1'>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>สพท.&nbsp;</Td><Td>";
+echo "<Select  name='khet' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 
-$sql = "select * from system_school_group order by code";
+$sql = "select * from system_khet order by khet_type,khet_code";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery)) {
-		if($ref_result['school_group']==$result['code']){
-		echo  "<option  value = '$result[code]' selected>$result[code] $result[name]</option>" ;
+		if($ref_result['khet_code']==$result['khet_code']){
+		echo  "<option  value = '$result[khet_code]' selected>$result[khet_code] $result[khet_name]</option>" ;
 		}
 		else{
-		echo  "<option  value = '$result[code]'>$result[code] $result[name]</option>" ;
+		echo  "<option  value = '$result[khet_code]'>$result[khet_code] $result[khet_name]</option>" ;
 		}
 }
 
@@ -130,28 +129,118 @@ echo "<Br>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'>";
+echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'>";
 
 echo "</form>";
 }
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
-$sql = "update system_school set school_code='$_POST[school_code]',school_name='$_POST[school_name]',school_type='$_POST[school_type]',school_group='$_POST[school_group]' where id='$_POST[id]'";
+$sql = "update system_school set school_code='$_POST[school_code]',school_name='$_POST[school_name]',school_type='$_POST[school_type]',khet_code='$_POST[khet]' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
 
 //ส่วนการแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
+//ส่วนของการแยกหน้า
+$pagelen=50;  // 1_กำหนดแถวต่อหน้า
+$url_link="file=school";  // 2_กำหนดลิงค์ฺ
+$sql = "select * from system_school"; // 3_กำหนด sql
+$dbquery = mysqli_query($connect,$sql);
+$num_rows = mysqli_num_rows($dbquery );
+$totalpages=ceil($num_rows/$pagelen);
+if(!isset($_REQUEST['page'])){
+$_REQUEST['page']="";
+}
+if($_REQUEST['page']==""){
+$page=$totalpages;
+		if($page<2){
+		$page=1;
+		}
+}
+else{
+		if($totalpages<$_REQUEST['page']){
+		$page=$totalpages;
+					if($page<1){
+					$page=1;
+					}
+		}
+		else{
+		$page=$_REQUEST['page'];
+		}
+}
 
-$sql = "select system_school.id, system_school.school_code, system_school.school_type, system_school.school_name, system_school_group.name from system_school left join system_school_group on system_school.school_group=system_school_group.code order by system_school.school_type,system_school.school_code";
+$start=($page-1)*$pagelen;
+
+if(($totalpages>1) and ($totalpages<16)){
+echo "<div align=center>";
+echo "หน้า	";
+			for($i=1; $i<=$totalpages; $i++)	{
+					if($i==$page){
+					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
+					}
+					else {
+					echo "<a href=$PHP_SELF?$url_link&page=$i>[$i]</a>";
+					}
+			}
+echo "</div>";
+}
+if($totalpages>15){
+			if($page <=8){
+			$e_page=15;
+			$s_page=1;
+			}
+			if($page>8){
+					if($totalpages-$page>=7){
+					$e_page=$page+7;
+					$s_page=$page-7;
+					}
+					else{
+					$e_page=$totalpages;
+					$s_page=$totalpages-15;
+					}
+			}
+			echo "<div align=center>";
+			if($page!=1){
+			$f_page1=$page-1;
+			echo "<<a href=$PHP_SELF?$url_link&page=1>หน้าแรก </a>";
+			echo "<<<a href=$PHP_SELF?$url_link&page=$f_page1>หน้าก่อน </a>";
+			}
+			else {
+			echo "หน้า	";
+			}
+			for($i=$s_page; $i<=$e_page; $i++){
+					if($i==$page){
+					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
+					}
+					else {
+					echo "<a href=$PHP_SELF?$url_link&page=$i>[$i]</a>";
+					}
+			}
+			if($page<$totalpages)	{
+			$f_page2=$page+1;
+			echo "<a href=$PHP_SELF?$url_link&page=$f_page2> หน้าถัดไป</a>>>";
+			echo "<a href=$PHP_SELF?$url_link&page=$totalpages> หน้าสุดท้าย</a>>";
+			}
+			echo " <select onchange=\"location.href=this.options[this.selectedIndex].value;\" size=\"1\" name=\"select\">";
+			echo "<option  value=\"\">หน้า</option>";
+				for($p=1;$p<=$totalpages;$p++){
+				echo "<option  value=\"?$url_link&page=$p\">$p</option>";
+				}
+			echo "</select>";
+echo "</div>";
+}
+//จบแยกหน้า
+
+$sql = "select system_school.id, system_school.school_code, system_school.school_name, system_school.school_type, system_khet.khet_name from system_school left join system_khet on system_school.khet_code=system_khet.khet_code order by system_khet.khet_type,system_school.school_code limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
 
 echo  "<table width=75% border=0 align=center>";
 echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?file=school&task=school&index=1\"'></Td></Tr>";
 
-echo "<Tr bgcolor=#FFCCCC align='center' class=style2><Td width='50'>ที่</Td> <Td>รหัสสถานศึกษา</Td><Td>ชื่อสถานศึกษา</Td><Td>ประเภท</Td><Td>กลุ่มสถานศึกษา</Td><Td   width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
-$N=1;
+echo "<Tr bgcolor=#FFCCCC align='center'><Td width='50'>ที่</Td><Td width='120'>รหัสสถานศึกษา</Td><Td>ชื่อสถานศึกษา</Td><Td>ประเภท</Td><Td>สพท.</Td><Td   width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
+$N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
 	{
@@ -159,7 +248,7 @@ While ($result = mysqli_fetch_array($dbquery))
 		$school_code= $result['school_code'];
 		$school_name= $result['school_name'];
 		$school_type= $result['school_type'];
-		$school_group= $result['name'];
+		$khet_name= $result['khet_name'];
 			if($school_type==1){
 			$school_type_text="สถานศึกษารัฐบาล";
 			}
@@ -174,7 +263,7 @@ While ($result = mysqli_fetch_array($dbquery))
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
 
-		echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td> <Td>$school_code</Td><Td align=left>$school_name</Td><Td align=left>$school_type_text</Td><Td align=left>$school_group</Td><Td><div align=center><a href=?file=school&task=school&index=2&id=$id><img src=../images/drop.png border='0' alt='ลบ'></a></div></Td><Td><a href=?file=school&task=school&index=5&id=$id><img src=../images/edit.png border='0' alt='แก้ไข'></a></div></Td>
+		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td> <Td>$school_code</Td><Td align=left>$school_name</Td><Td align=left>$school_type_text</Td><Td align=left>$khet_name</Td><Td><div align=center><a href=?file=school&task=school&index=2&id=$id&page=$page><img src=../images/drop.png border='0' alt='ลบ'></a></div></Td><Td><a href=?file=school&task=school&index=5&id=$id&page=$page><img src=../images/edit.png border='0' alt='แก้ไข'></a></div></Td>
 	</Tr>";
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า

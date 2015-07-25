@@ -32,7 +32,7 @@ $result = mysqli_fetch_array($dbquery);
 ?>
 <br>
 <form id="frm1" name="frm1">
-<table cellpadding='5' cellspacing='5' width='350' align='center'>
+<table cellpadding='5' cellspacing='5' width='450' align='center'>
 	<tr><td colspan='3' height=10></td></tr>
 	<tr><td colspan='3' align=center><font size='4'><b>เปลี่ยน Password</td></tr>
 	<tr><td>&nbsp;</td>

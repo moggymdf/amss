@@ -14,11 +14,13 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 </script>
 </head>
 <body onLoad="setFocus();">
-<!-- Div ของ login -->
-<div id="ctr" align="center">
-	<div class="login">
-		<div class="login-form">
-			<img src="../images/login/login.gif" alt="Login" />
+
+<table class="login" align="center">
+<tr><td></td><td align="left"><img src="../images/login/login.gif" alt="Login" /></td></tr>
+<tr><td>
+<div class="ctr"><img src="../images/login/login_key.jpg" alt="security" /></div>
+<div class="ctr"><font color="#FFFFFF">Smart Obec</font></div>
+</td><td width="60%">
         	<form action="index.php" method="post" name="loginForm" id="loginForm">
 			<div class="form-block">
 	        	<div class="inputlabel">Username</div>
@@ -29,16 +31,11 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 				&nbsp;<input type="reset" class="button" value="Reset" /></div>
         	</div>
 			</form>
-    	</div>
-		<div class="login-text">
-			<div class="ctr"><img src="../images/login/login_key.jpg" alt="security" /></div>
-        	<p>ระบบสนับสนุนการบริหารจัดการสำนักงานเขตพื้นที่การศึกษา</p>
-			<p>Education Area Management Support System : AMSS++</p>
-    	</div>
-		<div class="clr"></div>
-	</div>
-</div>
-<!-- จบ Login -->
+</td></tr>
+<tr><td colspan="2" align="center">
+<br></td></tr>
+</table>
+
 <noscript>
 !Warning! Javascript must be enabled for proper operation of the Administrator
 </noscript>

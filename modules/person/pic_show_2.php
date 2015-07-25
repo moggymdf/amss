@@ -12,7 +12,7 @@ if(isset($_SESSION['user_os'])){
 </head>
 <body>
 <?php
-require_once "../../amssplus_connect.php";
+require_once "../../database_connect.php";
 
 $sql_name = "select * from person_sch_main where person_id='$_GET[person_id]'";
 $dbquery_name = mysqli_query($connect,$sql_name);

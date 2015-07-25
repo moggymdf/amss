@@ -2,7 +2,7 @@
 session_start();
 /** Set flag that this is a parent file */
 define( "_VALID_", 1 );
-require_once "../amssplus_connect.php";
+require_once "../database_connect.php";
 
 if(isset($_POST['submit'])){
 $username 	= trim($_POST['username']);
@@ -95,7 +95,7 @@ $index="";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>AMSS_ADMIN</title>
+<title>SMART OBEC ADMIN</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="css/mm_training.css" type="text/css" />
 
@@ -111,7 +111,7 @@ $index="";
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr bgcolor="#666600">
 	<td width="15" nowrap="nowrap"></td>
-	<td height="50" colspan="3" class="logo" nowrap="nowrap">AMSS++<span class="tagline">  ส่วนการจัดการระบบ</span></td>
+	<td height="50" colspan="3" class="logo" nowrap="nowrap">Smart Obec<span class="tagline">  ส่วนการจัดการระบบ</span></td>
 	<td width="40">&nbsp;</td>
 	<td width="100%" align="right" class="user">
 <?php

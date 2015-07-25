@@ -70,10 +70,10 @@ echo "</select>";
 echo "</Td></Tr>";
 
 echo "<Tr><Td align='right'>การใช้งาน&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Select name='where_work' size='1'>";
-echo  "<option value ='0'>สพท. และสถานศึกษา</option>" ;
-echo  "<option value ='1'>เฉพาะสพท.</option>" ;
-echo  "<option value ='2'>เฉพาะสถานศึกษา</option>" ;
-echo  "<option value ='3'>สพท. สถานศึกษา และผู้เรียน</option>" ;
+echo  "<option value ='0'>สพฐ.</option>" ;
+echo  "<option value ='1'>สพฐ.และสพท.</option>" ;
+echo  "<option value ='2'>สพฐ สพท. และสถานศึกษา</option>" ;
+echo  "<option value ='3'>สพฐ สพท. สถานศึกษา และหน่วยงานพิเศษ</option>" ;
 echo "</select>";
 echo "</Td></Tr>";
 
@@ -113,10 +113,10 @@ echo "</select>";
 echo "</Td></Tr>";
 
 echo "<Tr><Td align='right'>การใช้งาน&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Select name='where_work' size='1'>";
-echo  "<option value ='0'>สพท. และสถานศึกษา</option>" ;
-echo  "<option value ='1'>เฉพาะสพท.</option>" ;
-echo  "<option value ='2'>เฉพาะสถานศึกษา</option>" ;
-echo  "<option value ='3'>สพท. สถานศึกษา และผู้เรียน</option>" ;
+echo  "<option value ='0'>สพฐ.</option>" ;
+echo  "<option value ='1'>สพฐ.และสพท.</option>" ;
+echo  "<option value ='2'>สพฐ สพท. และสถานศึกษา</option>" ;
+echo  "<option value ='3'>สพฐ สพท. สถานศึกษา และหน่วยงานพิเศษ</option>" ;
 echo "</select>";
 echo "</Td></Tr>";
 
@@ -152,10 +152,10 @@ echo "</select>";
 echo "</Td></Tr>";
 
 echo "<Tr><Td align='right'>การใช้งาน&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Select name='where_work' size='1'>";
-echo  "<option value ='0'>สพท. และสถานศึกษา</option>" ;
-echo  "<option value ='1'>เฉพาะสพท.</option>" ;
-echo  "<option value ='2'>เฉพาะสถานศึกษา</option>" ;
-echo  "<option value ='3'>สพท. สถานศึกษา และผู้เรียน</option>" ;
+echo  "<option value ='0'>สพฐ.</option>" ;
+echo  "<option value ='1'>สพฐ.และสพท.</option>" ;
+echo  "<option value ='2'>สพฐ สพท. และสถานศึกษา</option>" ;
+echo  "<option value ='3'>สพฐ สพท. สถานศึกษา และหน่วยงานพิเศษ</option>" ;
 echo "</select>";
 echo "</Td></Tr>";
 
@@ -290,28 +290,28 @@ echo "</div></td></tr>";
 
 echo "<Tr><Td align='right'>การใช้งาน&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Select name='where_work' size='1'>";
 if($ref_result['where_work']==0){
-echo  "<option value ='0' selected>สพท. และสถานศึกษา</option>" ;
+echo  "<option value ='0' selected>สพฐ.</option>" ;
 }
 else{
-echo  "<option value ='0'>สพท. และสถานศึกษา</option>" ;
+echo  "<option value ='0'>สพฐ.</option>" ;
 }
 if($ref_result['where_work']==1){
-echo  "<option value ='1' selected>เฉพาะสพท.</option>" ;
+echo  "<option value ='1' selected>สพฐ.และสพท.</option>" ;
 }
 else{
-echo  "<option value ='1'>เฉพาะสพท.</option>" ;
+echo  "<option value ='1'>สพฐ.และสพท.</option>" ;
 }
 if($ref_result['where_work']==2){
-echo  "<option value ='2' selected>เฉพาะสถานศึกษา</option>" ;
+echo  "<option value ='2' selected>สพฐ. สพท. และสถานศึกษา</option>" ;
 }
 else{
-echo  "<option value ='2'>เฉพาะสถานศึกษา</option>" ;
+echo  "<option value ='2'>สพฐ. สพท. และสถานศึกษา</option>" ;
 }
 if($ref_result['where_work']==3){
-echo  "<option value ='3' selected>สพท. สถานศึกษา และผู้เรียน</option>" ;
+echo  "<option value ='3' selected>สพฐ. สพท. สถานศึกษา และหน่วยพิเศษ</option>" ;
 }
 else{
-echo  "<option value ='3'>สพท. สถานศึกษา และผู้เรียน</option>" ;
+echo  "<option value ='3'>สพฐ. สพท. สถานศึกษา และหน่วยพิเศษ</option>" ;
 }
 echo "</select>";
 echo "</Td></Tr>";
@@ -508,16 +508,16 @@ While ($result = mysqli_fetch_array($dbquery))
 
 		echo "<Td align='center'><a href=?file=module&index=7&id=$id&module_active=$module_active&page=$page>$module_active_index</a></Td>";
 		if($result['where_work']==0){
-		$where_work_txt="สพท และสถานศึกษา";
+		$where_work_txt="สพฐ.";
 		}
 		else if($result['where_work']==1){
-		$where_work_txt="เฉพาะสพท";
+		$where_work_txt="สพฐ. และสพท.";
 		}
 		else if($result['where_work']==2){
-		$where_work_txt="เฉพาะสถานศึกษา";
+		$where_work_txt="สพฐ. สพท. และสถานศึกษา";
 		}
 		else if($result['where_work']==3){
-		$where_work_txt="สพท สถานศึกษา และผู้เรียน";
+		$where_work_txt="สพฐ. สพท. สถานศึกษา และหน่วยงานพิเศษ";
 		}
 		echo "<td align='left'>$where_work_txt</td>";
 		echo "<Td align='center'><a href=?file=module&index=2&id=$id&page=$page><img src=../images/drop.png border='0' alt='ลบ'></a></Td>

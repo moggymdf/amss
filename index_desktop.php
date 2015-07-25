@@ -1,6 +1,6 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr bgcolor="#26354A">
-	<td height="50" colspan="6" class="logo" nowrap="nowrap">&nbsp;AMSS++<span class="tagline">&nbsp; <?php echo $_SESSION['office_name']; ?> </span></td>
+	<td height="50" colspan="6" class="logo" nowrap="nowrap">&nbsp;Smart Obec<span class="tagline">&nbsp; <?php echo $_SESSION['office_name']; ?> </span></td>
 	</tr>
 	<tr bgcolor="#26354A"><td colspan="6" align="right"><font color="#FFFFFF">
 <?php
@@ -9,7 +9,7 @@ echo "ผู้ใช้ : $_SESSION[login_name]&nbsp;";
 		if(isset($_SESSION['login_surname'])){
 		echo $_SESSION['login_surname'];
 		}
-		if($_SESSION['login_status']==5 or $_SESSION['login_status']==15){
+		if($_SESSION['login_status']==100){
 		echo "&nbsp;(สิทธิ์เบื้องต้น)";
 		}
 		if(isset($_SESSION['system_school_name'])){

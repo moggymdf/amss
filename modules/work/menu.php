@@ -40,8 +40,8 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	if($_SESSION['login_status']<=105){
 	echo "<li><a href='?option=work' class='dir'>รายงาน</a>";
 		echo "<ul>";
-			echo "<li><a href='?option=work&task=report_3'>สรุปการปฏิบัติราชการ......3</a></li>";
-			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการ......4</a></li>";
+			echo "<li><a href='?option=work&task=report_3'>สรุปการปฏิบัติราชการ......33</a></li>";
+			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการ......44</a></li>";
 		echo "</ul>";
 	echo "</li>";
 	}

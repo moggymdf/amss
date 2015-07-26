@@ -7,7 +7,7 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 <ul id="nav" class="dropdown dropdown-horizontal">
 <?php
 //**
-if(!($_SESSION['login_status']==100)){
+if(!($_SESSION['login_status']==1000)){
 
 $sql_menugroup = "select  * from system_menugroup order by menugroup_order";
 $dbquery_menugroup = mysqli_query($connect,$sql_menugroup);
@@ -72,10 +72,10 @@ While ($result_menugroup = mysqli_fetch_array($dbquery_menugroup)) {
 	<li><a href="./" class="dir">ผู้ใช้ (User)</a>
 		<ul>
 <?php
-			if(!($_SESSION['login_status']==100)){
+			if(!($_SESSION['login_status']==1000)){
 			echo "<li><a href='?file=user_change_pwd'>เปลี่ยนรหัสผ่าน</a></li>";
 			}
-			if($_SESSION['login_status']==100){
+			if($_SESSION['login_status']==1000){
 			echo "<li><a href='?file=register'>ลงทะเบียนผู้ใช้</a></li>";
 			}
 ?>

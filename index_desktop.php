@@ -9,12 +9,15 @@ echo "ผู้ใช้ : $_SESSION[login_name]&nbsp;";
 		if(isset($_SESSION['login_surname'])){
 		echo $_SESSION['login_surname'];
 		}
-		if($_SESSION['login_status']==100){
+		if($_SESSION['login_status']==1000){
 		echo "&nbsp;(สิทธิ์เบื้องต้น)";
 		}
-		if(isset($_SESSION['system_school_name'])){
-		echo "&nbsp;&nbsp;&nbsp;[";
-		echo $_SESSION['system_school_name'];
+		if($_SESSION['system_user_department_name']!='' or $_SESSION['system_user_khet_name']!='' or $_SESSION['system_user_school_name']!='' or $_SESSION['system_user_specialunit_name']!=''){
+		echo "&nbsp;&nbsp;[";
+		echo $_SESSION['system_user_department_name'];
+		echo $_SESSION['system_user_khet_name'];
+		echo $_SESSION['system_user_school_name'];
+		echo $_SESSION['system_user_specialunit_name'];
 		echo "]&nbsp";
 		}
 echo "&nbsp;&nbsp;";

@@ -16,7 +16,7 @@ echo "<tr bgcolor='#FFCC00'><td>";
 echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 
 	echo "<li><a href='./'>รายการหลัก</a></li>";
-	if(($_SESSION['admin_person']=="person") or ($_SESSION['login_status']==99) or ($_SESSION['login_group']==1 and $result_permission['p1']==1)){
+	if(($_SESSION['admin_person']=="person") or ($_SESSION['login_status']==999) or ($_SESSION['login_group']==1 and $result_permission['p1']==1)){
 	echo "<li><a href='?option=person' class='dir'>ตั้งค่าระบบ</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=person&task=permission'>เจ้าหน้าที่ระบบข้อมูลบุคลากร</a></li>";

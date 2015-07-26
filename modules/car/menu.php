@@ -27,7 +27,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 
-	if($_SESSION['login_status']<=4){
+	if($_SESSION['login_group']<=4){
 	echo "<li><a href='?option=car' class='dir'>ขอใช้ยานพาหนะ</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=car&task=main/car_request'>ขอใช้รถราชการ</a></li>";

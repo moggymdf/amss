@@ -34,7 +34,6 @@ echo "<Font color='#006666' Size=3><B>กำหนดเจ้าหน้าท
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8' style='padding:15px;'>";
-
 echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือกสำนัก</option>" ;
@@ -99,13 +98,31 @@ echo "<Font color='#006666' Size=3><B>แก้ไข</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+
+$sql_user = "select a.department from person_main a left outer join car_permission b on a.person_id=b.person_id  where b.id='".$_GET['id']."' ";
+$dbquery_user = mysqli_query($connect,$sql_user);
+$result_user = mysqli_fetch_array($dbquery_user);
+$department = $result_user['department'];
+
+echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='department' id='department' size='1'>";
+echo  "<option  value = ''>เลือกสำนัก</option>" ;
+$sql = "select * from  system_department order by department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result_department = mysqli_fetch_array($dbquery)){
+echo  "<option  value ='$result_department[department]'";
+if($department==$result_department[department]) echo " selected";
+echo ">$result_department[department] $result_department[department_name]</option>" ;
+}
+echo "</select>";
+echo "</div></td></tr>";
 $sql = "select * from car_permission where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
 echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status='0' order by name";
+echo "<td><div align='left'><Select id='person_id'  name='person_id'  size='1'>";
+echo  "<option  value = ''>เลือกบุคลากร</option>" ;
+$sql = "select  * from person_main where status='0' and department='$department' order by name";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {

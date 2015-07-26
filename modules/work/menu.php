@@ -34,14 +34,9 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 		echo "<ul>";
 			echo "<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>";
 			echo "<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>";
-		echo "</ul>";
-	echo "</li>";
-	}
-	if($_SESSION['login_status']<=105){
-	echo "<li><a href='?option=work' class='dir'>รายงาน</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=report_3'>สรุปการปฏิบัติราชการ......33</a></li>";
-			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการ......44</a></li>";
+	if($_SESSION['login_status']<105){
+			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนัก</a></li>";
+    }
 		echo "</ul>";
 	echo "</li>";
 	}

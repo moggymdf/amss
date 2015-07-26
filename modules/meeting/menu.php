@@ -22,7 +22,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 		echo "</ul>";
 	echo "</li>";
 	}
-	if($_SESSION['login_status']<=4){
+	if($_SESSION['login_group']<=4){
 	echo "<li><a href='?option=meeting' class='dir'>จองห้องประชุม</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=meeting&task=main/meeting'>จองห้องประชุม</a></li>";

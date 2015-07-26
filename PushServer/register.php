@@ -1,14 +1,14 @@
 <?php
 $my = $_POST["regid"];
-// response json
+// รับข้อมูล json
 $json = array();
 /**
- * Registering a user device
- * Store reg id in users table
+ * ผู้ใช้ลงทะเบียนอุปกรณ์เข้ากับฐานข้อมูล
+ * โดยกับค่า reg id ลงในตาราง
  */
 if (isset($my)) {
-    $gcm_regid = $my; // GCM Registration ID
-    // Store user details in db
+    $gcm_regid = $my; // GCM ID ที่ลงทะเบียน
+    // เชื่อมต่อฐานข้อมูลและเก็บรายละเอียดผู้ใช้ลงฐานข้อมูล
     include_once './db_functions.php';
     include_once './gcm.php';
 

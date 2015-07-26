@@ -6,11 +6,15 @@ if(!(($result_permission['p1']==1) or ($_SESSION['admin_work']=='work'))) {
 exit();
 }
 
-require_once "modules/work/time_inc.php";
+require_once "modules/work/time_inc.php";	
 
 $officer=$_SESSION['login_user_id'];
 $today_date = date("Y-m-d");
 
+$sql_user = "select department from person_main where person_id='$officer' ";
+$dbquery_user = mysqli_query($connect,$sql_user);
+$result_user = mysqli_fetch_array($dbquery_user);
+$department = $result_user['department'];
 //ส่วนหัว
 echo "<br />";
 echo "<table width='99%' border='0' align='center'>";
@@ -30,15 +34,15 @@ $position_ar[$result['position_code']]=$result['position_name'];
 //ส่วนบันทึกข้อมูล
 if($index==4){
 $rec_date=date("Y-m-d H:i:s");
-	$sql = "select * from person_main where status='0' order by department,position_code,person_order";
+	$sql = "select person_id from person_main where status='0' order by department,position_code,person_order";
 	$dbquery = mysqli_query($connect,$sql);
 	While ($result = mysqli_fetch_array($dbquery))
 	{
 	$person_id = $result['person_id'];
-			$sql_select = "select * from  work_main  where work_date='$today_date' and person_id='$person_id'";
+			$sql_select = "select person_id from  work_main  where work_date='$today_date' and person_id='$person_id'";
 			$dbquery_select = mysqli_query($connect,$sql_select);
 			$data_num=mysqli_num_rows($dbquery_select);
-
+			
 if(!isset($_POST[$person_id])){
 $_POST[$person_id]="";
 }
@@ -46,7 +50,7 @@ $_POST[$person_id]="";
 $delete="delete_chk".$person_id;
 if(!isset($_POST[$delete])){
 $_POST[$delete]="";
-}
+}		
 
 			if(($_POST[$person_id]>0) and ($_POST[$delete]!=1)){
 					if($data_num>0){
@@ -57,27 +61,27 @@ $_POST[$delete]="";
 					$sql_insert = "insert into work_main (work_date, person_id, work, rec_date, officer) values ('$today_date', '$person_id', '$_POST[$person_id]', '$rec_date', '$officer')";
 					$dbquery_insert = mysqli_query($connect,$sql_insert);
 					}
-			}
+			}	
 			if(($_POST[$person_id]>0) and ($_POST[$delete]==1)){
 			$sql_delete = "delete from work_main where work_date='$today_date' and person_id='$person_id'";
 			$dbquery_delete = mysqli_query($connect,$sql_delete);
 			}
-	}
+	}	
 }
 
 //ส่วนแสดงหลัก
-$sql_person = "select * from person_main where status='0'";
+$sql_person = "select * from person_main where status='0'"; 
 $dbquery_person=mysqli_query($connect,$sql_person);
 While ($result_person = mysqli_fetch_array($dbquery_person)){
 $person_id = $result_person['person_id'];
 		$sql_work = "select * from  work_main  where work_date='$today_date' and person_id='$person_id' ";
 		$dbquery_work = mysqli_query($connect,$sql_work);
 		$result_work = mysqli_fetch_array($dbquery_work);
-$work_ar[$person_id]=$result_work['work'];
+$work_ar[$person_id]=$result_work['work'];		
 }
 
 echo "<form id='frm1' name='frm1'>";
-$sql = "select * from person_main where status='0' order by department,position_code,person_order";
+$sql = "select * from person_main where status='0' and department = '$department' order by department,position_code,person_order";
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width='98%' border='0' align='center'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
@@ -102,17 +106,17 @@ While ($result = mysqli_fetch_array($dbquery))
 			$color="#FFFFFF";
 			$color2="#FFFFFF";
 			}
-
+			
 //check การลา
 	$sql_la="select * from la_main where (la_start<='$today_date' and '$today_date'<=la_finish) and person_id='$person_id' ";
 	$dbquery_la = mysqli_query($connect,$sql_la);
 		if($dbquery_la){
-		$la_num=mysqli_num_rows($dbquery_la);
+		$la_num=mysqli_num_rows($dbquery_la);	
 				if($la_num>=1){
 						$result_la = mysqli_fetch_array($dbquery_la);
 						if($result_la['la_type']==1){
 						$color="#FF3366";
-						}
+						} 
 						else if($result_la['la_type']==2){
 						$color="#FFFF00";
 						}
@@ -125,25 +129,25 @@ While ($result = mysqli_fetch_array($dbquery))
 				$sql_cancel="select * from la_cancel where (cancel_la_start<='$today_date' and '$today_date'<=cancel_la_finish) and person_id='$person_id' ";
 				$dbquery_cancel = mysqli_query($connect,$sql_cancel);
 						if($dbquery_cancel){
-						$la_num_cancel=mysqli_num_rows($dbquery_cancel);
+						$la_num_cancel=mysqli_num_rows($dbquery_cancel);	
 								if($la_num_cancel>=1){
 								$color=$color2;
 								}
 						}
-
+						
 				}
 		}
-
+			
 //check การไปราชการ
 	$sql_date="select * from permission_date where person_id='$person_id' and date='$today_date' ";
 	$dbquery_date = mysqli_query($connect,$sql_date);
 		if($dbquery_date){
-		$date_num=mysqli_num_rows($dbquery_date);
+		$date_num=mysqli_num_rows($dbquery_date);	
 				if($date_num>=1){
 				$color="#00FFFF";
 				}
 		}
-
+		
 echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
 echo "<Td><input type='checkbox' name='delete_chk$person_id' value='1'>";
 echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
@@ -152,15 +156,15 @@ echo $position_ar[$position_code];
 }
 echo "</Td>";
 
-$check_index1="";
-$check_index2="";
-$check_index3="";
-$check_index4="";
-$check_index5="";
-$check_index6="";
-$check_index7="";
-$check_index8="";
-$check_index9="";
+$check_index1="";	
+$check_index2="";	
+$check_index3="";	
+$check_index4="";	
+$check_index5="";	
+$check_index6="";	
+$check_index7="";	
+$check_index8="";	
+$check_index9="";	
 
 if(!isset($_GET['index'])){
 $_GET['index']="";
@@ -218,7 +222,7 @@ echo "";
 $M++;
 $N++;
 	}
-
+	
 $sql = "select * from work_main where work_date='$today_date'";
 $dbquery = mysqli_query($connect,$sql);
 $record_num=mysqli_num_rows($dbquery);
@@ -236,7 +240,7 @@ echo "</form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=work&task=check");   // page ย้อนกลับ
+		callfrm("?option=work&task=check");   // page ย้อนกลับ 
 	}else if(val==1){
 	callfrm("?option=work&task=check&index=4");   //page ประมวลผล
 	}

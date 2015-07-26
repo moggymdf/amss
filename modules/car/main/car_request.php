@@ -4,7 +4,7 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 require_once "modules/car/time_inc.php";
 
 ?>
-<script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
+<script type="text/javascript" src="css/js/calendarDateInput.js"></script>
 <?php
 
 $user=$_SESSION['login_user_id'];
@@ -24,7 +24,7 @@ if(!isset($_POST['private_car'])){
 $_POST['private_car']="";
 }
 
-$sql_name = "select * from person_main ";
+$sql_name = "select person_id,prename,name,surname from person_main ";
 $dbquery_name = mysqli_query($connect,$sql_name);
 while($result_name = mysqli_fetch_array($dbquery_name)){;
 		$person_id = $result_name['person_id'];
@@ -48,7 +48,7 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>บันทึกขออนุญาตใช้รถราชการ</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-$sql = "select * from  car_car where status='2' ";
+$sql = "select pic from  car_car where status='2' ";
 $dbquery = mysqli_query($connect,$sql);
 $pic_num=0;
 While ($result = mysqli_fetch_array($dbquery)){
@@ -70,7 +70,7 @@ echo "<Tr align='left'><Td align='right'>เรียน&nbsp;&nbsp;</Td><Td>ผ
 echo "<Tr align='left'><Td align='right'>ข้าพเจ้า&nbsp;&nbsp;</Td><Td>$_SESSION[login_prename]$_SESSION[login_name]&nbsp;&nbsp;$_SESSION[login_surname]&nbsp;&nbsp;ตำแหน่ง$_SESSION[login_userposition]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td><Select  name='car'  size='1'>";
 echo  "<option  value = ''>เลือกรถ</option>" ;
-$sql = "select * from  car_car where status='2' ";
+$sql = "select car_code,car_number,name from  car_car where status='2' ";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {
@@ -86,12 +86,35 @@ echo "<Tr align='left'><Td align='right'>เพื่อวัตถุประ
 echo "<Tr align='left'><Td align='right'>ตั้งแต่วันที่&nbsp;&nbsp;</Td>";
 echo "<Td align='left'>";
 ?>
-<script>
-								var Y_date=<?php echo date("Y")?>
-								var m_date=<?php echo date("m")?>
-								var d_date=<?php echo date("d")?>
-								Y_date= Y_date+'/'+m_date+'/'+d_date
-								DateInput('car_start', true, 'YYYY-MM-DD', Y_date)</script>
+	<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">
+	<script src="./jquery/jquery-1.5.1.js"></script>
+	<script src="./jquery/ui/jquery.ui.core.js"></script>
+	<script src="./jquery/ui/jquery.ui.widget.js"></script>
+	<script src="./jquery/ui/jquery.ui.datepicker.js"></script>
+	<script>
+	$(function() {
+		$( "#datepicker" ).datepicker({
+			showButtonPanel: true,
+			dateFormat: 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true,
+			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส']
+		});
+	});
+	$(function() {
+		$( "#datepicker2" ).datepicker({
+			showButtonPanel: true,
+			dateFormat: 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true,
+			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส']
+		});
+	});
+	</script>
+
+<input type="text" id="datepicker" name=car_start value=""  readonly Size=10>
 <?php
 
 echo "</Td></Tr>";
@@ -99,12 +122,7 @@ echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input
 echo "<Tr align='left'><Td align='right'>ถึงวันที่&nbsp;&nbsp;</Td>";
 echo "<Td align='left'>";
 ?>
-<script>
-								var Y_date=<?php echo date("Y")?>
-								var m_date=<?php echo date("m")?>
-								var d_date=<?php echo date("d")?>
-								Y_date= Y_date+'/'+m_date+'/'+d_date
-								DateInput('car_finish', true, 'YYYY-MM-DD', Y_date)</script>
+<input type="text" id="datepicker2" name=car_finish value=""  readonly Size=10>
 <?php
 echo "</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input Type='Text' Name='time_finish' Size='5'>&nbspน.</Td></Tr>";
@@ -203,28 +221,46 @@ echo "<Tr align='left'><Td align='right'>สถานที่ไปราชก
 echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='because' Size='60' value='$ref_result[because]'></Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ตั้งแต่วันที่&nbsp;&nbsp;</Td>";
 echo "<Td align='left'>";
-		$car_start=explode("-", $ref_result['car_start']);
+		$car_start=$ref_result['car_start'];
 		?>
-		<script>
-										var Y_date=<?php echo $car_start[0]?>
-										var m_date=<?php echo $car_start[1]?>
-										var d_date=<?php echo $car_start[2]?>
-										Y_date= Y_date+'/'+m_date+'/'+d_date
-										DateInput('car_start', true, 'YYYY-MM-DD', Y_date)</script>
+		<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">
+	<script src="./jquery/jquery-1.5.1.js"></script>
+	<script src="./jquery/ui/jquery.ui.core.js"></script>
+	<script src="./jquery/ui/jquery.ui.widget.js"></script>
+	<script src="./jquery/ui/jquery.ui.datepicker.js"></script>
+	<script>
+	$(function() {
+		$( "#datepicker" ).datepicker({
+			showButtonPanel: true,
+			dateFormat: 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true,
+			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส']
+		});
+	});
+	$(function() {
+		$( "#datepicker2" ).datepicker({
+			showButtonPanel: true,
+			dateFormat: 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true,
+			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส']
+		});
+	});
+	</script>
+
+<input type="text" id="datepicker" name=car_start value="<?=$car_start;?>"  readonly Size=10>
 		<?php
 echo "</Td></Tr>";
 $time_start=number_format($ref_result['time_start'],2);
 echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input Type='Text' Name='time_start' Size='5' value='$time_start'>&nbspน.</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ถึงวันที่&nbsp;&nbsp;</Td>";
 echo "<Td align='left'>";
-		$car_finish=explode("-", $ref_result['car_finish']);
+		$car_finish=$ref_result['car_finish'];
 		?>
-		<script>
-										var Y_date=<?php echo $car_finish[0]?>
-										var m_date=<?php echo $car_finish[1]?>
-										var d_date=<?php echo $car_finish[2]?>
-										Y_date= Y_date+'/'+m_date+'/'+d_date
-										DateInput('car_finish', true, 'YYYY-MM-DD', Y_date)</script>
+<input type="text" id="datepicker2" name=car_finish value="<?=$car_finish;?>"  readonly Size=10>
 		<?php
 echo "</Td></Tr>";
 $time_finish=number_format($ref_result['time_finish'],2);
@@ -632,7 +668,7 @@ echo "<Td colspan='6' align='right'>";
 echo "<form  name='frm1'>";
 echo "&nbsp;<Select  name='car_index' size='1'>";
 echo  '<option value ="" >รถทุกคัน</option>' ;
-		$sql_car = "SELECT *  FROM car_car where status='2' ";
+		$sql_car = "SELECT car_code,name,car_number  FROM car_car where status='2' ";
 		$dbquery_car = mysqli_query($connect,$sql_car);
 				While ($result_car = mysqli_fetch_array($dbquery_car ))
 				{

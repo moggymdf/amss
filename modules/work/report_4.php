@@ -4,7 +4,7 @@ function printContentDiv(content){
 var printReady = document.getElementById(content);
 //var txt= 'nn';
 var txt= '';
-
+echo "aaaaaaaa";
 if (document.getElementsByTagName != null){
 var txtheadTags = document.getElementsByTagName('head');
 if (txtheadTags.length > 0){

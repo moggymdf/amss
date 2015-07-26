@@ -17,6 +17,17 @@ $(function(){
 		$("select#position_other_code").html(datalist2);
 	});
 });
+
+$(function(){
+	$("select#department").change(function(){
+		var datalist2 = $.ajax({
+			  url: "modules/person/return_ajax_sub_department.php",
+			  data:"department="+$(this).val(),
+			  async: false
+		}).responseText;
+		$("select#sub_department").html(datalist2);
+	});
+});
 </script>
 <?php
 
@@ -41,10 +52,16 @@ While ($result = mysqli_fetch_array($dbquery)){
 $position_ar[$result['position_code']]=$result['position_name'];
 }
 
-$sql = "select * from  system_department order by department_order";
+$sql = "select * from  system_department order by department";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery)){
 $department_ar[$result['department']]=$result['department_name'];
+}
+
+$sql = "select * from  system_subdepartment order by sub_department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result = mysqli_fetch_array($dbquery)){
+$sub_department_ar[$result['sub_department']]=$result['sub_department_name'];
 }
 
 echo "<br />";
@@ -133,6 +150,12 @@ echo  "<option  value ='$result_department[department]'>$result_department[depar
 echo "</select>";
 echo "</Td></Tr>";
 
+echo "<Tr align='left'><Td ></Td><Td align='right'>กลุ่ม(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
+echo "<Select  name='sub_department' id='sub_department' size='1'>";
+echo  "<option  value = ''>เลือก</option>" ;
+echo "</select>";
+echo "</Td></Tr>";
+
 echo "<Tr align='left'><Td ></Td><Td align='right'>ตำแหน่งอื่น(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
 echo "<Select  name='position_other_code' id='position_other_code' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
@@ -196,7 +219,7 @@ if(!isset($changed_name)){
 $changed_name="";
 }
 
-$sql = "insert into person_main (person_id,prename,name,surname,position_code,position_other_code,pic,department,status,person_order,officer,rec_date) values ( '$_POST[person_id]','$_POST[prename]','$_POST[name]','$_POST[surname]','$_POST[position_code]','$_POST[position_other_code]','$changed_name','$_POST[department]','0','$_POST[person_order]','$officer','$rec_date')";
+$sql = "insert into person_main (person_id,prename,name,surname,position_code,position_other_code,pic,department,sub_department,status,person_order,officer,rec_date) values ( '$_POST[person_id]','$_POST[prename]','$_POST[name]','$_POST[surname]','$_POST[position_code]','$_POST[position_other_code]','$changed_name','$_POST[department]','$_POST[sub_department]','0','$_POST[person_order]','$officer','$rec_date')";
 $dbquery = mysqli_query($connect,$sql);
 }
 //ส่วนฟอร์มแก้ไขข้อมูล
@@ -243,6 +266,24 @@ While ($result_department = mysqli_fetch_array($dbquery)){
 		}
 		else{
 		echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+		}
+}
+echo "</select>";
+echo "</Td></Tr>";
+
+echo "<Tr align='left'><Td ></Td><Td align='right'>กลุ่ม(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
+echo "<Select  name='sub_department' id='sub_department' size='1'>";
+echo  "<option  value = ''>เลือก</option>" ;
+$sql = "select * from  system_subdepartment order by sub_department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result_sub = mysqli_fetch_array($dbquery)){
+		$sub_department = $result_sub['sub_department'];
+		$sub_department_name = $result_sub['sub_department_name'];
+		if($result_sub['sub_department']==$result['sub_department']){
+		echo "<option value='$sub_department' selected>$sub_department_name</option>";
+		}
+		else{
+		echo "<option value='$sub_department'>$sub_department_name</option>";
 		}
 }
 echo "</select>";
@@ -300,10 +341,10 @@ exit();
 			if(!isset($changed_name)){
 			$changed_name="";
 			}
-		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', pic='$changed_name', position_code='$_POST[position_code]', position_other_code='$_POST[position_other_code]', person_order='$_POST[person_order]',department='$_POST[department]',officer='$officer' where id='$_POST[id]'";
+		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', pic='$changed_name', position_code='$_POST[position_code]', position_other_code='$_POST[position_other_code]', person_order='$_POST[person_order]',department='$_POST[department]',sub_department='$_POST[sub_department]',officer='$officer' where id='$_POST[id]'";
 		}
 		else{
-		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', position_code='$_POST[position_code]', position_other_code='$_POST[position_other_code]', person_order='$_POST[person_order]',department='$_POST[department]',officer='$officer' where id='$_POST[id]'";
+		$sql = "update person_main set person_id='$_POST[person_id]', prename='$_POST[prename]', name='$_POST[name]', surname='$_POST[surname]', position_code='$_POST[position_code]', position_other_code='$_POST[position_other_code]', person_order='$_POST[person_order]',department='$_POST[department]',sub_department='$_POST[sub_department]',officer='$officer' where id='$_POST[id]'";
 		}
 $dbquery = mysqli_query($connect,$sql);
 $index="";
@@ -322,7 +363,7 @@ $pagelen=50;  // 1_กำหนดแถวต่อหน้า
 $url_link="option=person&task=person&page_var1=$_REQUEST[department]&index=$index&name_search=$_REQUEST[name_search]";
 
 if($index==8 and ($_REQUEST['name_search']!="")){
-$sql_page =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.pic, person_main.person_order from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0' ";
+$sql_page =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.sub_department, person_main.pic, person_main.person_order,person_main.position_other_code from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0' ";
 $_REQUEST['department']="";
 }
 else if($_REQUEST['department']==""){
@@ -458,7 +499,7 @@ While ($result = mysqli_fetch_array($dbquery)){
 echo "</td></tr></table>";
 
 if($index==8 and ($_REQUEST['name_search']!="")){
-$sql =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.pic, person_main.person_order from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0'  order by person_main.position_code limit $start,$pagelen";
+$sql =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.sub_department, person_main.pic, person_main.person_order,person_main.position_other_code from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0'  order by person_main.position_code limit $start,$pagelen";
 $_REQUEST['department']="";
 }
 else if($_REQUEST['department']==""){
@@ -469,7 +510,7 @@ $sql = "select * from person_main where status='0' and department='$_REQUEST[dep
 }
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width='95%' border='0' align='center'>";
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='70'>ที่</Td><Td width='120'>เลขประชาชน</Td><Td width='200'>ชื่อ</Td><Td>ตำแหน่ง</Td><Td width='50'>ลำดับ</Td><Td>สำนัก</Td><Td width='50'>รูปภาพ</Td><Td width='60'>ลบ</Td><Td width='60'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='70'>ที่</Td><Td width='120'>เลขประชาชน</Td><Td width='200'>ชื่อ</Td><Td>ตำแหน่ง</Td><Td width='50'>ลำดับ</Td><Td>สำนัก</Td><Td>กลุ่ม</Td><Td width='50'>รูปภาพ</Td><Td width='60'>ลบ</Td><Td width='60'>แก้ไข</Td></Tr>";
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -483,6 +524,7 @@ While ($result = mysqli_fetch_array($dbquery))
 		$position_other_code= $result['position_other_code'];
 		$person_order= $result['person_order'];
 		$department= $result['department'];
+		$sub_department= $result['sub_department'];
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
@@ -517,6 +559,13 @@ else{
 echo "<Td align='left'></Td>";
 }
 
+if(isset($sub_department_ar[$sub_department])){
+echo "<Td align='left'>$sub_department_ar[$sub_department]</Td>";
+}
+else{
+echo "<Td align='left'></Td>";
+}
+
 if($result['pic']!=""){
 echo "<Td align='center'><a href='modules/person/pic_show.php?&person_id=$person_id' target='_blank'><img src=images/admin/user.gif border='0' alt='รูปภาพ'></a></Td>";
 }
@@ -529,7 +578,7 @@ echo "<Td><div align='center'><a href=?option=person&task=person&index=2&id=$id&
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 	}
-echo "<Tr bgcolor='#FFCCCC'><Td colspan='9'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือกทั้งหมด &nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='smb' value='ลบทั้งหมดที่เลือก' onclick='goto_delete_all()'></Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC'><Td colspan='10'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือกทั้งหมด &nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='smb' value='ลบทั้งหมดที่เลือก' onclick='goto_delete_all()'></Td></Tr>";
 echo "</Table>";
 echo "</form>";
 }
@@ -568,6 +617,8 @@ function goto_url_update(val){
 			alert("กรุณากรอกชื่อ");
 		}else if(frm1.surname.value==""){
 			alert("กรุณากรอกนามสกุล");
+		}else if(frm1.position_code.value==""){
+			alert("กรุณาเลือกตำแหน่ง");
 		}else{
 			callfrm("?option=person&task=person&index=6");   //page ประมวลผล
 		}

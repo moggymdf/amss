@@ -22,9 +22,9 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 			echo "<li><a href='?option=person&task=permission'>เจ้าหน้าที่ระบบข้อมูลบุคลากร</a></li>";
 			echo "<li><a href='?option=person&task=position'>ตำแหน่งบุคลากร สพฐ.</a></li>";
 		//	if(($_SESSION['admin_person']=="person") or ($_SESSION['login_status']<=4 and $result_permission['p1']==1)){
-			echo "<li><a href='?option=person&task=special_position'>ตำแหน่งบุคลากรหน่วยงานพิเศษ สพฐ.</a></li>";
 			echo "<li><a href='?option=person&task=khet_position'>ตำแหน่งบุคลากร สพท.</a></li>";
 			echo "<li><a href='?option=person&task=sch_position'>ตำแหน่งบุคลากร สถานศึกษา</a></li>";
+			echo "<li><a href='?option=person&task=special_position'>ตำแหน่งบุคลากรหน่วยงานพิเศษ สพฐ.</a></li>";
 		//	}
 			//echo "<li><a href='?option=person&task=person_import'>นำเข้าข้อมูลบุคลากร สพฐ.</a></li>";
 			//echo "<li><a href='?option=person&task=person_special_import'>นำเข้าข้อมูลบุคลากรหน่วยงานพิเศษ สพฐ.</a></li>";
@@ -41,9 +41,9 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 		echo "<ul>";
 			echo "<li><a href='?option=person&task=person'>สพฐ.</a></li>";
 			//if(($_SESSION['admin_person']=="person") or ($_SESSION['login_status']<=4 and $result_permission['p1']==1)){
-			echo "<li><a href='?option=person&task=person_special'>หน่วยงานพิเศษ สพฐ</a></li>";
 			echo "<li><a href='?option=person&task=person_khet'>สำนักงานเขตพื้นที่การศึกษา</a></li>";
 			echo "<li><a href='?option=person&task=person_sch'>สถานศึกษา</a></li>";
+			echo "<li><a href='?option=person&task=person_special'>หน่วยงานพิเศษ สพฐ</a></li>";
 			//}
 	echo "</ul>";
 	echo "</li>";

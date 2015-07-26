@@ -3,6 +3,7 @@
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 
 		$_SESSION['system_user_department']="";
+		$_SESSION['system_user_subdepartment']="";
 		$_SESSION['system_user_department_name']="";
 		$_SESSION['system_user_khet']="";
 		$_SESSION['system_user_khet_name']="";
@@ -81,6 +82,9 @@ if($result1){
 						$result_system_name = mysqli_fetch_array($query_system_name);
 						$_SESSION['system_user_department_name']=$result_system_name['department_name'];
 						$_SESSION['system_user_department']=$result_user['department'];
+						if($result_user['department']>0){
+						$_SESSION['system_user_subdepartment']=$result_user['sub_department'];
+						}
 						//*
 				}
 				else{

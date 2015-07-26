@@ -1,7 +1,23 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
+?>
+<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script> 
+<script type="text/javascript">
+$(function(){
+	$("select#department").change(function(){
+		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
+			  url: "admin/section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
+			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
+			  async: false
+		}).responseText;		
+		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2 
+		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
+	});
+});
 
+</script>
+<?php
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
@@ -17,22 +33,24 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>กำหนดเจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
-echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status='0' order by name";
+echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8' style='padding:15px;'>";
+
+echo "<Tr><Td align='right'>ผู้ดูแล(Admin)&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='department' id='department' size='1'>";
+echo  "<option  value = ''>เลือกสำนัก</option>" ;
+$sql = "select * from  system_department order by department";
 $dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
-   {
-		$person_id = $result['person_id'];
-		$name = $result['name'];
-		$surname = $result['surname'];
-		echo  "<option value = $person_id>$name $surname</option>" ;
-	}
+While ($result_department = mysqli_fetch_array($dbquery)){
+echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+}	
 echo "</select>";
 echo "</div></td></tr>";
 
+echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
+echo  "<option  value = ''>เลือกบุคลากร</option>" ;
+echo "</select>";
+echo "</div></td></tr>";
 echo   "<tr><td align='right'>เจ้าหน้าที่&nbsp;&nbsp;</td>";
 echo   "<td align='left'><input  type='radio' name='car_permission1' value='1'></td></tr>";
 echo   "<tr><td align='right'>ผู้ให้ความเห็นชอบ&nbsp;&nbsp;</td>";
@@ -155,20 +173,20 @@ While ($result = mysqli_fetch_array($dbquery))
 		$prename = $result['prename'];
 		$name = $result['name'];
 		$surname = $result['surname'];
-
+		
 			$p1_pic="";
 			$p2_pic="";
 			$p3_pic="";
 			if($result['p1']==1){
-			$p1_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";
+			$p1_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";	
 			}
 			else if($result['p1']==2){
-			$p2_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";
+			$p2_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";	
 			}
 			else if($result['p1']==3){
 			$p3_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";
 			}
-
+			
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
@@ -185,7 +203,7 @@ echo "</Table>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=car&task=main/permission");   // page ย้อนกลับ
+		callfrm("?option=car&task=main/permission");   // page ย้อนกลับ 
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 		alert("กรุณาเลือกบุคลากร");
@@ -200,7 +218,7 @@ function goto_url(val){
 
 function goto_url_update(val){
 	if(val==0){
-		callfrm("?option=car&task=main/permission");   // page ย้อนกลับ
+		callfrm("?option=car&task=main/permission");   // page ย้อนกลับ 
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");

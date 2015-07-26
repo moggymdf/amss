@@ -28,6 +28,12 @@ While ($result = mysqli_fetch_array($dbquery)){
 $department_ar[$result['department']]=$result['department_name'];
 }
 
+$sql = "select * from  system_subdepartment order by sub_department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result = mysqli_fetch_array($dbquery)){
+$sub_department_ar[$result['sub_department']]=$result['sub_department_name'];
+}
+
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==2.1) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
@@ -48,7 +54,7 @@ $pagelen=50;  // 1_กำหนดแถวต่อหน้า
 $url_link="option=person&task=person_report1&page_var1=$_REQUEST[department]&index=$index&name_search=$_REQUEST[name_search]";
 
 if($index==8 and ($_REQUEST['name_search']!="")){
-$sql_page =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.pic, person_main.person_order from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0' ";
+$sql_page =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.sub_department,person_main.pic, person_main.person_order,person_main.position_other_code from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0' ";
 $_REQUEST['department']="";
 }
 else if($_REQUEST['department']==""){
@@ -184,7 +190,7 @@ While ($result = mysqli_fetch_array($dbquery)){
 echo "</td></tr></table>";
 
 if($index==8 and ($_REQUEST['name_search']!="")){
-$sql =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.pic, person_main.person_order from  person_main  left join system_department on person_main.department=system_department.department  where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0'  order by person_main.position_code limit $start,$pagelen";
+$sql =  "select person_main.id, person_main.person_id, person_main.prename, person_main.name, person_main.surname, person_main.position_code, person_main.department, person_main.sub_department, person_main.pic, person_main.person_order,person_main.position_other_code from  person_main  left join system_department on person_main.department=system_department.department where person_main.name like '%$_REQUEST[name_search]%'  or person_main.surname like '%$_REQUEST[name_search]%'  and person_main.status='0'  order by person_main.position_code limit $start,$pagelen";
 $_REQUEST['department']="";
 }
 else if($_REQUEST['department']==""){
@@ -195,7 +201,7 @@ $sql = "select * from person_main where status='0' and department='$_REQUEST[dep
 }
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width='90%' border='0' align='center'>";
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='70'>ที่</Td><Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>สำนัก</Td><Td width='50'>รูปภาพ</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='70'>ที่</Td><Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>กลุ่ม</Td><Td>สำนัก</Td><Td width='50'>รูปภาพ</Td></Tr>";
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -208,6 +214,7 @@ While ($result = mysqli_fetch_array($dbquery))
 		$position_code= $result['position_code'];
 		$person_order= $result['person_order'];
 		$department= $result['department'];
+		$sub_department= $result['sub_department'];
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
@@ -230,6 +237,13 @@ while($result_sub = mysqli_fetch_array($query_sub)){
 echo "</Td>";
 if(isset($department_ar[$department])){
 echo "<Td align='left'>$department_ar[$department]</Td>";
+}
+else{
+echo "<Td align='left'></Td>";
+}
+
+if(isset($sub_department_ar[$sub_department])){
+echo "<Td align='left'>$sub_department_ar[$sub_department]</Td>";
 }
 else{
 echo "<Td align='left'></Td>";

@@ -30,6 +30,7 @@ echo "</table>";
 
 //ส่วนฟอร์มรับข้อมูล
 if($index==1){
+
 echo "<form id='frm1' name='frm1'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>จองห้องประชุม</Font>";
@@ -140,8 +141,10 @@ echo  "<option value = 23>23.00 น.</option>";
 echo  "<option value = 24>24.00 น.</option>";
 echo "</select>";
 echo "</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>ประธานการประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='chairman' Size='100'></Td></Tr>";
 echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='objective' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num' Size='4'>&nbsp;คน</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num' Size='5'>&nbsp;คน</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>ผู้ประสานงาน/เบอร์โทร&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='coordinator' Size='100'></Td></Tr>";
 echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='other' Size='100'></Td></Tr>";
 echo "</Table>";
 echo "<Br>";
@@ -172,7 +175,7 @@ $dbquery = mysqli_query($connect,$sql);
 if($index==4){
 $date_time_now = date("Y-m-d H:i:s");
 
-$sql = "insert into meeting_main (room, book_date, start_time, finish_time, objective, person_num, other, book_person, rec_date) values ('$_POST[room]', '$_POST[book_date]','$_POST[start_time]','$_POST[finish_time]','$_POST[objective]','$_POST[person_num]','$_POST[other]','$user','$date_time_now')";
+$sql = "insert into meeting_main (room, book_date, start_time, finish_time, objective, person_num, chairman, coordinator, other, book_person, rec_date) values ('$_POST[room]', '$_POST[book_date]','$_POST[start_time]','$_POST[finish_time]','$_POST[objective]','$_POST[person_num]','$_POST[chairman]','$_POST[coordinator]','$_POST[other]','$user','$date_time_now')";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -287,10 +290,10 @@ $room_ar[$result_room['room_code']]=$result_room['room_name'];
 }
 
 if($room_index>=1){
-$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num, meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num, meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname ,meeting_main.coordinator,meeting_main.chairman from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 }
 else{
-$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num,  meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname from meeting_main left join person_main on meeting_main.book_person = person_main.person_id order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num,  meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname,meeting_main.coordinator,meeting_main.chairman from meeting_main left join person_main on meeting_main.book_person = person_main.person_id order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 }
 
 $dbquery = mysqli_query($connect,$sql);
@@ -321,7 +324,7 @@ echo "</form>";
 echo "</Td>";
 echo "</Tr>";
 
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>วัตถุประสงค์</Td><Td width='100'>จำนวนผู้ประชุม</Td><Td width='200'>อื่น ๆ</Td><Td width='100'>ผู้จอง</Td><Td>วันเวลาจอง</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='100'>จำนวนผู้ประชุม</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td width='100'>ผู้จอง</Td><Td>วันเวลาจอง</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -337,7 +340,8 @@ While ($result = mysqli_fetch_array($dbquery)){
 		$rec_date = $result['rec_date'];
 		$name= $result['name'];
 		$surname = $result['surname'];
-
+        $coordinator = $result['coordinator'];
+		$chairman = $result['chairman'];
 			if(($M%2) == 0)
 			$color="#FFFFB";
 			else  	$color="#FFFFFF";
@@ -351,14 +355,14 @@ echo $room_ar[$room];
 }
 echo "</Td>";
 echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time น.</Td>";
-echo "<td>$result[objective]</td>";
+echo "<td>$result[chairman]/$result[objective]</td>";
 if($result['person_num']>0){
 echo "<td align='center'>$result[person_num]&nbsp;คน</td>";
 }
 else{
 echo "<td align='center'>&nbsp;</td>";
 }
-echo "<td>$result[other]</td>";
+echo "<td>$result[other]/$result[coordinator]</td>";
 echo "<Td>$name&nbsp;&nbsp;$surname</Td>";
 echo "<Td>";
 echo thai_date_4($rec_date);
@@ -409,8 +413,20 @@ function goto_url(val){
 	}else if(val==1){
 		if(frm1.room.value == ""){
 			alert("กรุณาเลือกห้องประชุม");
-		}else if(frm1.objective == ""){
+		}else if(frm1.book_date.value == ""){
+			alert("กรุณาระบุวันที่ต้องการจอง");
+		}else if(frm1.start_time.value == ""){
+			alert("กรุณาระบุเวลาเริ่มประชุม");
+		}else if(frm1.finish_time.value == ""){
+			alert("กรุณาระบุเวลาเลิกประชุม");
+		}else if(frm1.chairman.value == ""){
+			alert("กรุณาระบุประธานการประชุม");
+		}else if(frm1.objective.value == ""){
 			alert("กรุณาระบุวัตถุประสงค์ของการใช้");
+		}else if(frm1.person_num.value == ""){
+			alert("กรุณาระบุจำนวนผู้เข้าประชุม");
+		}else if(frm1.coordinator.value == ""){
+			alert("กรุณาระบุผู้ประสานงานและเบอร์โทรศัพท์");
 		}else{
 			callfrm("?option=meeting&task=main/meeting&index=4");   //page ประมวลผล
 		}

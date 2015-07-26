@@ -188,10 +188,10 @@ $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td><td>";
 if(isset($full_name_ar[$person_id])){
-echo "<a href='modules/work/report_3.php?person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>$full_name_ar[$person_id]</a>";
+echo "<a href='?option=work&task=report_3&person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>$full_name_ar[$person_id]</a>";
 }
 else{
-echo "<a href='modules/work/report_3.php?person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>ไมมีรายชื่อ($person_id)</a>";
+echo "<a href='?option=work&task=report_3&person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>ไมมีรายชื่อ($person_id)</a>";
 }
 echo"</td>";
 echo "<td>";

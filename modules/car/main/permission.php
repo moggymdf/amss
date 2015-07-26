@@ -35,7 +35,7 @@ echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8' style='padding:15px;'>";
 
-echo "<Tr><Td align='right'>ผู้ดูแล(Admin)&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือกสำนัก</option>" ;
 $sql = "select * from  system_department order by department";

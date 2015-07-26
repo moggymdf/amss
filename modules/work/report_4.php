@@ -149,8 +149,8 @@ $num_rows=mysqli_num_rows($dbquery_work);
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td>";
 echo "<td><a href='?option=work&task=report_5&department=$department' target='_blank'>$department_name</a></td>";
-echo "<td>";
-	echo "รวมคน";
+echo "<td align='center'>";
+	echo $num_rows;
 echo "</td>";            
 
 While ($result_work = mysqli_fetch_array($dbquery_work)){

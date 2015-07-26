@@ -52,7 +52,6 @@ $thai_month_arr=array(
 );
 
 require_once "modules/work/time_inc.php";	
-echo  "ถถถถถถถถถถถถถถถถ";
 //แปลงรูปแบบ date
 if(isset($_GET['datepicker'])){
 $f1_date=explode("-", $_GET['datepicker']);

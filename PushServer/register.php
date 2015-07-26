@@ -19,7 +19,7 @@ if (isset($my)) {
         $res = $db->storeUser($gcm_regid);
 
         $registatoin_ids = array($gcm_regid);
-        $message = "ยินดีต้อนรับสู่สำนักงานเขตพื้นที่การศึกษาประถมศึกษาสุรินทร์ เขต 3";
+        $message = "ยินดีต้อนรับสู่สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน";
 
         $result = $gcm->send_notification($registatoin_ids, $message);
 

@@ -3,7 +3,7 @@
 <head>
 <title>AMSS++</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" href="css/mm_training.css" type="text/css" />
+<link rel="stylesheet" href="../../css/mm_training.css" type="text/css" />
 <style type="text/css">
 <!--
 .style1 {font-size: 14px}
@@ -11,9 +11,14 @@
 </style>
 
 <?php
-require_once "../../amssplus_connect.php";
-require_once("../../mainfile.php");
-require_once "time_inc.php";
+/** ensure this file is being included by a parent file */
+defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
+//if(!($_SESSION['login_status']<=5)){
+if($_SESSION['login_status']>105 || $result_permission['p1']!=1 ){	    
+exit();
+}
+
+require_once "modules/work/time_inc.php";	
 
 $thai_month_arr=array(
 	"01"=>"มกราคม",
@@ -21,13 +26,13 @@ $thai_month_arr=array(
 	"03"=>"มีนาคม",
 	"04"=>"เมษายน",
 	"05"=>"พฤษภาคม",
-	"06"=>"มิถุนายน",
+	"06"=>"มิถุนายน",	
 	"07"=>"กรกฎาคม",
 	"08"=>"สิงหาคม",
 	"09"=>"กันยายน",
 	"10"=>"ตุลาคม",
 	"11"=>"พฤศจิกายน",
-	"12"=>"ธันวาคม"
+	"12"=>"ธันวาคม"					
 );
 
 //แปลงรูปแบบ date
@@ -80,15 +85,15 @@ echo  "<table width='95%' border='0' align='center'>";
 echo "<Tr bgcolor='#FFCCCC' align='center' class='style1'><Td width='50'>ที่</Td>";
 echo "<Td>วัน เดือน ปี</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
 
 While ($result_work = mysqli_fetch_array($dbquery_work)){
-
+		
 						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
-
-$work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";
+						
+$work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";		
 
 if($result_work['work']==1){
 $work_1="มา";
@@ -102,32 +107,32 @@ $work_2_sum=$work_2_sum+1;
 else if($result_work['work']==3){
 $work_3="ลาป่วย";
 $work_3_sum=$work_3_sum+1;
-}
+}			
 else if($result_work['work']==4){
 $work_4="ลากิจ";
 $work_4_sum=$work_4_sum+1;
-}
+}			
 else if($result_work['work']==5){
 $work_5="ลาพักผ่อน";
 $work_5_sum=$work_5_sum+1;
-}
+}			
 else if($result_work['work']==6){
 $work_6="ลาคลอด";
 $work_6_sum=$work_6_sum+1;
-}
+}			
 else if($result_work['work']==7){
 $work_7="ลาอื่นๆ";
 $work_7_sum=$work_7_sum+1;
-}
+}			
 else if($result_work['work']==8){
 $work_8="มาสาย";
 $work_8_sum=$work_8_sum+1;
-}
+}			
 else if($result_work['work']==9){
 $work_9="ไม่มา";
 $work_9_sum=$work_9_sum+1;
-}
-
+}			
+		
 echo "<tr bgcolor='$color' class='style1'>";
 echo "<td align='center'>$N</td><td>";
 $date=thai_date_2($result_work['work_date']);

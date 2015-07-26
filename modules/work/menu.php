@@ -34,6 +34,8 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 		echo "<ul>";
 			echo "<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>";
 			echo "<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>";
+			echo "<li><a href='?option=work&task=report_3'>สรุปการปฏิบัติราชการ......</a></li>";
+			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการ......</a></li>";
 		echo "</ul>";
 	echo "</li>";
 	}

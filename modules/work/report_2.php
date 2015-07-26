@@ -30,8 +30,10 @@ printWin.print();
 
 <?php
 /** ensure this file is being included by a parent file */
+
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-if(!($_SESSION['login_status']<=5)){
+//if(!($_SESSION['login_status']<=5)){
+if(!($_SESSION['login_status']<=105 or $result_permission['p1']==1)){	
 exit();
 }
 
@@ -41,13 +43,13 @@ $thai_month_arr=array(
 	"03"=>"มีนาคม",
 	"04"=>"เมษายน",
 	"05"=>"พฤษภาคม",
-	"06"=>"มิถุนายน",
+	"06"=>"มิถุนายน",	
 	"07"=>"กรกฎาคม",
 	"08"=>"สิงหาคม",
 	"09"=>"กันยายน",
 	"10"=>"ตุลาคม",
 	"11"=>"พฤศจิกายน",
-	"12"=>"ธันวาคม"
+	"12"=>"ธันวาคม"					
 );
 
 //แปลงรูปแบบ date
@@ -143,13 +145,13 @@ echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td width='40' bgcolor=
 $N=1;
 While ($result_work = mysqli_fetch_array($dbquery_work)){
 		$person_id = $result_work['person_id'];
-
+		
 						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
-
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;
-
+						
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
+	
 			$sql = "select  work from work_main where person_id='$person_id' and work_date between '$start_date' and '$end_date' ";
 			$dbquery= mysqli_query($connect,$sql);
 			While ($result = mysqli_fetch_array($dbquery)){
@@ -158,30 +160,30 @@ $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work
 			}
 			else if($result['work']==2){
 			$work_2_sum=$work_2_sum+1;
-
+			
 			}
 			else if($result['work']==3){
 			$work_3_sum=$work_3_sum+1;
-			}
+			}			
 			else if($result['work']==4){
 			$work_4_sum=$work_4_sum+1;
-			}
+			}			
 			else if($result['work']==5){
 			$work_5_sum=$work_5_sum+1;
-			}
+			}			
 			else if($result['work']==6){
 			$work_6_sum=$work_6_sum+1;
-			}
+			}			
 			else if($result['work']==7){
 			$work_7_sum=$work_7_sum+1;
-			}
+			}			
 			else if($result['work']==8){
 			$work_8_sum=$work_8_sum+1;
-			}
+			}			
 			else if($result['work']==9){
 			$work_9_sum=$work_9_sum+1;
-			}
-			}
+			}			
+			}			
 
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td><td>";

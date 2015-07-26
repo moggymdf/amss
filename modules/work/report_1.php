@@ -31,11 +31,11 @@ printWin.print();
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-if(!($_SESSION['login_status']<=5)){
+if(!($_SESSION['login_status']<=105 or $result_permission['p1']==1)){	
 exit();
 }
 
-require_once "modules/work/time_inc.php";
+require_once "modules/work/time_inc.php";	
 
 //แปลงรูปแบบ date
 if(isset($_GET['datepicker'])){
@@ -118,16 +118,16 @@ echo  "<table width='98%' border='0' align='center'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
 
 While ($result_work = mysqli_fetch_array($dbquery_work)){
 		$person_id = $result_work['person_id'];
-
+		
 						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
-
-$work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";
+						
+$work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";		
 
 if($result_work['work']==1){
 $work_1="มา";
@@ -141,32 +141,32 @@ $work_2_sum=$work_2_sum+1;
 else if($result_work['work']==3){
 $work_3="ลาป่วย";
 $work_3_sum=$work_3_sum+1;
-}
+}			
 else if($result_work['work']==4){
 $work_4="ลากิจ";
 $work_4_sum=$work_4_sum+1;
-}
+}			
 else if($result_work['work']==5){
 $work_5="ลาพักผ่อน";
 $work_5_sum=$work_5_sum+1;
-}
+}			
 else if($result_work['work']==6){
 $work_6="ลาคลอด";
 $work_6_sum=$work_6_sum+1;
-}
+}			
 else if($result_work['work']==7){
 $work_7="ลาอื่นๆ";
 $work_7_sum=$work_7_sum+1;
-}
+}			
 else if($result_work['work']==8){
 $work_8="มาสาย";
 $work_8_sum=$work_8_sum+1;
-}
+}			
 else if($result_work['work']==9){
 $work_9="ไม่มา";
 $work_9_sum=$work_9_sum+1;
-}
-
+}			
+		
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td><td>";
 	if(isset($full_name_ar[$person_id])){

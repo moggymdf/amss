@@ -4,10 +4,15 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 if(!(($result_permission['p1']==1) or ($_SESSION['admin_work']=='work'))) {
 exit();
 }
-
-require_once "modules/work/time_inc.php";
+require_once "modules/work/time_inc.php";	
 
 $officer=$_SESSION['login_user_id'];
+
+$sql_user = "select department from person_main where person_id='$officer' ";
+$dbquery_user = mysqli_query($connect,$sql_user);
+$result_user = mysqli_fetch_array($dbquery_user);
+$department = $result_user['department'];
+
 
 if(isset($_POST['send_date'])){
 		if($_POST['send_date']!=""){
@@ -81,7 +86,7 @@ $rec_date=date("Y-m-d H:i:s");
 			$sql_select = "select * from  work_main  where work_date='$f2_date' and person_id='$person_id'";
 			$dbquery_select = mysqli_query($connect,$sql_select);
 			$data_num=mysqli_num_rows($dbquery_select);
-
+			
 if(!isset($_POST[$person_id])){
 $_POST[$person_id]="";
 }
@@ -89,7 +94,7 @@ $_POST[$person_id]="";
 $delete="delete_chk".$person_id;
 if(!isset($_POST[$delete])){
 $_POST[$delete]="";
-}
+}		
 
 			if(($_POST[$person_id]>0) and ($_POST[$delete]!=1)){
 					if($data_num>0){
@@ -100,26 +105,26 @@ $_POST[$delete]="";
 					$sql_insert = "insert into work_main (work_date, person_id, work, rec_date, officer) values ('$f2_date', '$person_id', '$_POST[$person_id]', '$rec_date', '$officer')";
 					$dbquery_insert = mysqli_query($connect,$sql_insert);
 					}
-			}
+			}	
 			if(($_POST[$person_id]>0) and ($_POST[$delete]==1)){
 			$sql_delete = "delete from work_main where work_date='$f2_date' and person_id='$person_id'";
 			$dbquery_delete = mysqli_query($connect,$sql_delete);
 			}
-	}
+	}	
 }
 
 //ส่วนแสดงหลัก
-$sql_person = "select * from person_main where status='0'";
+$sql_person = "select * from person_main where status='0'"; 
 $dbquery_person=mysqli_query($connect,$sql_person);
 While ($result_person = mysqli_fetch_array($dbquery_person)){
 $person_id = $result_person['person_id'];
 		$sql_work = "select * from  work_main  where work_date='$f2_date' and person_id='$person_id' ";
 		$dbquery_work = mysqli_query($connect,$sql_work);
 		$result_work = mysqli_fetch_array($dbquery_work);
-$work_ar[$person_id]=$result_work['work'];
+$work_ar[$person_id]=$result_work['work'];		
 }
 echo "<form id='frm1' name='frm1'>";
-$sql = "select * from person_main where status='0' order by department,position_code,person_order";
+$sql = "select * from person_main where status='0' and department='$department' order by department,position_code,person_order";
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width='98%' border='0' align='center'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
@@ -147,15 +152,15 @@ echo $position_ar[$position_code];
 }
 echo "</Td>";
 
-$check_index1="";
-$check_index2="";
-$check_index3="";
-$check_index4="";
-$check_index5="";
-$check_index6="";
-$check_index7="";
-$check_index8="";
-$check_index9="";
+$check_index1="";	
+$check_index2="";	
+$check_index3="";	
+$check_index4="";	
+$check_index5="";	
+$check_index6="";	
+$check_index7="";	
+$check_index8="";	
+$check_index9="";	
 
 if(!isset($_GET['index'])){
 $_GET['index']="";
@@ -212,7 +217,7 @@ echo "</Tr>";
 $M++;
 $N++;
 	}
-
+	
 echo "</Table>";
 echo "<br>";
 if(isset($_GET['datepicker'])){
@@ -229,7 +234,7 @@ echo "</form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=work&task=check_2");   // page ย้อนกลับ
+		callfrm("?option=work&task=check_2");   // page ย้อนกลับ 
 	}else if(val==1){
 	callfrm("?option=work&task=check_2&index=4");   //page ประมวลผล
 	}

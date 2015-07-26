@@ -1,7 +1,7 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-if(!($_SESSION['login_status']<=4)){
+if(!($_SESSION['login_group']<=4)){
 exit();
 }
 
@@ -58,12 +58,27 @@ echo "<Tr align='left'><Td align='right'>วันทีใช้ห้อง&nb
 
 echo "<Td align='left'>";
 ?>
-<script>
-								var Y_date=<?php echo date("Y")?>
-								var m_date=<?php echo date("m")?>
-								var d_date=<?php echo date("d")?>
-								Y_date= Y_date+'/'+m_date+'/'+d_date
-								DateInput('book_date', true, 'YYYY-MM-DD', Y_date)</script>
+
+	<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">
+	<script src="./jquery/jquery-1.5.1.js"></script>
+	<script src="./jquery/ui/jquery.ui.core.js"></script>
+	<script src="./jquery/ui/jquery.ui.widget.js"></script>
+	<script src="./jquery/ui/jquery.ui.datepicker.js"></script>
+	<script>
+	$(function() {
+		$( "#datepicker" ).datepicker({
+			showButtonPanel: true,
+			dateFormat: 'yy-mm-dd',
+			changeMonth: true,
+			changeYear: true,
+			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส']
+		});
+	});
+	</script>
+
+<input type="text" id="datepicker" name=book_date value=""  readonly Size=10>
+
 <?php
 
 echo "</Td></Tr>";
@@ -110,11 +125,11 @@ echo  "<option value = 8>08.00 น.</option>";
 echo  "<option value = 9>09.00 น.</option>";
 echo  "<option value = 10>10.00 น.</option>";
 echo  "<option value = 11>11.00 น.</option>";
-echo  "<option value = 12  selected>12.00 น.</option>";
+echo  "<option value = 12>12.00 น.</option>";
 echo  "<option value = 13>13.00 น.</option>";
 echo  "<option value = 14>14.00 น.</option>";
 echo  "<option value = 15>15.00 น.</option>";
-echo  "<option value = 16>16.00 น.</option>";
+echo  "<option value = 16   selected>16.00 น.</option>";
 echo  "<option value = 17>17.00 น.</option>";
 echo  "<option value = 18>18.00 น.</option>";
 echo  "<option value = 19>19.00 น.</option>";
@@ -125,7 +140,7 @@ echo  "<option value = 23>23.00 น.</option>";
 echo  "<option value = 24>24.00 น.</option>";
 echo "</select>";
 echo "</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='objective' Size='60'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='objective' Size='100'></Td></Tr>";
 echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num' Size='4'>&nbsp;คน</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='other' Size='100'></Td></Tr>";
 echo "</Table>";

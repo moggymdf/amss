@@ -121,6 +121,7 @@ echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "</form>";
+	echo "test";
 }
 
 //ส่วนปรับปรุงข้อมูล

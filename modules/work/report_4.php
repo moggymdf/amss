@@ -32,7 +32,7 @@ printWin.print();
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
-if($_SESSION['login_status']<105){
+if(!$_SESSION['login_status']<105){
 exit();
 }
 

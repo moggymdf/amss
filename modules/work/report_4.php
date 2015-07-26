@@ -30,10 +30,9 @@ printWin.print();
 
 <?php
 /** ensure this file is being included by a parent file */
-
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
-if(!($_SESSION['login_status']<=105 or $result_permission['p1']==1)){	
+if($_SESSION['login_status']>105 || $result_permission['p1']!=1 ){	    
 exit();
 }
 
@@ -52,28 +51,21 @@ $thai_month_arr=array(
 	"12"=>"ธันวาคม"					
 );
 
+require_once "modules/work/time_inc.php";	
+
 //แปลงรูปแบบ date
 if(isset($_GET['datepicker'])){
 $f1_date=explode("-", $_GET['datepicker']);
-$start_date=$f1_date[2]."-".$f1_date[1]."-"."01";
-$end_date=$f1_date[2]."-".$f1_date[1]."-"."31";
-$thai_month=$thai_month_arr[$f1_date[1]];
-$thai_year=$f1_date[2]+543;
-$date_input_tag="$thai_month.$thai_year";
+$f2_date=$f1_date[2]."-".$f1_date[1]."-".$f1_date[0];  //ปี เดือน วัน
 }
 else{
-$f1_date=date("Y-m-d");
-$f1_date=explode("-", $f1_date);
-$start_date=$f1_date[0]."-".$f1_date[1]."-"."01";
-$end_date=$f1_date[0]."-".$f1_date[1]."-"."31";
-$thai_month=$thai_month_arr[$f1_date[1]];
-$thai_year=$f1_date[0]+543;
-$date_input_tag="$thai_month.$thai_year";
+$f2_date=date("Y-m-d");
 }
 
+$thai_date=thai_date($f2_date);
 echo "<br />";
 echo "<table width='99%' border='0' align='center'>";
-echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการเดือน$thai_month พ.ศ.$thai_year</strong></font></td></tr>";
+echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการ $thai_date</strong></font></td></tr>";
 ?>
 	<link rel="stylesheet" type="text/css" media="all" href="./modules/work/css.css">
 	<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">
@@ -100,8 +92,8 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 	<td align=right  id=no_print>
 <FORM name=frmSearchDate METHOD=GET>
 <INPUT TYPE="hidden" name=option value="work">
-<INPUT TYPE="hidden" name=task value="report_2">
-เลือกเดือนปี <input type="text" id="datepicker" name=datepicker value=<?php echo  $date_input_tag ?>  readonly Size="12">
+<INPUT TYPE="hidden" name=task value="report_4">
+เลือกวันที่ <input type="text" id="datepicker" name=datepicker value=<?php echo (isset($_GET['datepicker']))? $_GET['datepicker']:date("d-m-Y");?>  readonly Size=10>
 </FORM>
 	</td>
 </tr>
@@ -129,108 +121,78 @@ $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 $position_code_ar[$person_id]=$position_code;
 }
 
-$sql_work = "select distinct work_main.person_id from work_main left join person_main on work_main.person_id=person_main.person_id where work_main.work_date between '$start_date' and '$end_date' order by person_main.department, person_main.position_code, person_main.person_order";
+echo  "<table width='98%' border='0' align='center'>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
+echo "<Td>สำนัก</Td><Td>จำนวนทั้งหมด</Td><Td width='40' bgcolor='#CCFFFF'>มา</Td><Td width='40'>ไปราชการ</Td><Td width='40' bgcolor='#CCFFFF'>ลาป่วย</Td><Td width='40'>ลากิจ</Td><Td width='40' bgcolor='#CCFFFF'>ลาพักผ่อน</Td><Td width='40'>ลาคลอด</Td><Td width='40' bgcolor='#CCFFFF'>ลาอื่นๆ</Td><Td width='40'>มาสาย</Td><Td width='40' bgcolor='#CCFFFF'>ไม่มา</Td></Tr>";
+$N=1;
+//เลือกหน่วยงาน
+    $sql_department = "select department,department_name from system_department order by department";
+    $dbquery_department = mysqli_query($connect,$sql_department);
+        While ($result_department = mysqli_fetch_array($dbquery_department)){
+            
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;	
+
+$department = $result_department["department"];
+$department_name = $result_department['department_name'];
+//echo "de ".$department." pt<BR>";
+
+//แสดงทุกคนและหน่วยงานในวันนั้นๆ
+$sql_work = "select person_main.department as department,work_main.person_id,work_main.work from person_main,work_main where (work_main.work_date='$f2_date') and (work_main.person_id=person_main.person_id) and (person_main.department=$department) order by person_main.department, person_main.position_code, person_main.person_order";
 
 $dbquery_work = mysqli_query($connect,$sql_work);
 $num_rows=mysqli_num_rows($dbquery_work);
 
-if($num_rows<1){
-echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
-echo exit();
-}
-echo  "<table width='98%' border='0' align='center'>";
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
-echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td width='40' bgcolor='#CCFFFF'>มา</Td><Td width='40'>ไปราชการ</Td><Td width='40' bgcolor='#CCFFFF'>ลาป่วย</Td><Td width='40'>ลากิจ</Td><Td width='40' bgcolor='#CCFFFF'>ลาพักผ่อน</Td><Td width='40'>ลาคลอด</Td><Td width='40' bgcolor='#CCFFFF'>ลาอื่นๆ</Td><Td width='40'>มาสาย</Td><Td width='40' bgcolor='#CCFFFF'>ไม่มา</Td></Tr>";
-
-$N=1;
-While ($result_work = mysqli_fetch_array($dbquery_work)){
-		$person_id = $result_work['person_id'];
-		
-						if(($N%2) == 0)
+ 						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
-						
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
-	
-			$sql = "select  work from work_main where person_id='$person_id' and work_date between '$start_date' and '$end_date' ";
-			$dbquery= mysqli_query($connect,$sql);
-			While ($result = mysqli_fetch_array($dbquery)){
-			if($result['work']==1){
+           
+            
+echo "<tr bgcolor='$color'>";
+echo "<td align='center'>$N</td>";
+echo "<td><a href='?option=work&task=report_5&department=$department' target='_blank'>$department_name</a></td>";
+echo "<td>";
+	echo "รวมคน";
+echo "</td>";            
+
+While ($result_work = mysqli_fetch_array($dbquery_work)){
+
+
+            //นับการมา ไม่มา
+            if($result_work['work']==1){
 			$work_1_sum=$work_1_sum+1;
 			}
-			else if($result['work']==2){
+			else if($result_work['work']==2){
 			$work_2_sum=$work_2_sum+1;
-			
 			}
-			else if($result['work']==3){
+			else if($result_work['work']==3){
 			$work_3_sum=$work_3_sum+1;
 			}			
-			else if($result['work']==4){
+			else if($result_work['work']==4){
 			$work_4_sum=$work_4_sum+1;
 			}			
-			else if($result['work']==5){
+			else if($result_work['work']==5){
 			$work_5_sum=$work_5_sum+1;
 			}			
-			else if($result['work']==6){
+			else if($result_work['work']==6){
 			$work_6_sum=$work_6_sum+1;
 			}			
-			else if($result['work']==7){
+			else if($result_work['work']==7){
 			$work_7_sum=$work_7_sum+1;
 			}			
-			else if($result['work']==8){
+			else if($result_work['work']==8){
 			$work_8_sum=$work_8_sum+1;
 			}			
-			else if($result['work']==9){
+			else if($result_work['work']==9){
 			$work_9_sum=$work_9_sum+1;
-			}			
-			}			
-
-echo "<tr bgcolor='$color'>";
-echo "<td align='center'>$N</td><td>";
-if(isset($full_name_ar[$person_id])){
-echo "<a href='modules/work/report_3.php?person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>$full_name_ar[$person_id]</a>";
-}
-else{
-echo "<a href='modules/work/report_3.php?person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>ไมมีรายชื่อ($person_id)</a>";
-}
-echo"</td>";
-echo "<td>";
-	if(isset($position_ar[$position_code_ar[$person_id]])){
-	echo $position_ar[$position_code_ar[$person_id]];
-	}
-echo "</td>";
-if($work_1_sum==0){
-$work_1_sum="";
-}
-if($work_2_sum==0){
-$work_2_sum="";
-}
-if($work_3_sum==0){
-$work_3_sum="";
-}
-if($work_4_sum==0){
-$work_4_sum="";
-}
-if($work_5_sum==0){
-$work_5_sum="";
-}
-if($work_6_sum==0){
-$work_6_sum="";
-}
-if($work_7_sum==0){
-$work_7_sum="";
-}
-if($work_8_sum==0){
-$work_8_sum="";
-}
-if($work_9_sum==0){
-$work_9_sum="";
+            }			    
+    
 }
 
 echo "<td align='center' bgcolor='#CCFFFF'>$work_1_sum</td><td align='center'>$work_2_sum</td><td align='center' bgcolor='#CCFFFF'>$work_3_sum</td><td align='center'>$work_4_sum</td><td align='center' bgcolor='#CCFFFF'>$work_5_sum</td><td align='center'>$work_6_sum</td><td align='center' bgcolor='#CCFFFF'>$work_7_sum</td><td align='center'>$work_8_sum</td><td align='center' bgcolor='#CCFFFF'>$work_9_sum</td>";
-echo "</tr>";
-$N++;
-}
+
+            
+ $N++;           
+        }
 echo "</table>";
 ?>
 

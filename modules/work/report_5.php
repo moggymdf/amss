@@ -31,12 +31,14 @@ printWin.print();
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-if(!($_SESSION['login_status']<=105 or $result_permission['p1']==1)){	
+//if(!($_SESSION['login_status']<=5)){
+if($_SESSION['login_status']>105 || $result_permission['p1']!=1 ){	    
 exit();
 }
 
 require_once "modules/work/time_inc.php";	
 
+$department=$_GET['department'];
 //แปลงรูปแบบ date
 if(isset($_GET['datepicker'])){
 $f1_date=explode("-", $_GET['datepicker']);
@@ -76,7 +78,8 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 	<td align=right  id=no_print>
 <FORM name=frmSearchDate METHOD=GET>
 <INPUT TYPE="hidden" name=option value="work">
-<INPUT TYPE="hidden" name=task value="report_1">
+<INPUT TYPE="hidden" name=task value="report_5">
+<INPUT TYPE="hidden" name=department value=<?=$department;?>>
 เลือกวันที่ <input type="text" id="datepicker" name=datepicker value=<?php echo (isset($_GET['datepicker']))? $_GET['datepicker']:date("d-m-Y");?>  readonly Size=10>
 </FORM>
 	</td>
@@ -93,7 +96,7 @@ While ($result_post = mysqli_fetch_array($dbquery_post)){
 $position_ar[$result_post['position_code']]=$result_post['position_name'];
 }
 
-$sql_name = "select * from person_main order by department,position_code,person_order";
+$sql_name = "select * from person_main  order by department,position_code,person_order";
 $dbquery_name = mysqli_query($connect,$sql_name);
 While ($result_name = mysqli_fetch_array($dbquery_name)){
 		$person_id = $result_name['person_id'];
@@ -105,7 +108,7 @@ $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 $position_code_ar[$person_id]=$position_code;
 }
 
-$sql_work = "select work_main.person_id, work_main.work from work_main left join person_main on work_main.person_id=person_main.person_id where work_main.work_date='$f2_date' order by person_main.department, person_main.position_code, person_main.person_order";
+$sql_work = "select work_main.person_id, work_main.work from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date='$f2_date') and (person_main.department=$department) order by person_main.department, person_main.position_code, person_main.person_order";
 
 $dbquery_work = mysqli_query($connect,$sql_work);
 $num_rows=mysqli_num_rows($dbquery_work);

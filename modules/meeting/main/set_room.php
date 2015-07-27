@@ -8,7 +8,8 @@ exit();
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>กำหนดห้องประชุม</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>กำหนดห้องประชุม";
+echo "<BR>ของ ".$_SESSION['system_user_department_name']." </strong></font></td></tr>";
 echo "</table>";
 echo "<br>";
 }
@@ -54,7 +55,7 @@ $dbquery = mysqli_query($connect,$sql);
 //ส่วนแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
 
-$sql= "select * from meeting_room order by id";
+$sql= "select * from meeting_room where department=".$_SESSION['system_user_department']."  order by id";
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width=50% border=0 align=center>";
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center' >ชื่อห้องประชุม</Td><td align='center'>สถานะ</td><Td align='center' width='50'>แก้ไข</Td></Tr>";

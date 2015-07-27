@@ -39,7 +39,7 @@ echo "<Br><Br>";
 echo "<Table width='70%'>";
 echo "<Tr align='left'><Td align='right'>เลือกห้องประชุม&nbsp;&nbsp;</Td><Td><Select  name='room'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from meeting_room where active='1' order by id";
+$sql = "select * from meeting_room where active='1'  order by id";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {

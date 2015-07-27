@@ -21,7 +21,7 @@ echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
 echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='person_id'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status='0' order by name";
+$sql = "select  * from person_main  where department=".$_SESSION['system_user_department']." and status='0' order by name";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {

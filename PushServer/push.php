@@ -6,7 +6,7 @@ $deviceType = 'android';
 
 $deviceToken = $my;
 // Replace with real BROWSER API key from Google APIs
-// $apiKey = "AIzaSyCg_XTK48PxL39bEh3RQ0HSOAaZW2pB39s";
+// $apiKey = "";
 include_once './config.php';
 $apiKey = GOOGLE_API_KEY;
 // Replace with real client registration IDs

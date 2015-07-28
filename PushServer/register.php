@@ -1,14 +1,14 @@
 <?php
 $my = $_POST["regid"];
-// response json
+// รับข้อมูล json
 $json = array();
 /**
- * Registering a user device
- * Store reg id in users table
+ * ผู้ใช้ลงทะเบียนอุปกรณ์เข้ากับฐานข้อมูล
+ * โดยกับค่า reg id ลงในตาราง
  */
 if (isset($my)) {
-    $gcm_regid = $my; // GCM Registration ID
-    // Store user details in db
+    $gcm_regid = $my; // GCM ID ที่ลงทะเบียน
+    // เชื่อมต่อฐานข้อมูลและเก็บรายละเอียดผู้ใช้ลงฐานข้อมูล
     include_once './db_functions.php';
     include_once './gcm.php';
 
@@ -19,7 +19,7 @@ if (isset($my)) {
         $res = $db->storeUser($gcm_regid);
 
         $registatoin_ids = array($gcm_regid);
-        $message = "ยินดีต้อนรับสู่สำนักงานเขตพื้นที่การศึกษาประถมศึกษาสุรินทร์ เขต 3";
+        $message = "ยินดีต้อนรับสู่สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน";
 
         $result = $gcm->send_notification($registatoin_ids, $message);
 

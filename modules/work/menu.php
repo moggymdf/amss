@@ -35,7 +35,8 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 			echo "<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>";
 			echo "<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>";
 	if($_SESSION['login_status']<105){
-			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนัก</a></li>";
+			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนักรายวัน</a></li>";
+			echo "<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการรายสำนักในรอบเดือน</a></li>";
     }
 		echo "</ul>";
 	echo "</li>";

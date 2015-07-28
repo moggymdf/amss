@@ -32,7 +32,7 @@ printWin.print();
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
-if(!$_SESSION['login_status']<105){
+if($_SESSION['login_status']>=105){
 exit();
 }
 
@@ -49,9 +49,20 @@ $f2_date=date("Y-m-d");
 }
 
 $thai_date=thai_date($f2_date);
+$sql= "select department_name from system_department where department=$department ";
+$dbquery_name = mysqli_query($connect,$sql);
+While ($result_namedepartment = mysqli_fetch_array($dbquery_name)){
+		$department_name = $result_namedepartment['department_name'];
+}
+
 echo "<br />";
 echo "<table width='99%' border='0' align='center'>";
 echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการ $thai_date</strong></font></td></tr>";
+echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>ของ $department_name</strong></font></td></tr>";
+
+
+
+
 ?>
 	<link rel="stylesheet" type="text/css" media="all" href="./modules/work/css.css">
 	<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">

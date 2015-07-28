@@ -150,10 +150,8 @@ $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work
 While ($result_work = $result->fetch_array()){
 		$person_id = $result_work['person_id'];
 		
-						if(($N%2) == 0)
-						$color="#FFFFC";
-						else  	$color="#FFFFFF";
-						
+/* กำหนดสี */
+$color = ($N%2) == 0?"#FFFFCC":"#FFFFFF";
 $work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";		
 
 if($result_work['work']==1){

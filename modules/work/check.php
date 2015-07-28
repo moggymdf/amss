@@ -70,7 +70,7 @@ $_POST[$delete]="";
 }
 
 //ส่วนแสดงหลัก
-$sql_person = "select * from person_main where status='0'"; 
+$sql_person = "select * from person_main where status='0'and department = '$department'";
 $dbquery_person=mysqli_query($connect,$sql_person);
 While ($result_person = mysqli_fetch_array($dbquery_person)){
 $person_id = $result_person['person_id'];
@@ -107,8 +107,8 @@ While ($result = mysqli_fetch_array($dbquery))
 			$color2="#FFFFFF";
 			}
 			
-//check การลา
-	$sql_la="select * from la_main where (la_start<='$today_date' and '$today_date'<=la_finish) and person_id='$person_id' ";
+//check การลา  --->ยังไม่ได้เชื่อมกับระบบลา
+/*	$sql_la="select * from la_main where (la_start<='$today_date' and '$today_date'<=la_finish) and person_id='$person_id' ";
 	$dbquery_la = mysqli_query($connect,$sql_la);
 		if($dbquery_la){
 		$la_num=mysqli_num_rows($dbquery_la);	
@@ -138,7 +138,7 @@ While ($result = mysqli_fetch_array($dbquery))
 				}
 		}
 			
-//check การไปราชการ
+//check การไปราชการ  -->ยังไม่ได้เชื่อมกับระบบไปราชการ
 	$sql_date="select * from permission_date where person_id='$person_id' and date='$today_date' ";
 	$dbquery_date = mysqli_query($connect,$sql_date);
 		if($dbquery_date){
@@ -147,15 +147,9 @@ While ($result = mysqli_fetch_array($dbquery))
 				$color="#00FFFF";
 				}
 		}
-		
-echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
-echo "<Td><input type='checkbox' name='delete_chk$person_id' value='1'>";
-echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
-if(isset($position_ar[$position_code])){
-echo $position_ar[$position_code];
-}
-echo "</Td>";
+*/
 
+//เพิ่มในส่วนของงานแสดงผลในเฟส 1
 $check_index1="";	
 $check_index2="";	
 $check_index3="";	
@@ -178,29 +172,45 @@ if($work_ar[$person_id]==1){
 $check_index1="checked";
 }
 else if($work_ar[$person_id]==2){
+$color="#00FFFF";
 $check_index2="checked";
 }
 else if($work_ar[$person_id]==3){
+$color="#FF3366";
 $check_index3="checked";
 }
 else if($work_ar[$person_id]==4){
+$color="#FFFF00";
 $check_index4="checked";
 }
 else if($work_ar[$person_id]==5){
+$color="#0099FF";
 $check_index5="checked";
 }
 else if($work_ar[$person_id]==6){
+$color="#FF00FF";
 $check_index6="checked";
 }
 else if($work_ar[$person_id]==7){
+$color="#FFFF00";
 $check_index7="checked";
 }
 else if($work_ar[$person_id]==8){
+$color="#FF0000";
 $check_index8="checked";
 }
 else if($work_ar[$person_id]==9){
+$color="#FF0000";
 $check_index9="checked";
 }
+
+echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
+echo "<Td><input type='checkbox' name='delete_chk$person_id' value='1'>";
+echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
+if(isset($position_ar[$position_code])){
+echo $position_ar[$position_code];
+}
+echo "</Td>";
 
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='1' $check_index1>มา</Td>";
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='2' $check_index2>ไปราชการ</Td>";
@@ -267,5 +277,6 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;3.พื้นแถว<font color='#FF3366'>ส�
 echo "&nbsp;&nbsp;&nbsp;&nbsp;4.พื้นแถว<font color='#FFFF00'>สีเหลือง</font> หมายถึง ลากิจ<br>";
 echo "&nbsp;&nbsp;&nbsp;&nbsp;5.พื้นแถว<font color='#0099FF'>สีฟ้า</font> หมายถึง ลาพักผ่อน<br>";
 echo "&nbsp;&nbsp;&nbsp;&nbsp;6.พื้นแถว<font color='#FF00FF'>สีชมพู</font> หมายถึง ลาคลอด<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;7.ลบ หมายถึง ลบการบันทึกข้อมูล<br>";
 
 ?>

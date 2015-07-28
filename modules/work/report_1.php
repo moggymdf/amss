@@ -86,6 +86,8 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 echo "</table>";
 
 //ส่วนรายละเอียด
+$system_user_department = $_SESSION['system_user_department'];
+
 
 $sql_post = "select * from  person_position";
 $dbquery_post = mysqli_query($connect,$sql_post);
@@ -93,7 +95,7 @@ While ($result_post = mysqli_fetch_array($dbquery_post)){
 $position_ar[$result_post['position_code']]=$result_post['position_name'];
 }
 
-$sql_name = "select * from person_main order by department,position_code,person_order";
+$sql_name = "select * from person_main where department='$system_user_department' order by department,position_code,person_order";
 $dbquery_name = mysqli_query($connect,$sql_name);
 While ($result_name = mysqli_fetch_array($dbquery_name)){
 		$person_id = $result_name['person_id'];
@@ -105,7 +107,7 @@ $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 $position_code_ar[$person_id]=$position_code;
 }
 
-$sql_work = "select work_main.person_id, work_main.work from work_main left join person_main on work_main.person_id=person_main.person_id where work_main.work_date='$f2_date' order by person_main.department, person_main.position_code, person_main.person_order";
+$sql_work = "select work_main.person_id, work_main.work from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date='$f2_date') and (person_main.department='$system_user_department') order by person_main.department, person_main.position_code, person_main.person_order";
 
 $dbquery_work = mysqli_query($connect,$sql_work);
 $num_rows=mysqli_num_rows($dbquery_work);

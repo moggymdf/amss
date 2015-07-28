@@ -144,6 +144,64 @@ While ($result = mysqli_fetch_array($dbquery))
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
+
+
+//เพิ่มในส่วนของงานแสดงผลในเฟส 1
+$check_index1="";
+$check_index2="";
+$check_index3="";
+$check_index4="";
+$check_index5="";
+$check_index6="";
+$check_index7="";
+$check_index8="";
+$check_index9="";
+
+if(!isset($_GET['index'])){
+$_GET['index']="";
+}
+
+if($_GET['index']==2){
+$check_index1="checked";
+}
+
+if($work_ar[$person_id]==1){
+$check_index1="checked";
+}
+else if($work_ar[$person_id]==2){
+$color="#00FFFF";
+$check_index2="checked";
+}
+else if($work_ar[$person_id]==3){
+$color="#FF3366";
+$check_index3="checked";
+}
+else if($work_ar[$person_id]==4){
+$color="#FFFF00";
+$check_index4="checked";
+}
+else if($work_ar[$person_id]==5){
+$color="#0099FF";
+$check_index5="checked";
+}
+else if($work_ar[$person_id]==6){
+$color="#FF00FF";
+$check_index6="checked";
+}
+else if($work_ar[$person_id]==7){
+$color="#FFFF00";
+$check_index7="checked";
+}
+else if($work_ar[$person_id]==8){
+$color="#FF0000";
+$check_index8="checked";
+}
+else if($work_ar[$person_id]==9){
+$color="#FF0000";
+$check_index9="checked";
+}
+
+
 echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
 echo "<Td><input type='checkbox' name='delete_chk$person_id' value='1'>";
 echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
@@ -151,7 +209,7 @@ if(isset($position_ar[$position_code])){
 echo $position_ar[$position_code];
 }
 echo "</Td>";
-
+/*
 $check_index1="";	
 $check_index2="";	
 $check_index3="";	
@@ -197,6 +255,7 @@ $check_index8="checked";
 else if($work_ar[$person_id]==9){
 $check_index9="checked";
 }
+*/
 
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='1' $check_index1>มา</Td>";
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='2' $check_index2>ไปราชการ</Td>";
@@ -240,3 +299,16 @@ function goto_url(val){
 	}
 }
 </script>
+
+<?php
+echo "<BR><BR>";
+echo "<b>&nbsp;&nbsp;หมายเหตุ</b><br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;1.<img src=images/dangerous.png border='0'> หมายถึง ยังไม่มีข้อมูล<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;2.พื้นแถว<font color='#00FFFF'>สีเขียว</font> หมายถึง ขออนุญาตไปราชการ<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;3.พื้นแถว<font color='#FF3366'>สีแดง</font> หมายถึง ลาป่วย<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;4.พื้นแถว<font color='#FFFF00'>สีเหลือง</font> หมายถึง ลากิจ<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;5.พื้นแถว<font color='#0099FF'>สีฟ้า</font> หมายถึง ลาพักผ่อน<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;6.พื้นแถว<font color='#FF00FF'>สีชมพู</font> หมายถึง ลาคลอด<br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;7.ลบ หมายถึง ลบการบันทึกข้อมูล<br>";
+
+?>

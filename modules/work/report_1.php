@@ -1,3 +1,11 @@
+<?
+/* ชื่อไฟล์ : report_1.php
+ * รายละเอียด : รายงานข้อมูลการขาดลามาสาย
+ * เขียนโดย : @ตอง
+ * ปรับปรุงคำสั่ง sql เพื่อป้องกัน sql injection โดย @ครูป๋อง
+ * beautify code โดย @ครูป๋อง
+ */
+?>
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -90,14 +98,20 @@ $system_user_department = $_SESSION['system_user_department'];
 
 
 $sql_post = "select * from  person_position";
-$dbquery_post = mysqli_query($connect,$sql_post);
-While ($result_post = mysqli_fetch_array($dbquery_post)){
+/* เพิ่มคำสั่ง prepare */
+$stmt = mysqli_prepare($connect,$sql_post);
+$stmt->execute();
+$dbquery_post = $stmt->get_result();
+While ($result_post = $dbquery_post->fetch_array()){
 $position_ar[$result_post['position_code']]=$result_post['position_name'];
 }
 
 $sql_name = "select * from person_main where department='$system_user_department' order by department,position_code,person_order";
-$dbquery_name = mysqli_query($connect,$sql_name);
-While ($result_name = mysqli_fetch_array($dbquery_name)){
+/* เพิ่มคำสั่ง prepare */
+$stmt = mysqli_prepare($connect,$sql_name);
+$stmt->execute();
+$result = $stmt->get_result();
+While ($result_name = $result->fetch_array()){
 		$person_id = $result_name['person_id'];
 		$prename=$result_name['prename'];
 		$name= $result_name['name'];
@@ -107,14 +121,25 @@ $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 $position_code_ar[$person_id]=$position_code;
 }
 
-$sql_work = "select work_main.person_id, work_main.work from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date='$f2_date') and (person_main.department='$system_user_department') order by person_main.department, person_main.position_code, person_main.person_order";
-
-$dbquery_work = mysqli_query($connect,$sql_work);
-$num_rows=mysqli_num_rows($dbquery_work);
+/* เพิ่มคำสั่ง prepare */
+$sql_work = "select work_main.person_id, work_main.work from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date=?) and (person_main.department=?) order by person_main.department, person_main.position_code, person_main.person_order";
+$stmt = mysqli_prepare($connect,$sql_work);
+$stmt->bind_param("ss", $f2_date,$system_user_department);
+$stmt->execute();
+$stmt->store_result();
+$num_rows = $stmt->num_rows;
+$stmt->close();
 
 if($num_rows<1){
+	/* หยุดการทำงานเมื่อไม่พบข้อมูล */
 echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
 echo exit();
+} else {
+/* เริ่มดึงข้อมูลจากฐานข้อมุล */
+$stmt = mysqli_prepare($connect,$sql_work);
+$stmt->bind_param("ss", $f2_date,$system_user_department);
+$stmt->execute();
+$result = $stmt->get_result();
 }
 echo  "<table width='98%' border='0' align='center'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
@@ -122,7 +147,7 @@ echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไ�
 $N=1;
 $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
 
-While ($result_work = mysqli_fetch_array($dbquery_work)){
+While ($result_work = $result->fetch_array()){
 		$person_id = $result_work['person_id'];
 		
 						if(($N%2) == 0)

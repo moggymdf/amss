@@ -110,6 +110,8 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 echo "</table>";
 
 //ส่วนรายละเอียด
+$system_user_department = $_SESSION['system_user_department'];
+
 
 $sql_post = "select * from  person_position";
 $dbquery_post = mysqli_query($connect,$sql_post);
@@ -129,7 +131,8 @@ $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 $position_code_ar[$person_id]=$position_code;
 }
 
-$sql_work = "select distinct work_main.person_id from work_main left join person_main on work_main.person_id=person_main.person_id where work_main.work_date between '$start_date' and '$end_date' order by person_main.department, person_main.position_code, person_main.person_order";
+
+$sql_work = "select distinct work_main.person_id from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date between '$start_date' and '$end_date') and person_main.department='$system_user_department' order by person_main.department, person_main.position_code, person_main.person_order";
 
 $dbquery_work = mysqli_query($connect,$sql_work);
 $num_rows=mysqli_num_rows($dbquery_work);

@@ -1,20 +1,26 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-
-if(!(($result_permission['p1']==1) or ($_SESSION['admin_work']=='work'))) {
+$login_admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
+if(!(($result_permission['p1']==1) or ($login_admin_work=='work'))) {
 exit();
 }
 
 require_once "modules/work/time_inc.php";	
 
-$officer=$_SESSION['login_user_id'];
-$today_date = date("Y-m-d");
+$officer=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 
-$sql_user = "select department from person_main where person_id='$officer' ";
-$dbquery_user = mysqli_query($connect,$sql_user);
-$result_user = mysqli_fetch_array($dbquery_user);
-$department = $result_user['department'];
+$today_date = date("Y-m-d");
+    $sql_user = "select department from person_main where person_id=? ";
+    $dbquery_user = $connect->prepare($sql_user);
+    $dbquery_user->bind_param("i", $officer);
+    $dbquery_user->execute();
+    $result_userdepart = $dbquery_user->get_result();
+    while($result_user = $result_userdepart->fetch_array())
+	   {
+        $department = $result_user['department'];
+    }
+
 //ส่วนหัว
 echo "<br />";
 echo "<table width='99%' border='0' align='center'>";
@@ -25,72 +31,120 @@ echo "<tr align='center'>
 echo "</table>";
 echo "<br />";
 
-$sql = "select * from  person_position order by position_code";
-$dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery)){
-$position_ar[$result['position_code']]=$result['position_name'];
-}
+   $sql_post = "select * from  person_position order by position_code ";
+    $dbquery_post = $connect->prepare($sql_post);
+    $dbquery_post->execute();
+    $result_allpost = $dbquery_post->get_result();
+    while($result = $result_allpost->fetch_array())
+	   {
+        $position_ar[$result['position_code']]=$result['position_name'];
+    }
 
 //ส่วนบันทึกข้อมูล
-if($index==4){
+if(isset($_POST['index'])){
+$postindex=mysqli_real_escape_string($connect,$_POST['index']);
+}else {$postindex="";}
+if($postindex==4){
 $rec_date=date("Y-m-d H:i:s");
-	$sql = "select person_id from person_main where status='0' order by department,position_code,person_order";
-	$dbquery = mysqli_query($connect,$sql);
-	While ($result = mysqli_fetch_array($dbquery))
-	{
-	$person_id = $result['person_id'];
-			$sql_select = "select person_id from  work_main  where work_date='$today_date' and person_id='$person_id'";
-			$dbquery_select = mysqli_query($connect,$sql_select);
-			$data_num=mysqli_num_rows($dbquery_select);
-			
-if(!isset($_POST[$person_id])){
-$_POST[$person_id]="";
+    
+    $sql = "select person_id from person_main where department = ? and status='0' order by department,position_code,person_order";
+    $dbquery_personid = $connect->prepare($sql);
+    $dbquery_personid->bind_param("i", $department);
+    $dbquery_personid->execute();
+    $result_personid = $dbquery_personid->get_result();
+    while($result = $result_personid->fetch_array())
+	   {
+            $person_id = $result['person_id'];
+			$sql_select = "select person_id from  work_main  where work_date=? and person_id=? ";
+            $dbquery_select = $connect->prepare($sql_select);
+            $dbquery_select->bind_param("si", $today_date,$person_id);
+            $dbquery_select->execute();
+            $result_showselect = $dbquery_select->get_result();
+            $data_num=mysqli_num_rows($result_showselect);
+            //while($result_show = $result_showselect->fetch_array())
+	       //    {
+//echo $_POST[$person_id];
+
+$postperson_id = $_POST[$person_id];         
+if(!isset($postperson_id)){
+//$_POST[$person_id]="";
+$postperson_id="";
+}else{
+    $postperson_id=mysqli_real_escape_string($connect,$postperson_id);
 }
 
-$delete="delete_chk".$person_id;
+    $delete = "delete_chk".$person_id;
+    //echo $delete;
+    //$deletework = $_POST[$delete];   
+    //echo $deletework;
 if(!isset($_POST[$delete])){
-$_POST[$delete]="";
+//$_POST[$delete]="";
+$postdelete="";
+}else{$postdelete=mysqli_real_escape_string($connect,$_POST[$delete]);
 }		
-
-			if(($_POST[$person_id]>0) and ($_POST[$delete]!=1)){
+        //echo "555 ".$postperson_id;
+			if(($postperson_id>0) and ($postdelete!=1)){
 					if($data_num>0){
-					$sql_update = "update work_main set work='$_POST[$person_id]', rec_date='$rec_date', officer='$officer' where work_date='$today_date' and person_id='$person_id'";
-					$dbquery_update = mysqli_query($connect,$sql_update);
-					}
+					$sql_update = "update work_main set work=?, rec_date=?, officer=? where work_date=? and person_id=?";
+                    $dbquery_update = $connect->prepare($sql_update);
+                    $dbquery_update->bind_param("ssiss", $postperson_id,$rec_date,$officer,$today_date,$person_id);
+                    $dbquery_update->execute();
+                    $result_update = $dbquery_update->get_result();
+ 					}
 					else {
-					$sql_insert = "insert into work_main (work_date, person_id, work, rec_date, officer) values ('$today_date', '$person_id', '$_POST[$person_id]', '$rec_date', '$officer')";
-					$dbquery_insert = mysqli_query($connect,$sql_insert);
-					}
+					$sql_insert = "insert into work_main (work_date, person_id, work, rec_date, officer) values (?,?,?,?,?)";
+                    $dbquery_insert = $connect->prepare($sql_insert);
+                    $dbquery_insert->bind_param("ssiss", $today_date,$person_id,$postperson_id,$rec_date,$officer);
+                    $dbquery_insert->execute();
+                    $result_insert = $dbquery_insert->get_result();
+                    }
 			}	
-			if(($_POST[$person_id]>0) and ($_POST[$delete]==1)){
-			$sql_delete = "delete from work_main where work_date='$today_date' and person_id='$person_id'";
-			$dbquery_delete = mysqli_query($connect,$sql_delete);
-			}
+			if(($postperson_id>0) and ($postdelete==1)){
+			$sql_delete = "delete from work_main where work_date=? and person_id=?";
+            $dbquery_delete = $connect->prepare($sql_delete);
+            $dbquery_delete->bind_param("ss", $today_date,$person_id);
+            $dbquery_delete->execute();
+            $result_delete = $dbquery_delete->get_result();
+             }
 	}	
 }
 
 //ส่วนแสดงหลัก
-$sql_person = "select * from person_main where status='0'and department = '$department'";
-$dbquery_person=mysqli_query($connect,$sql_person);
-While ($result_person = mysqli_fetch_array($dbquery_person)){
-$person_id = $result_person['person_id'];
-		$sql_work = "select * from  work_main  where work_date='$today_date' and person_id='$person_id' ";
-		$dbquery_work = mysqli_query($connect,$sql_work);
-		$result_work = mysqli_fetch_array($dbquery_work);
-$work_ar[$person_id]=$result_work['work'];		
-}
+$sql_person = "select * from person_main where status='0'and department = ?";
+            $dbquery_person = $connect->prepare($sql_person);
+            $dbquery_person->bind_param("i",$department);
+            $dbquery_person->execute();
+            $result_allperson = $dbquery_person->get_result();
+    while($result_person = $result_allperson->fetch_array())
+        {
+        $person_id = $result_person['person_id'];
+        $sql_work = "select * from  work_main  where work_date=? and person_id=? ";
+            $dbquery_work = $connect->prepare($sql_work);
+            $dbquery_work->bind_param("ss",$today_date,$person_id);
+            $dbquery_work->execute();
+            $result_personwork = $dbquery_work->get_result();
+    while($result_work = $result_personwork->fetch_array())
+        {
+         $work_ar[$person_id]=$result_work['work'];		
+         }
+        
+        }
 
 echo "<form id='frm1' name='frm1'>";
-$sql = "select * from person_main where status='0' and department = '$department' order by department,position_code,person_order";
-$dbquery = mysqli_query($connect,$sql);
+$sql_show = "select * from person_main where status='0' and department = ? order by department,position_code,person_order";
+            $dbquery_show = $connect->prepare($sql_show);
+            $dbquery_show->bind_param("i",$department);
+            $dbquery_show->execute();
+            $result_personshow = $dbquery_show->get_result();
+
 echo  "<table width='98%' border='0' align='center'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ลบ</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td><Td></Td></Tr>";
 $N=1;
 $M=1;
-While ($result = mysqli_fetch_array($dbquery))
-	{
+while($result = $result_personshow->fetch_array())
+    {
 		$id = $result['id'];
 		$person_id = $result['person_id'];
 		$prename=$result['prename'];
@@ -160,14 +214,14 @@ $check_index7="";
 $check_index8="";	
 $check_index9="";	
 
-if(!isset($_GET['index'])){
-$_GET['index']="";
+if(!isset($postindex)){
+$postindex="";
 }
 
-if($_GET['index']==2){
+if($postindex==2){
 $check_index1="checked";
 }
-
+if(isset($work_ar[$person_id])){    
 if($work_ar[$person_id]==1){
 $check_index1="checked";
 }
@@ -203,9 +257,10 @@ else if($work_ar[$person_id]==9){
 $color="#FF0000";
 $check_index9="checked";
 }
-
+}
+    
 echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
-echo "<Td><input type='checkbox' name='delete_chk$person_id' value='1'>";
+echo "<Td><input type='checkbox' name='delete_chk$person_id' id='delete_chk$person_id'  value='1'>";
 echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
 if(isset($position_ar[$position_code])){
 echo $position_ar[$position_code];
@@ -222,8 +277,10 @@ echo "<Td><input type='radio' name='$person_id' id='$person_id' value='7' $check
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='8' $check_index8>มาสาย</Td>";
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='9' $check_index9>ไม่มา</Td>";
 
+if(isset($work_ar[$person_id])){       
 if($work_ar[$person_id]<1){
 echo "<Td align='center'><img src=images/dangerous.png border='0' alt='ไม่มีข้อมูล'></Td>";
+}
 }
 else{
 echo "<Td align='center'>&nbsp;</td>";
@@ -233,16 +290,19 @@ $M++;
 $N++;
 	}
 	
-$sql = "select * from work_main where work_date='$today_date'";
-$dbquery = mysqli_query($connect,$sql);
-$record_num=mysqli_num_rows($dbquery);
+$sql_check = "select * from work_main where work_date=?";
+            $dbquery_check = $connect->prepare($sql_check);
+            $dbquery_check->bind_param("s",$today_date);
+            $dbquery_check->execute();
+            $result_checkperson = $dbquery_check->get_result();
+$record_num=mysqli_num_rows($result_checkperson);
 if(($record_num<=0) and ($index!=2)){
 echo "<Tr bgcolor='#FFCCCC'>";
 echo "<Td colspan='14' align='center'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือก มาปฏิบัติราชการทั้งหมด</Td>";
 }
 echo "</Tr>";
 echo "</Table>";
-echo "<br>";
+echo "<br><input type='hidden' name='index' value='4'>";
 echo "<div align='center'><INPUT TYPE='button' name='smb' value='บันทึก' onclick='goto_url(1)' class=entrybutton></div>";
 echo "</form>";
 ?>
@@ -252,7 +312,7 @@ function goto_url(val){
 	if(val==0){
 		callfrm("?option=work&task=check");   // page ย้อนกลับ 
 	}else if(val==1){
-	callfrm("?option=work&task=check&index=4");   //page ประมวลผล
+	callfrm("?option=work&task=check");   //page ประมวลผล
 	}
 }
 

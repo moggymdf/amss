@@ -1,3 +1,7 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://bootsnipp.com/dist/bootsnipp.min.css?ver=70eabcd8097cd299e1ba8efe436992b7">
+
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -50,7 +54,7 @@ $f2_date=date("Y-m-d");
 
 $thai_date=thai_date($f2_date);
 echo "<br />";
-echo "<table width='99%' border='0' align='center'>";
+echo "<table width='99%' border='0' align='center'  >";
 echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการ $thai_date</strong></font></td></tr>";
 
 
@@ -97,7 +101,7 @@ $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_use
 //echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
 //echo exit();
 //}
-echo  "<table width='98%' border='0' align='center'>";
+echo  "<table width='98%' border='0' align='center' class='col-md-12 table-bordered table-striped table-condensed cf'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;

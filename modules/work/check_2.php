@@ -25,6 +25,7 @@ if(!isset($_POST['send_date'])){
 $postsend_date="";
 }else{
     $postsend_date=mysqli_real_escape_string($connect,$_POST['send_date']);
+    $_GET['datepicker']=$postsend_date;
 }
 //$datepicker = $_GET['datepicker'];
 if(!isset($_GET['datepicker'])){
@@ -36,7 +37,6 @@ if(!isset($_GET['datepicker'])){
     $f2_date=$f1_date[2]."-".$f1_date[1]."-".$f1_date[0];  //ปี เดือน วัน
 
 }
-
 
 //$thai_date=thai_date(make_time($f2_date));
 $thai_date=thai_date($f2_date);
@@ -71,7 +71,7 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 <FORM name=frmSearchDate METHOD=GET>
 <INPUT TYPE="hidden" name=option value="work">
 <INPUT TYPE="hidden" name=task value="check_2">
-เลือกวันที่ <input type="text" id="datepicker" name=datepicker value=<?php echo (isset($_GET['datepicker']))? $_GET['datepicker']:date("d-m-Y");?>  readonly Size=10>
+เลือกวันที่ <input type="text" id="datepicker" name=datepicker value=<?php echo (isset($getdatepicker))? $getdatepicker:date("d-m-Y");?>  readonly Size=10>
 </FORM>
 	</td>
 </tr>
@@ -115,12 +115,12 @@ $rec_date=date("Y-m-d H:i:s");
 	       //    {
 //echo $_POST[$person_id];
 
-$postperson_id = $_POST[$person_id];         
-if(!isset($postperson_id)){
+
+if(!isset($_POST[$person_id])){
 //$_POST[$person_id]="";
 $postperson_id="";
 }else{
-    $postperson_id=mysqli_real_escape_string($connect,$postperson_id);
+    $postperson_id=mysqli_real_escape_string($connect,$_POST[$person_id]);
 }
 
     $delete = "delete_chk".$person_id;
@@ -333,13 +333,14 @@ echo "<Td align='center'><img src=images/dangerous.png border='0' alt='ไม่
 }
 }
 else{
-echo "<Td align='center'>&nbsp;</td>";
+echo "<Td align='center'><img src=images/dangerous.png border='0' alt='ไม่มีข้อมูล'></Td>";
 }
 echo "";
 $M++;
 $N++;
 	}
 	
+/*
 $sql_check = "select * from work_main where work_date=?";
             $dbquery_check = $connect->prepare($sql_check);
             $dbquery_check->bind_param("s",$f2_date);
@@ -347,12 +348,12 @@ $sql_check = "select * from work_main where work_date=?";
             $result_checkperson = $dbquery_check->get_result();
 $record_num=mysqli_num_rows($result_checkperson);
 if(($record_num<=0) and ($index!=2)){
+*/
 echo "<Tr bgcolor='#FFCCCC'>";
 echo "<Td colspan='14' align='center'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือก มาปฏิบัติราชการทั้งหมด</Td>";
-}
+//}
 echo "</Tr>";
 echo "</Table>";
-
 if(isset($getdatepicker)){
 echo "<INPUT TYPE='hidden' name='send_date' value='$getdatepicker'>";
 }
@@ -370,7 +371,7 @@ function goto_url(val){
 	if(val==0){
 		callfrm("?option=work&task=check_2");   // page ย้อนกลับ 
 	}else if(val==1){
-	callfrm("?option=work&task=check_2");   //page ประมวลผล
+	   callfrm("?option=work&task=check_2");   //page ประมวลผล
 	}
 }
 </script>

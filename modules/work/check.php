@@ -65,12 +65,11 @@ $rec_date=date("Y-m-d H:i:s");
 	       //    {
 //echo $_POST[$person_id];
 
-$postperson_id = $_POST[$person_id];         
-if(!isset($postperson_id)){
+if(!isset($_POST[$person_id])){
 //$_POST[$person_id]="";
 $postperson_id="";
 }else{
-    $postperson_id=mysqli_real_escape_string($connect,$postperson_id);
+    $postperson_id=mysqli_real_escape_string($connect,$_POST[$person_id]);
 }
 
     $delete = "delete_chk".$person_id;
@@ -277,19 +276,22 @@ echo "<Td><input type='radio' name='$person_id' id='$person_id' value='7' $check
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='8' $check_index8>มาสาย</Td>";
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='9' $check_index9>ไม่มา</Td>";
 
-if(isset($work_ar[$person_id])){       
+
+if(isset($work_ar[$person_id])){
 if($work_ar[$person_id]<1){
 echo "<Td align='center'><img src=images/dangerous.png border='0' alt='ไม่มีข้อมูล'></Td>";
 }
 }
 else{
-echo "<Td align='center'>&nbsp;</td>";
+echo "<Td align='center'><img src=images/dangerous.png border='0' alt='ไม่มีข้อมูล'></Td>";
+
+
 }
 echo "";
 $M++;
 $N++;
 	}
-	
+/*
 $sql_check = "select * from work_main where work_date=?";
             $dbquery_check = $connect->prepare($sql_check);
             $dbquery_check->bind_param("s",$today_date);
@@ -297,9 +299,10 @@ $sql_check = "select * from work_main where work_date=?";
             $result_checkperson = $dbquery_check->get_result();
 $record_num=mysqli_num_rows($result_checkperson);
 if(($record_num<=0) and ($index!=2)){
+*/
 echo "<Tr bgcolor='#FFCCCC'>";
 echo "<Td colspan='14' align='center'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือก มาปฏิบัติราชการทั้งหมด</Td>";
-}
+//}
 echo "</Tr>";
 echo "</Table>";
 echo "<br><input type='hidden' name='index' value='4'>";

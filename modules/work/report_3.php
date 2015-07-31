@@ -14,7 +14,8 @@
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
-if(!($_SESSION['login_status']<=105 or $result_permission['p1']==1)){	
+$login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
+if(!($login_status<=105 or $result_permission['p1']==1)){	
 exit();
 }
 
@@ -40,24 +41,33 @@ $f1_date=explode("-", $_GET['start_date']);
 $thai_month=$thai_month_arr[$f1_date[1]];
 $thai_year=$f1_date[0]+543;
 
+$person_id=mysqli_real_escape_string($connect,$_GET['person_id']);
+
 //ส่วนรายละเอียด
-
-
-$sql_name = "select * from person_main where person_id='$_GET[person_id]' ";
-$dbquery_name = mysqli_query($connect,$sql_name);
-$result_name = mysqli_fetch_array($dbquery_name);
+    $sql_name= "select * from person_main where person_id=? ";
+    $dbquery_name = $connect->prepare($sql_name);
+    $dbquery_name->bind_param("s", $person_id);
+    $dbquery_name->execute();
+    $result_nameperson = $dbquery_name->get_result();
+    while($result_name = $result_nameperson->fetch_array())
+	   {
 		$person_id = $result_name['person_id'];
 		$prename=$result_name['prename'];
 		$name= $result_name['name'];
 		$surname = $result_name['surname'];
 		$position_code = $result_name['position_code'];
-$full_name="$prename$name&nbsp;&nbsp;$surname";
-
-$sql_post = "select * from  person_position where position_code='$position_code'";
-$dbquery_post = mysqli_query($connect,$sql_post);
-$result_post = mysqli_fetch_array($dbquery_post);
-$position_name=$result_post['position_name'];
-
+        $full_name="$prename$name&nbsp;&nbsp;$surname";
+    }
+    $sql_post = "select * from  person_position where position_code=? ";
+    $dbquery_post = $connect->prepare($sql_post);
+    $dbquery_post->bind_param("i", $position_code);
+    $dbquery_post->execute();
+    $result_position = $dbquery_post->get_result();
+    while($result_post = $result_position->fetch_array())
+	   {
+        $position_name=$result_post['position_name'];
+    }
+        
 echo "<br />";
 echo "<table width='99%' border='0' align='center'>";
 echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการเดือน$thai_month พ.ศ.$thai_year</strong></font></td></tr>";
@@ -66,16 +76,19 @@ if($name!=""){
 echo $full_name;
 }
 else{
-echo $_GET['person_id'];
+echo $person_id;
 }
 echo " $position_name</strong></font></td></tr>";
 echo "</table>";
 echo "<br />";
 
-$sql_work = "select work_date, work from work_main where person_id='$_GET[person_id]' and work_date between '$_GET[start_date]' and '$_GET[end_date]' order by work_date";
+$sql_work = "select work_date, work from work_main where person_id=? and work_date between ? and ? order by work_date";
+    $dbquery_work = $connect->prepare($sql_work);
+    $dbquery_work->bind_param("sss", $person_id,$_GET['start_date'],$_GET['end_date']);
+    $dbquery_work->execute();
+    $result_mywork = $dbquery_work->get_result();
 
-$dbquery_work = mysqli_query($connect,$sql_work);
-$num_rows=mysqli_num_rows($dbquery_work);
+        $num_rows=mysqli_num_rows($result_mywork);
 
 if($num_rows<1){
 echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
@@ -87,7 +100,7 @@ echo "<Td>วัน เดือน ปี</Td><Td>มา</Td><Td>ไปรา�
 $N=1;
 $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
 
-While ($result_work = mysqli_fetch_array($dbquery_work)){
+While ($result_work = $result_mywork->fetch_array()){
 		
 						if(($N%2) == 0)
 						$color="#FFFFC";

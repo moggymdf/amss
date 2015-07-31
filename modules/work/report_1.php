@@ -100,7 +100,7 @@ $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_use
 //echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
 //echo exit();
 //}
-echo  "<table width='98%' border='0' align='center' class='col-md-12 table-bordered table-striped table-condensed cf'>";
+echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;

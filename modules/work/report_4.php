@@ -106,7 +106,7 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 echo "</table>";
 
 //ส่วนรายละเอียด
-echo  "<table width='98%' border='0' align='center' class='col-md-12 table-bordered table-striped table-condensed cf'>>";
+echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>สำนัก</Td><Td>จำนวนทั้งหมด</Td><Td width='40' bgcolor='#CCFFFF'>มา</Td><Td width='40'>ไปราชการ</Td><Td width='40' bgcolor='#CCFFFF'>ลาป่วย</Td><Td width='40'>ลากิจ</Td><Td width='40' bgcolor='#CCFFFF'>ลาพักผ่อน</Td><Td width='40'>ลาคลอด</Td><Td width='40' bgcolor='#CCFFFF'>ลาอื่นๆ</Td><Td width='40'>มาสาย</Td><Td width='40' bgcolor='#CCFFFF'>ไม่มา</Td></Tr>";
 $N=1;

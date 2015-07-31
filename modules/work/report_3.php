@@ -9,7 +9,8 @@
 .style1 {font-size: 14px}
 -->
 </style>
-
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -94,7 +95,7 @@ if($num_rows<1){
 echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
 echo exit();
 }
-echo  "<table width='95%' border='0' align='center'>";
+echo  "<table width='95%' border='0' align='center' class='col-md-12 table-bordered table-striped table-condensed cf'>>";
 echo "<Tr bgcolor='#FFCCCC' align='center' class='style1'><Td width='50'>ที่</Td>";
 echo "<Td>วัน เดือน ปี</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;

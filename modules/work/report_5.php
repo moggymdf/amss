@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -103,7 +105,7 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 
 <?php
 echo "</table>";
-echo  "<table width='98%' border='0' align='center'>";
+echo  "<table width='98%' border='0' align='center' class='col-md-12 table-bordered table-striped table-condensed cf'>>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;

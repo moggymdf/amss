@@ -54,7 +54,7 @@ $f2_date=date("Y-m-d");
 
 $thai_date=thai_date($f2_date);
 echo "<br />";
-echo "<table width='99%' border='0' align='center'  >";
+echo "<table width='99%' border='0' align='center'>";
 echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการ $thai_date</strong></font></td></tr>";
 
 

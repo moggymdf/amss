@@ -9,7 +9,6 @@ $result_permission = mysqli_fetch_array($dbquery_permission);
 if(!isset($_SESSION['admin_meeting'])){
 $_SESSION['admin_meeting']="";
 }
-
 echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>";
 echo "<tr bgcolor='#FFCC00'><td>";
 echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
@@ -25,7 +24,8 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	if($_SESSION['login_group']<=4){
 	echo "<li><a href='?option=meeting' class='dir'>จองห้องประชุม</a>";
 		echo "<ul>";
-			echo "<li><a href='?option=meeting&task=main/meeting'>จองห้องประชุม</a></li>";
+			echo "<li><a href='?option=meeting&task=main/meeting'>จองห้องประชุมในสำนัก</a></li>";
+			echo "<li><a href='?option=meeting&task=main/meeting_other'>จองห้องประชุมต่างสำนัก</a></li>";
 			if(($result_permission['p1']==1) or ($_SESSION['admin_meeting']=="meeting")){
 			echo "<li><a href='?option=meeting&task=main/officer'>อนุญาตให้ใช้ห้องประชุม</a></li>";
 			}

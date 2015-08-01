@@ -227,8 +227,11 @@ echo "<script>document.location.href='?option=work&task=permission'; </script>\n
 //ส่วนแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
 
-$sql = "select work_permission.id, work_permission.p1, person_main.name, person_main.surname from work_permission left join person_main on work_permission.person_id=person_main.person_id order by work_permission.id";
-$dbquery = mysqli_query($connect,$sql);
+$sql_show = "select work_permission.id, work_permission.p1, person_main.name, person_main.surname from work_permission left join person_main on work_permission.person_id=person_main.person_id where person_main.department=? order by work_permission.id";
+    $dbquery_show = $connect->prepare($sql_show);
+    $dbquery_show->bind_param("i", $system_user_department);
+    $dbquery_show->execute();
+    $result_show = $dbquery_show->get_result();
 
 echo "<form id='frm1' name='frm1' action='?option=work&task=permission' method='post'>";
 echo  "<table width=50% border=0 align=center>";
@@ -238,7 +241,7 @@ echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='submit' name='smb' value='�
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td><td  align='center'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
 echo "<tr bgcolor='#CC9900'><Td  align='center' width='80'>เจ้าหน้าที่</Td></tr>";
 $M=1;
-While ($result = mysqli_fetch_array($dbquery))
+While ($result = mysqli_fetch_array($result_show))
 	{
 		$id = $result['id'];
 		$name = $result['name'];

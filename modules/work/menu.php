@@ -13,6 +13,8 @@ $sql_permission = "select * from work_permission where person_id=?";
          $permission = $result_permission["p1"];
      }
 
+$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
+
 
 if(!isset($_SESSION['admin_work'])){
 $admin_work="";
@@ -38,7 +40,13 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 		echo "<ul>";
 			echo "<li><a href='?option=work&task=check'>บันทึกข้อมูลการปฏิบัติราชการวันนี้</a></li>";
 			echo "<li><a href='?option=work&task=check_2'>บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง</a></li>";
-	echo "</ul>";
+
+        //บันทึกข้อมูลผู้บริหาร
+        if($system_user_department==2){
+ 			echo "<li><a href='?option=work&task=check_3'>บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร</a></li>";
+        }
+
+    echo "</ul>";
 	echo "</li>";
 	}	
 	if($login_status<=105 or $permission==1){	

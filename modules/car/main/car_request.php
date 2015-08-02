@@ -70,7 +70,7 @@ echo "<Tr align='left'><Td align='right'>เรียน&nbsp;&nbsp;</Td><Td>ผ
 echo "<Tr align='left'><Td align='right'>ข้าพเจ้า&nbsp;&nbsp;</Td><Td>$_SESSION[login_prename]$_SESSION[login_name]&nbsp;&nbsp;$_SESSION[login_surname]&nbsp;&nbsp;ตำแหน่ง$_SESSION[login_userposition]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td><Select  name='car'  size='1'>";
 echo  "<option  value = ''>เลือกรถ</option>" ;
-$sql = "select car_code,car_number,name from  car_car where status='2' ";
+$sql = "select car_code,car_number,name from  car_car where status<='2' ";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {
@@ -118,14 +118,16 @@ echo "<Td align='left'>";
 <?php
 
 echo "</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input Type='Text' Name='time_start' Size='5'>&nbspน.</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td>";
+echo "<Td><Input Type='Text' Name='time_start' Size='5'>&nbspน.</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ถึงวันที่&nbsp;&nbsp;</Td>";
 echo "<Td align='left'>";
 ?>
 <input type="text" id="datepicker2" name=car_finish value=""  readonly Size=10>
 <?php
 echo "</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input Type='Text' Name='time_finish' Size='5'>&nbspน.</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td>";
+echo "<Td><Input Type='Text' Name='time_finish' Size='5'>&nbspน.</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>รวม&nbsp;&nbsp;</Td>";
 echo "<Td><Input Type='Text' Name='day_total' Size='5'>&nbsp;&nbsp;วัน";
 echo "<Tr align='left'><Td align='right'>มีผู้โดยสารทั้งหมด&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num' Size='5'>&nbsp;&nbsp;คน</Td></Tr>";
@@ -195,7 +197,7 @@ echo "<Tr align='left'><Td align='right'>เรียน&nbsp;&nbsp;</Td><Td>ผ
 echo "<Tr align='left'><Td align='right'>ข้าพเจ้า&nbsp;&nbsp;</Td><Td>$_SESSION[login_prename]$_SESSION[login_name]&nbsp;&nbsp;$_SESSION[login_surname]&nbsp;&nbsp;ตำแหน่ง$_SESSION[login_userposition]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td><Select  name='car'  size='1'>";
 echo  "<option  value = ''>เลือกรถ</option>" ;
-$sql = "select * from  car_car where status='2' ";
+$sql = "select * from  car_car where status<='2' ";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {
@@ -345,6 +347,7 @@ if ($index==6){
 }
 
 if ($index==7){
+    if(!is_numeric($_GET['id']))exit(); // check sql injection
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>รายละเอียด</B></Font>";
 echo "</Cener>";
@@ -358,6 +361,7 @@ $ref_result = mysqli_fetch_array($dbquery);
 $id=$ref_result['id'];
 $person_id=$ref_result['person_id'];
 $rec_date=$ref_result['rec_date'];
+$car_code=$ref_result['car'];
 
 // ชื่อและตำแหน่ง
 $sql_name = "select * from person_main  left join  person_position  on  person_main.position_code=person_position.position_code  where  person_main.person_id='$person_id'";
@@ -376,104 +380,70 @@ echo "</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>เรื่อง&nbsp;&nbsp;</Td><Td>ขออนุญาตใช้รถราชการ</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>เรียน&nbsp;&nbsp;</Td><Td>ผู้อำนวยการ$_SESSION[office_name]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ข้าพเจ้า&nbsp;&nbsp;</Td><Td>$full_name&nbsp;&nbsp;ตำแหน่ง&nbsp;&nbsp;$position_name</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td><Select  name='car'  size='1'>";
-echo  "<option  value = ''>เลือกรถ</option>" ;
-$sql = "select * from  car_car where status='2' ";
+echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td>";
+$sql = "select * from  car_car where car_code='$car_code' ";
 $dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
-   {
-		$car_code = $result['car_code'];
-		$car_number= $result['car_number'];
-		$name = $result['name'];
-				if($car_code==$ref_result['car']){
-				echo  "<option value = $car_code selected>$car_number $name</option>";
-				}
-				else{
-				echo  "<option value = $car_code>$car_number $name</option>";
-				}
-	}
-echo "</select>";
+$result = mysqli_fetch_array($dbquery);
+    $car_number= $result['car_number'];
+    $name = $result['name'];
+    echo $car_number."  ".$name;
 echo "</Td></Tr>";
-////ภาพ
-$sql_pic = "select * from  car_car where car_code='$ref_result[car]' ";
-$dbquery_pic = mysqli_query($connect,$sql_pic);
-$result_pic = mysqli_fetch_array($dbquery_pic);
-echo "<tr><td></td><td align='left'><img src='$result_pic[pic]' width='150'></td></tr>";
+echo "<tr><td></td><td align='left'><img src='$result[pic]' width='150'></td></tr>";
 ////
-echo "<Tr align='left'><Td align='right'>สถานที่ไปราชการ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='place' Size='60' value='$ref_result[place]'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='because' Size='60' value='$ref_result[because]'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>สถานที่ไปราชการ&nbsp;&nbsp;</Td><Td>$ref_result[place]</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td>$ref_result[because]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ตั้งแต่วันที่&nbsp;&nbsp;</Td>";
-echo "<Td align='left'>";
-		$car_start=explode("-", $ref_result['car_start']);
-		?>
-		<script>
-										var Y_date=<?php echo $car_start[0]?>
-										var m_date=<?php echo $car_start[1]?>
-										var d_date=<?php echo $car_start[2]?>
-										Y_date= Y_date+'/'+m_date+'/'+d_date
-										DateInput('car_start', true, 'YYYY-MM-DD', Y_date)</script>
-		<?php
-echo "</Td></Tr>";
+echo "<Td align='left'>$ref_result[car_start]</Td></Tr>";
 $time_start=number_format($ref_result['time_start'],2);
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input Type='Text' Name='time_start' Size='5' value='$time_start'>&nbspน.</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td>$time_start&nbspน.</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ถึงวันที่&nbsp;&nbsp;</Td>";
-echo "<Td align='left'>";
-		$car_finish=explode("-", $ref_result['car_finish']);
-		?>
-		<script>
-										var Y_date=<?php echo $car_finish[0]?>
-										var m_date=<?php echo $car_finish[1]?>
-										var d_date=<?php echo $car_finish[2]?>
-										Y_date= Y_date+'/'+m_date+'/'+d_date
-										DateInput('car_finish', true, 'YYYY-MM-DD', Y_date)</script>
-		<?php
-echo "</Td></Tr>";
+echo "<Td align='left'>$ref_result[car_finish]</Td></Tr>";
 $time_finish=number_format($ref_result['time_finish'],2);
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td><Input Type='Text' Name='time_finish' Size='5' value='$time_finish'>&nbspน.</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;เวลา</Td><Td>$time_finish&nbspน.</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>รวม&nbsp;&nbsp;</Td>";
-echo "<Td><Input Type='Text' Name='day_total' Size='5' value='$ref_result[day_total]'>&nbsp;&nbsp;วัน";
-echo "<Tr align='left'><Td align='right'>มีผู้โดยสารทั้งหมด&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num' Size='5'  value='$ref_result[person_num]'>&nbsp;&nbsp;คน</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>ผู้ควบคุมรถคือ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='control_person' Size='60'  value='$ref_result[control_person]'></Td></Tr>";
-$fuel_check_1="";
-$fuel_check_2="";
-$fuel_check_3="";
+echo "<Td>$ref_result[day_total]&nbsp;&nbsp;วัน";
+echo "<Tr align='left'><Td align='right'>มีผู้โดยสารทั้งหมด&nbsp;&nbsp;</Td><Td>$ref_result[person_num]&nbsp;&nbsp;คน</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>ผู้ควบคุมรถคือ&nbsp;&nbsp;</Td><Td>$ref_result[control_person]</Td></Tr>";
+$fuel_check_1=" disabled";
+$fuel_check_2=" disabled";
+$fuel_check_3=" disabled";
 if($ref_result['fuel']==1){
-$fuel_check_2="checked";
+$fuel_check_2="checked disabled";
 }
 else if ( $ref_result['fuel']==2){
-$fuel_check_3="checked";
+$fuel_check_3="checked disabled";
 }
 else {
-$fuel_check_1="checked";
+$fuel_check_1="checked disabled";
 }
 echo "<Tr align='left'><Td align='right'>เชื้อเพลิง&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='fuel'  value='0' $fuel_check_1>ไม่ขอใช้จากงบเชื้อเพลิงกลาง สพท.</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='fuel'  value='1' $fuel_check_2>ขอใช้จากงบเชื้อเพลิงกลางของ สพท.</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='fuel'  value='2' $fuel_check_3>ขอใช้จากงบเชื้อเพลิงจากโครงการ&nbsp;<Input Type='Text' Name='project' Size='40' value='$ref_result[project]'>&nbsp;&nbsp;กิจกรรม&nbsp;<Input Type='Text' Name='activity' Size='40' value='$ref_result[activity]'></Td></Tr>";
-echo "<Tr align='left'><Td></Td><Td>&nbsp;&nbsp;&nbsp;&nbsp;จำนวนเงิน&nbsp;<Input Type='Text' Name='money' Size='10'  value='$ref_result[money]'>&nbsp;บาท .</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='fuel'  value='2' $fuel_check_3>ขอใช้จากงบเชื้อเพลิงจากโครงการ&nbsp;<Input Type='Text' Name='project' Size='40' value='$ref_result[project]' disabled>&nbsp;&nbsp;กิจกรรม&nbsp;<Input Type='Text' Name='activity' Size='40' value='$ref_result[activity]' disabled></Td></Tr>";
+echo "<Tr align='left'><Td></Td><Td>&nbsp;&nbsp;&nbsp;&nbsp;จำนวนเงิน&nbsp;<Input Type='Text' Name='money' Size='10'  value='$ref_result[money]' disabled>&nbsp;บาท .</Td></Tr>";
 
 if( $ref_result['self_driver']==1){
-$self_driver_check="checked";
+$self_driver_check="checked disabled";
 }
 else{
-$self_driver_check="";
+$self_driver_check=" disabled";
 }
 echo "<Tr align='left'><Td align='right'>กรณีไม่มีพนักงานขับรถ&nbsp;&nbsp;</Td><Td><Input Type='checkbox' Name='self_driver'  value='1' $self_driver_check>ขออนุญาตเป็นผู้ขับรถคันดังกล่าว  ซึ่งได้รับใบอนุญาตในการขับขี่รถจากทางราชการประเภทนี้</Td></Tr>";
 if( $ref_result['private_car']==1){
-$private_car_check="checked";
+$private_car_check="checked disabled";
 }
 else{
-$private_car_check="";
+$private_car_check=" disabled";
 }
-echo "<Tr align='left'><Td align='right'>กรณีรถราชการไม่ว่าง&nbsp;&nbsp;</Td><Td><Input Type='checkbox' Name='private_car'  value='1' $private_car_check>ขออนุญาตใช้ส่วนส่วนตัวของ&nbsp<Input Type='Text' Name='car_owner' Size='40'  value='$ref_result[car_owner]'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td>หมายเลขทะเบียน&nbsp<Input Type='Text' Name='private_car_number' Size='40'  value='$ref_result[private_car_number]'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td>ผู้ขับขี่&nbsp<Input Type='Text' Name='private_driver' Size='40'  value='$ref_result[private_driver]'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>กรณีรถราชการไม่ว่าง&nbsp;&nbsp;</Td><Td><Input Type='checkbox' Name='private_car'  value='1' $private_car_check>ขออนุญาตใช้ส่วนส่วนตัวของ&nbsp<Input Type='Text' Name='car_owner' Size='40'  value='$ref_result[car_owner]' disabled></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td>หมายเลขทะเบียน&nbsp<Input Type='Text' Name='private_car_number' Size='40'  value='$ref_result[private_car_number]' disabled></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td>ผู้ขับขี่&nbsp<Input Type='Text' Name='private_driver' Size='40'  value='$ref_result[private_driver]' disabled></Td></Tr>";
 ///////
 echo "<tr><td colspan='2'>";
 echo "<fieldset>";
 echo "<legend>&nbsp;<B>ส่วนเจ้าหน้าที่</B>: &nbsp;</legend>";
 echo "<table>";
 echo "<Tr align='left'><Td align='right'>เห็นควรให้&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='driver'  size='1'>";
+echo "<td><div align='left'><Select  name='driver'  size='1' disabled>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql_driver= "select  car_driver.person_id, person_main.prename, person_main.name, person_main.surname from car_driver left join person_main  on car_driver.person_id=person_main.person_id ";
 $dbquery_driver = mysqli_query($connect,$sql_driver);
@@ -492,7 +462,7 @@ While ($result_driver = mysqli_fetch_array($dbquery_driver))
 	}
 echo "</select>";
 echo "&nbsp;เป็นพนักงานขับรถในราชการนี้</div></td></tr>";
-echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='officer_comment' Size='80' value='$ref_result[officer_comment]'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='officer_comment' Size='80' value='$ref_result[officer_comment]' disabled></Td></Tr>";
 $officer_sign=$ref_result['officer_sign'];
 echo "<Tr align='left'><Td align='right'>ลงชื่อ&nbsp;&nbsp;</Td><Td>";
 if(isset($full_name_ar[$officer_sign])){
@@ -510,7 +480,7 @@ echo "<tr><td colspan='2'>";
 echo "<fieldset>";
 echo "<legend>&nbsp;<B>ส่วนความเห็นชอบ</B>: &nbsp;</legend>";
 echo "<table>";
-echo "<Tr align='left'><Td align='right'>ความเห็น&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='group_comment' Size='80' value='$ref_result[group_comment]'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>ความเห็น&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='group_comment' Size='80' value='$ref_result[group_comment]' disabled></Td></Tr>";
 $group_sign=$ref_result['group_sign'];
 echo "<Tr align='left'><Td align='right'>ลงชื่อ&nbsp;&nbsp;</Td><Td>";
 if(isset($full_name_ar[$group_sign])){
@@ -528,7 +498,7 @@ echo "<tr><td colspan='2'>";
 echo "<fieldset>";
 echo "<legend>&nbsp;<B>ส่วนการอนุมัติ</B>: &nbsp;</legend>";
 echo "<table>";
-echo "<Tr align='left'><Td align='right'>คำสั่ง(ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='grant_comment' Size='80' value='$ref_result[grant_comment]'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>คำสั่ง(ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='grant_comment' Size='80' value='$ref_result[grant_comment]' disabled></Td></Tr>";
 		$commander_grant_check1=""; $commander_grant_check2="";
 		if($ref_result['commander_grant']==1){
 		$commander_grant_check1="checked";
@@ -536,7 +506,7 @@ echo "<Tr align='left'><Td align='right'>คำสั่ง(ถ้ามี)&nbs
 		else if($ref_result['commander_grant']==2){
 		$commander_grant_check2="checked";
 		}
-echo "<Tr align='left'><Td align='right'>อนุมัติ/ไม่อนุมัติ&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='commander_grant' value='1' $commander_grant_check1>อนุมัติ&nbsp;&nbsp;<Input Type='radio' Name='commander_grant' value='2' $commander_grant_check2>ไม่อนุมัติ&nbsp;&nbsp;</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>อนุมัติ/ไม่อนุมัติ&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='commander_grant' value='1' $commander_grant_check1 disabled>อนุมัติ&nbsp;&nbsp;<Input Type='radio' Name='commander_grant' value='2' $commander_grant_check2 disabled>ไม่อนุมัติ&nbsp;&nbsp;</Td></Tr>";
 $commander_sign=$ref_result['commander_sign'];
 echo "<Tr align='left'><Td align='right'>ลงชื่อ&nbsp;&nbsp;</Td><Td>";
 if(isset($full_name_ar[$commander_sign])){
@@ -668,7 +638,7 @@ echo "<Td colspan='6' align='right'>";
 echo "<form  name='frm1'>";
 echo "&nbsp;<Select  name='car_index' size='1'>";
 echo  '<option value ="" >รถทุกคัน</option>' ;
-		$sql_car = "SELECT car_code,name,car_number  FROM car_car where status='2' ";
+		$sql_car = "SELECT car_code,name,car_number  FROM car_car where status<='2' ";
 		$dbquery_car = mysqli_query($connect,$sql_car);
 				While ($result_car = mysqli_fetch_array($dbquery_car ))
 				{

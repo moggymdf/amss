@@ -124,6 +124,7 @@ $dbquery = mysqli_query($connect,$sql);
 //ส่วนเพิ่มข้อมูล
 if($index==4){
 $basename = basename($_FILES['userfile']['name']);
+$changed_name="";
 if ($basename!="")
 {
 $changed_name = file_upload();

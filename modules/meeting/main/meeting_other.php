@@ -493,10 +493,10 @@ $room_ar[$result_room['room_code']]=$result_room['room_name'];
 
 if($room_index>=1){
 //$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num, meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname ,meeting_main.coordinator,meeting_main.chairman from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date  from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' and person_main.department='$system_user_department' order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date  from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' and person_main.department!='$system_user_department' order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 }
 else{
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department='$system_user_department' order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department!='$system_user_department' order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 }
     $dbquery_join = $connect->prepare($sql_join);
     //$dbquery_join->bind_param("i", $room_index);

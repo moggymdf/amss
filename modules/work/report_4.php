@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -32,7 +34,8 @@ printWin.print();
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
-if($_SESSION['login_status']>=105){
+$login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
+if($login_status>=105){
 exit();
 }
 
@@ -56,9 +59,11 @@ require_once "modules/work/time_inc.php";
 if(isset($_GET['datepicker'])){
 $f1_date=explode("-", $_GET['datepicker']);
 $f2_date=$f1_date[2]."-".$f1_date[1]."-".$f1_date[0];  //ปี เดือน วัน
+$f3_date=$_GET['datepicker'];
 }
 else{
 $f2_date=date("Y-m-d");
+$f3_date=date("d-m-Y");
 }
 
 $thai_date=thai_date($f2_date);
@@ -101,34 +106,18 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 echo "</table>";
 
 //ส่วนรายละเอียด
-
-$sql_post = "select * from  person_position";
-$dbquery_post = mysqli_query($connect,$sql_post);
-While ($result_post = mysqli_fetch_array($dbquery_post)){
-$position_ar[$result_post['position_code']]=$result_post['position_name'];
-}
-
-$sql_name = "select * from person_main order by department,position_code,person_order";
-$dbquery_name = mysqli_query($connect,$sql_name);
-While ($result_name = mysqli_fetch_array($dbquery_name)){
-		$person_id = $result_name['person_id'];
-		$prename=$result_name['prename'];
-		$name= $result_name['name'];
-		$surname = $result_name['surname'];
-		$position_code = $result_name['position_code'];
-$full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
-$position_code_ar[$person_id]=$position_code;
-}
-
-echo  "<table width='98%' border='0' align='center'>";
+echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>สำนัก</Td><Td>จำนวนทั้งหมด</Td><Td width='40' bgcolor='#CCFFFF'>มา</Td><Td width='40'>ไปราชการ</Td><Td width='40' bgcolor='#CCFFFF'>ลาป่วย</Td><Td width='40'>ลากิจ</Td><Td width='40' bgcolor='#CCFFFF'>ลาพักผ่อน</Td><Td width='40'>ลาคลอด</Td><Td width='40' bgcolor='#CCFFFF'>ลาอื่นๆ</Td><Td width='40'>มาสาย</Td><Td width='40' bgcolor='#CCFFFF'>ไม่มา</Td></Tr>";
 $N=1;
 //เลือกหน่วยงาน
     $sql_department = "select department,department_name from system_department order by department";
-    $dbquery_department = mysqli_query($connect,$sql_department);
-        While ($result_department = mysqli_fetch_array($dbquery_department)){
-            
+    $dbquery_department = $connect->prepare($sql_department);
+    //$dbquery_department->bind_param();
+    $dbquery_department->execute();
+    $result_showdepartment=$dbquery_department->get_result();
+    while($result_department = $result_showdepartment->fetch_array())
+	   {     
 $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;	
 
 $department = $result_department["department"];
@@ -136,11 +125,14 @@ $department_name = $result_department['department_name'];
 //echo "de ".$department." pt<BR>";
 
 //แสดงทุกคนและหน่วยงานในวันนั้นๆ
-$sql_work = "select person_main.department as department,work_main.person_id,work_main.work from person_main,work_main where (work_main.work_date='$f2_date') and (work_main.person_id=person_main.person_id) and (person_main.department=$department) order by person_main.department, person_main.position_code, person_main.person_order";
+$sql_work = "select person_main.department as department,work_main.person_id,work_main.work from person_main,work_main where (work_main.work_date=?) and (work_main.person_id=person_main.person_id) and (person_main.department=?) order by person_main.department, person_main.position_code, person_main.person_order";
 
-$dbquery_work = mysqli_query($connect,$sql_work);
-$num_rows=mysqli_num_rows($dbquery_work);
-
+    $dbquery_work = $connect->prepare($sql_work);
+    $dbquery_work->bind_param("si",$f2_date,$department);
+    $dbquery_work->execute();
+    $result_numwork=$dbquery_work->get_result();
+    $num_rows=mysqli_num_rows($result_numwork);
+ 
  						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
@@ -148,12 +140,12 @@ $num_rows=mysqli_num_rows($dbquery_work);
             
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td>";
-echo "<td><a href='?option=work&task=report_5&department=$department' target='_blank'>$department_name</a></td>";
+echo "<td><a href='?option=work&task=report_5&department=$department&datepicker=$f3_date' target='_blank'>$department_name</a></td>";
 echo "<td align='center'>";
 	echo $num_rows;
 echo "</td>";            
 
-While ($result_work = mysqli_fetch_array($dbquery_work)){
+While ($result_work = $result_numwork->fetch_array()){
 
 
             //นับการมา ไม่มา

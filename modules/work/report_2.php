@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -33,7 +35,8 @@ printWin.print();
 
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
-if(!($_SESSION['login_status']<=105 or $result_permission['p1']==1)){	
+$login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
+if(!($login_status<=105 or $result_permission['p1']==1)){	
 exit();
 }
 
@@ -74,6 +77,12 @@ $date_input_tag="$thai_month.$thai_year";
 echo "<br />";
 echo "<table width='99%' border='0' align='center'>";
 echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการเดือน$thai_month พ.ศ.$thai_year</strong></font></td></tr>";
+
+//ถ้าเป็นผู้บริหารให้แสดงผลรายสำนัก
+//$showmydepartment="";
+//$showmydepartmentwhere ="";
+$department_id=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
+
 ?>
 	<link rel="stylesheet" type="text/css" media="all" href="./modules/work/css.css">
 	<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">
@@ -110,96 +119,110 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 echo "</table>";
 
 //ส่วนรายละเอียด
-$system_user_department = $_SESSION['system_user_department'];
-
-
-$sql_post = "select * from  person_position";
-$dbquery_post = mysqli_query($connect,$sql_post);
-While ($result_post = mysqli_fetch_array($dbquery_post)){
-$position_ar[$result_post['position_code']]=$result_post['position_name'];
-}
-
-$sql_name = "select * from person_main order by department,position_code,person_order";
-$dbquery_name = mysqli_query($connect,$sql_name);
-While ($result_name = mysqli_fetch_array($dbquery_name)){
-		$person_id = $result_name['person_id'];
-		$prename=$result_name['prename'];
-		$name= $result_name['name'];
-		$surname = $result_name['surname'];
-		$position_code = $result_name['position_code'];
-$full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
-$position_code_ar[$person_id]=$position_code;
-}
-
-
-$sql_work = "select distinct work_main.person_id from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date between '$start_date' and '$end_date') and person_main.department='$system_user_department' order by person_main.department, person_main.position_code, person_main.person_order";
-
-$dbquery_work = mysqli_query($connect,$sql_work);
-$num_rows=mysqli_num_rows($dbquery_work);
-
-if($num_rows<1){
-echo "<div align='center'><font color='#CC0000' size='3'>ไม่มีรายการ</font></div>";
-echo exit();
-}
-echo  "<table width='98%' border='0' align='center'>";
+echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
-echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td width='40' bgcolor='#CCFFFF'>มา</Td><Td width='40'>ไปราชการ</Td><Td width='40' bgcolor='#CCFFFF'>ลาป่วย</Td><Td width='40'>ลากิจ</Td><Td width='40' bgcolor='#CCFFFF'>ลาพักผ่อน</Td><Td width='40'>ลาคลอด</Td><Td width='40' bgcolor='#CCFFFF'>ลาอื่นๆ</Td><Td width='40'>มาสาย</Td><Td width='40' bgcolor='#CCFFFF'>ไม่มา</Td></Tr>";
-
+echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
+//ถ้าเป็นผู้บริหารให้แสดงผลเฉพาะส่วนผู้บริหาร
+//แสดงชื่อหน่วยงาน
+$login_user_id = mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+$sql= "select position_code,id from person_main where person_id=? ";
+    $dbquery_name = $connect->prepare($sql);
+    $dbquery_name->bind_param("i", $login_user_id);
+    $dbquery_name->execute();
+    $result_name=$dbquery_name->get_result();
+    while($result_person = $result_name->fetch_array())
+	   {
+        $result_position_id = $result_person['position_code'];
+		$result_person_id = $result_person['id'];
+        //$department_id = $department_id;
+    }
+	//$connect->close();
 $N=1;
-While ($result_work = mysqli_fetch_array($dbquery_work)){
-		$person_id = $result_work['person_id'];
-		
-						if(($N%2) == 0)
-						$color="#FFFFC";
-						else  	$color="#FFFFFF";
-						
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;		
-	
-			$sql = "select  work from work_main where person_id='$person_id' and work_date between '$start_date' and '$end_date' ";
-			$dbquery= mysqli_query($connect,$sql);
-			While ($result = mysqli_fetch_array($dbquery)){
-			if($result['work']==1){
+    $sql_sumworkperson= "select * from person_main where department = ? order by position_code ";
+    $dbquery_sumwork = $connect->prepare($sql_sumworkperson);
+    $dbquery_sumwork->bind_param("i", $department_id);
+    $dbquery_sumwork->execute();
+    $result_shownallperson = $dbquery_sumwork->get_result();
+    while($result_allperson = $result_shownallperson->fetch_array())
+	   {
+
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;$work_sum_total=0;		
+        
+            $person_id = $result_allperson['person_id'];
+            $prename=$result_allperson['prename'];
+            $name= $result_allperson['name'];
+            $surname = $result_allperson['surname'];
+            $position_code = $result_allperson['position_code'];
+            //$work = $result_allperson['work'];
+            $full_name="$prename$name&nbsp;&nbsp;$surname";
+
+            $sql_work = "select work from work_main  where (work_date between ? and ?) and (person_id=?) ";
+            $dbquery_work = $connect->prepare($sql_work);
+            $dbquery_work->bind_param("sss",$start_date,$end_date,$person_id);
+            $dbquery_work->execute();
+            $result_daywork = $dbquery_work->get_result();
+            
+            while($result_work = $result_daywork->fetch_array())
+	           {
+             $work = $result_work['work'];
+  		
+			if($work==1){
 			$work_1_sum=$work_1_sum+1;
 			}
-			else if($result['work']==2){
+			else if($work==2){
 			$work_2_sum=$work_2_sum+1;
-			
 			}
-			else if($result['work']==3){
+			else if($work==3){
 			$work_3_sum=$work_3_sum+1;
 			}			
-			else if($result['work']==4){
+			else if($work==4){
 			$work_4_sum=$work_4_sum+1;
 			}			
-			else if($result['work']==5){
+			else if($work==5){
 			$work_5_sum=$work_5_sum+1;
 			}			
-			else if($result['work']==6){
+			else if($work==6){
 			$work_6_sum=$work_6_sum+1;
 			}			
-			else if($result['work']==7){
+			else if($work==7){
 			$work_7_sum=$work_7_sum+1;
 			}			
-			else if($result['work']==8){
+			else if($work==8){
 			$work_8_sum=$work_8_sum+1;
 			}			
-			else if($result['work']==9){
+			else if($work==9){
 			$work_9_sum=$work_9_sum+1;
 			}			
-			}			
+        }
+ 
+            if(($N%2) == 0)
+			$color="#FFFFC";
+			else  $color="#FFFFFF";
+       
+        
+            $sql_post= "select position_name from person_position where position_code=? ";   
+            $dbquery_post = $connect->prepare($sql_post);
+            $dbquery_post->bind_param("i",$position_code);
+            $dbquery_post->execute();
+            $result_personpost = $dbquery_post->get_result();
+            while($result_post = $result_personpost->fetch_array())
+	        {
+            $position_name=$result_post['position_name'];
+            }
+
 
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td><td>";
-if(isset($full_name_ar[$person_id])){
-echo "<a href='?option=work&task=report_3&person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>$full_name_ar[$person_id]</a>";
+if(isset($full_name)){
+echo "<a href='?option=work&task=report_3&person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>$full_name</a>";
 }
 else{
 echo "<a href='?option=work&task=report_3&person_id=$person_id&start_date=$start_date&end_date=$end_date' target='_blank'>ไมมีรายชื่อ($person_id)</a>";
 }
 echo"</td>";
 echo "<td>";
-	if(isset($position_ar[$position_code_ar[$person_id]])){
-	echo $position_ar[$position_code_ar[$person_id]];
+	if(isset($position_name)){
+	echo $position_name;
 	}
 echo "</td>";
 if($work_1_sum==0){
@@ -233,7 +256,9 @@ $work_9_sum="";
 echo "<td align='center' bgcolor='#CCFFFF'>$work_1_sum</td><td align='center'>$work_2_sum</td><td align='center' bgcolor='#CCFFFF'>$work_3_sum</td><td align='center'>$work_4_sum</td><td align='center' bgcolor='#CCFFFF'>$work_5_sum</td><td align='center'>$work_6_sum</td><td align='center' bgcolor='#CCFFFF'>$work_7_sum</td><td align='center'>$work_8_sum</td><td align='center' bgcolor='#CCFFFF'>$work_9_sum</td>";
 echo "</tr>";
 $N++;
-}
+
+    }
+
 echo "</table>";
 ?>
 

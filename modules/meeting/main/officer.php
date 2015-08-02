@@ -1,34 +1,46 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-if(!(($result_permission['p1']==1) or ($_SESSION['admin_meeting']=="meeting"))){
+$admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_meeting']);
+if(!(($result_permission['p1']==1) or ($admin_meeting=="meeting"))){
 exit();
 }
 
 require_once "modules/meeting/time_inc.php";
-$user=$_SESSION['login_user_id'];
+$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
+$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
 
-$sql = "select * from person_main where status='0' and (position_code='1' or position_code='2') order by position_code,person_order";
-$dbquery_person = mysqli_query($connect,$sql);
-While ($result_person = mysqli_fetch_array($dbquery_person))
-{
-$person_id = $result_person['person_id'];
-$name = $result_person['name'];
-$surname = $result_person['surname'];
-$person_ar[$result_person['person_id']]=$name.' '. $surname;
-}
+if(isset($_GET['index'])){
+$getindex=mysqli_real_escape_string($connect,$_GET['index']);
+}else {$getindex="";}
+
+if(isset($_POST['index'])){
+$postindex=mysqli_real_escape_string($connect,$_POST['index']);
+}else {$postindex="";}
+
+if(isset($_GET['id'])){
+$getid=mysqli_real_escape_string($connect,$_GET['id']);
+}else {$getid="";}
+
+if(isset($_GET['page'])){
+$getpage=mysqli_real_escape_string($connect,$_GET['page']);
+}else {$getpage="";}
+
 
 //ส่วนหัว
 echo "<br />";
-if(!(($index==1) or ($index==2) or ($index==5))){
+if(!(($getindex==1) or ($getindex==2) or ($getindex==5))){
 
 echo "<table width='100%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ส่วนของเจ้าหน้าที่</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>ส่วนของเจ้าหน้าที่ห้องประชุม $system_user_department_name</strong></font></td></tr>";
 echo "</table>";
 }
 
 //ส่วนยืนยันการลบข้อมูล
-if($index==2) {
+if($getindex==2) {
 echo "<table width='500' border='0' align='center'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
@@ -38,124 +50,171 @@ echo "</td></tr></table>";
 }
 
 //ส่วนลบข้อมูล
-if($index==3){
+if($getindex==3){
 $sql = "delete from meeting_main where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
 
 //ส่วนบันทึกข้อมูล
-if($index==4){
+if($getindex==4){
 $date_time_now = date("Y-m-d H:i:s");
+
+//if(isset($_POST['allchk'])){
+//$postallchk=mysqli_real_escape_string($connect,$_POST['allchk']);
+//}else {$postallchk="";}
+
 if(!isset($_POST['allchk'])){
 $_POST['allchk']="";
 }
 
 	foreach($_POST as $key => $value){
 		if($key!=$_POST['allchk']){
-		$sql = "update meeting_main set approve='$value', officer='$_SESSION[login_user_id]', officer_date='$date_time_now' where id='$key'";
-		$dbquery = mysqli_query($connect,$sql);
+		$sql = "update meeting_main set approve=?, officer=?, officer_date=? where id=?";
+        $dbquery = $connect->prepare($sql);
+        $dbquery->bind_param("issi", $value,$user,$date_time_now,$key);
+        $dbquery->execute();
+        $result=$dbquery->get_result();
 		}
 	}
 }
 
-if ($index==5){
-echo "<form id='frm1' name='frm1'>";
+//ใส่เหตุผลการไม่อนุมัติ หรือแก้ไขเป็นอนุมัติ
+if ($getindex==5){
+
+echo "<form id='frm1' name='frm1'  >";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>ส่วนของการอนุญาต</Font>";
+echo "<Font color='#006666' Size=3><B>ส่วนของการอนุญาต $system_user_department_name</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 
-$sql_room = "select * from meeting_room where active='1' order by id";
-$dbquery_room = mysqli_query($connect,$sql_room);
-While ($result_room = mysqli_fetch_array($dbquery_room))
+    $sql_room = "select * from meeting_room where department=? and active='1'  order by id";
+    $dbquery_room = $connect->prepare($sql_room);
+    $dbquery_room->bind_param("i", $system_user_department);
+    $dbquery_room->execute();
+    $result_qroom=$dbquery_room->get_result();
+While ($result_room = mysqli_fetch_array($result_qroom))
 {
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
 }
 
-$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num,  meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.id='$_GET[id]' ";
-$dbquery = mysqli_query($connect,$sql);
-$result = mysqli_fetch_array($dbquery);
-		$id= $result['id'];
+$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where  meeting_main.id=? ";
+
+    if ($dbquery_join = $connect->prepare($sql_join)) {
+
+    $dbquery_join->bind_param("i", $getid);
+   $dbquery_join->execute();
+    $result_joinroom=$dbquery_join->get_result();
+While ($result = mysqli_fetch_array($result_joinroom)){
+ 		$id= $result['id'];
 		$room= $result['room'];
 		$start_time=$result['start_time'];
 		$start_time=number_format($start_time,2);
 		$finish_time=$result['finish_time'];
 		$finish_time=number_format($finish_time,2);
-		$book_date = $result['book_date'];
+		$book_date_start = $result['book_date_start'];
+		$book_date_end = $result['book_date_end'];
 		$rec_date = $result['rec_date'];
 		$name= $result['name'];
 		$surname = $result['surname'];
+        $coordinator = $result['coordinator'];
+		$chairman = $result['chairman'];
+		$person_num = $result['person_num'];
+		$book_person = $result['book_person'];
+		$user_book = $result['user_book'];
+		$objective = $result['objective'];
+		$other = $result['other'];
+		$rec_date = $result['rec_date'];
+        $approve = $result['approve'];
+        $officer = $result['officer'];
+        $officer_date = $result['officer_date'];
+        $reason = $result['reason'];
+}
+    // execute it and all...
+} else {
+    die("Errormessage: ". $connect->error);
+}
 
-echo "<Table width='60%'><tr><td>";
+echo "<Table width='60%' class='table table-hover table-bordered table-striped table-condensed'><tr><td>";
 echo "<fieldset>";
-echo "<legend>&nbsp;<B>ข้อมูลผู้ขอใช้</B>: &nbsp;</legend>";
-echo "<table>";
+echo "<legend>&nbsp;<B>ข้อมูลผู้ขอใช้ห้องประชุม</B>: &nbsp;</legend></fieldset>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr align='left'><Td align='right'>ห้องประชุม&nbsp;&nbsp;</Td><Td>$room_ar[$room]</Td></Tr>";
 
-echo "<Tr align='left'><Td align='right'>วันทีใช้หห้อง&nbsp;&nbsp;</Td>";
+echo "<Tr align='left'><Td align='right'>วันทีเริ่มใช้ห้อง&nbsp;&nbsp;</Td>";
 echo "<Td align='left'>";
-echo thai_date_3($book_date);
+echo thai_date_3($book_date_start);
+echo "&nbsp;&nbsp;&nbsp;&nbsp;ถึงวันที่&nbsp;&nbsp;&nbsp;&nbsp;";
+echo thai_date_3($book_date_end);
 echo "</Td></Tr>";
 
 echo "<Tr align='left'><Td align='right'>ตั้งแต่เวลา&nbsp;&nbsp;</Td>";
-echo "<Td align='left'>$start_time น.</Td></Tr>";
-
-echo "<Tr align='left'><Td align='right'>ถึงเวลา&nbsp;&nbsp;</Td>";
-echo "<Td align='left'>$finish_time น.</Td></Tr>";
-
-echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td>$result[objective]</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td>$result[person_num]&nbsp;คน</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>อื่น ๆ&nbsp;&nbsp;</Td><Td>$result[other]</Td></Tr>";
-
-echo "<Tr align='left'><Td align='right'>ผู้จองฺ&nbsp;&nbsp;</Td><Td>$name&nbsp;&nbsp;$surname</Td></Tr>";
-
-echo "<Tr align='left'><Td align='right'>วันเวลาจอง&nbsp;&nbsp;</Td><Td>";
-echo thai_date_4($rec_date);
+echo "<td align='left'>$start_time น.";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; $finish_time น.";
 echo "</td></tr>";
-echo "</table></fieldset>";
+echo "<Tr align='left'><Td align='right'>ประธานการประชุม&nbsp;&nbsp;</Td><Td>$chairman</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td>$objective</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td>$person_num &nbsp;คน</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>ผู้ประสานงาน/เบอร์โทร&nbsp;&nbsp;</Td><Td>$coordinator</Td></Tr>";
+echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td>$other</Td></Tr>";
+echo "</Table>";
 
 echo "<fieldset>";
-echo "<legend>&nbsp;<B>ส่วนเจ้าหน้าที่</B>: &nbsp;</legend>";
-echo "<table>";
+echo "<legend>&nbsp;<B>ส่วนเจ้าหน้าที่</B>: &nbsp;</legend></fieldset>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 $approve_check1="";  $approve_check2="";
-		if($result['approve']==1){
+		if($approve==1){
 		$approve_check1="checked";
 		}
-		else if($result['approve']==2){
+		else if($approve==2){
 		$approve_check2="checked";
 		}
 echo "<Tr align='left'><Td align='right'>อนุญาต/ไม่อนุญาตการใช้ห้องประชุม&nbsp;&nbsp;</Td><Td><Input Type='radio' Name='approve' value='1' $approve_check1>อนุญาต&nbsp;&nbsp;<Input Type='radio' Name='approve' value='2' $approve_check2>ไม่อนุญาต&nbsp;&nbsp;</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>หมายเหตุ(ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='reason' Size='50' value='$result[reason]'></Td></Tr>";
-
-echo "</table></fieldset>";
-
+echo "<Tr align='left'><Td align='right'>หมายเหตุ(ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='reason' Size='50' value='$reason'></Td></Tr>";
+echo "</table>";
 echo "</td></tr></Table>";
-echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
-echo "<Br />";
-echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'>";
+echo "<Input Type=Hidden Name='id' Value='$getid'>";
+echo "<Input Type=Hidden Name='page' Value='$getpage'>";
+echo "<INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>";
+
 echo "</form>";
+
 }
 
-if ($index==6){
+if ($getindex==6){
+
+if(isset($_POST['approve'])){
+$postapprove=mysqli_real_escape_string($connect,$_POST['approve']);
+}else {$postapprove="";}
+if(isset($_POST['id'])){
+$postid=mysqli_real_escape_string($connect,$_POST['id']);
+}else {$postid="";}
+if(isset($_POST['reason'])){
+$postreason=mysqli_real_escape_string($connect,$_POST['reason']);
+}else {$postreason="";}
+
+
 $date_time_now = date("Y-m-d H:i:s");
-		$sql = "update meeting_main set approve='$_POST[approve]',
-		reason='$_POST[reason]',
-		officer='$_SESSION[login_user_id]',
-		officer_date='$date_time_now'
-		where id='$_POST[id]'";
-		$dbquery = mysqli_query($connect,$sql);
+
+		$sql = "update meeting_main set approve=?, reason=? , officer=?, officer_date=? where id=?";
+        $dbquery = $connect->prepare($sql);
+        $dbquery->bind_param("isssi", $postapprove,$postreason,$user,$date_time_now,$postid);
+        $dbquery->execute();
+        $result=$dbquery->get_result();
 }
 
 //ส่วนแสดงผล
-if(!(($index==1) or ($index==2) or ($index==5))){
+if(!(($getindex==1) or ($getindex==2) or ($getindex==11) or ($getindex==5))){
 
 //ส่วนของการแยกหน้า
-$sql="select id from meeting_main";
-$dbquery = mysqli_query($connect,$sql);
-$num_rows = mysqli_num_rows($dbquery);
+
+$sql_meeting="select id from meeting_main where user_book=? ";
+
+    $dbquery_meeting = $connect->prepare($sql_meeting);
+    $dbquery_meeting->bind_param("i", $user);
+    $dbquery_meeting->execute();
+    $result_meeting=$dbquery_meeting->get_result();
+
+$num_rows = mysqli_num_rows($result_meeting);
 
 $pagelen=20;  // 1_กำหนดแถวต่อหน้า
 $url_link="option=meeting&task=main/officer";  // 2_กำหนดลิงค์ฺ
@@ -170,6 +229,8 @@ $page=$totalpages;
 		if($page<2){
 		$page=1;
 		}
+$start=0;
+
 }
 else{
 		if($totalpages<$_REQUEST['page']){
@@ -181,14 +242,16 @@ else{
 		else{
 		$page=$_REQUEST['page'];
 		}
+    $start=($page-1)*$pagelen;
 }
 
-$start=($page-1)*$pagelen;
+//$start=($page-1)*$pagelen;
 
 if(($totalpages>1) and ($totalpages<16)){
 echo "<div align=center>";
 echo "หน้า	";
 			for($i=1; $i<=$totalpages; $i++)	{
+                if($start==0){$page=1;}
 					if($i==$page){
 					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
 					}
@@ -245,58 +308,97 @@ echo "</div>";
 }
 //จบแยกหน้า
 
+
 $sql_room = "select * from meeting_room where active='1' order by id";
-$dbquery_room = mysqli_query($connect,$sql_room);
-While ($result_room = mysqli_fetch_array($dbquery_room))
+    $dbquery_room = $connect->prepare($sql_room);
+    //$dbquery_room->bind_param("i", $system_user_department);
+    $dbquery_room->execute();
+    $result_meetroom=$dbquery_room->get_result();
+While ($result_room = mysqli_fetch_array($result_meetroom))
 {
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
 }
 
-$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective,  meeting_main.person_num,  meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname, meeting_main.officer from meeting_main left join person_main on meeting_main.book_person = person_main.person_id order by meeting_main.book_date,meeting_main.room,meeting_main.start_time,meeting_main.id limit $start,$pagelen";
-$dbquery = mysqli_query($connect,$sql);
+$sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time,meeting_main.rec_date desc limit $start,$pagelen";
 
+    $dbquery_join = $connect->prepare($sql_join);
+    $dbquery_join->bind_param("i", $system_user_department);
+    $dbquery_join->execute();
+    $result_joinroom=$dbquery_join->get_result();
+
+//$dbquery = mysqli_query($connect,$sql);
 echo "<form id='frm1' name='frm1'>";
-echo  "<table width='95%' border='0' align='center'>";
-echo "<Tr><td colspan='11'></td><Td colspan='4' align='left'><INPUT TYPE='checkbox' name='allchk'  id='allckk' onclick='CheckAll()'>เลือก/ไม่เลือกทั้งหมด</Td></Tr>";
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่</Td><Td>ห้องประชุม</Td><Td>ตั้งแต่เวลา</Td><Td>ถึงเวลา</Td><Td>วัตถุประสงค์</Td><Td width='100'>จำนวนผู้ประชุม</Td><Td width='200'>อื่น ๆ</Td><Td>ผู้จอง</Td><Td>วันเวลาจอง</Td><Td width='40'><INPUT TYPE='button' name='smb' value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
+echo  "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><td colspan='15' align='right'><INPUT TYPE='checkbox' name='allchk'  id='allckk' onclick='CheckAll()'> เลือก/ไม่เลือกทั้งหมด</Td></Tr>";
+
+
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 
-While ($result = mysqli_fetch_array($dbquery)){
-		$id= $result['id'];
+While ($result = mysqli_fetch_array($result_joinroom)){
+ 		$id= $result['id'];
 		$room= $result['room'];
 		$start_time=$result['start_time'];
 		$start_time=number_format($start_time,2);
 		$finish_time=$result['finish_time'];
-		$officer=$result['officer'];
 		$finish_time=number_format($finish_time,2);
-		$book_date = $result['book_date'];
+		$book_date_start = $result['book_date_start'];
+		$book_date_end = $result['book_date_end'];
 		$rec_date = $result['rec_date'];
-		$name= $result['name'];
-		$surname = $result['surname'];
+		//$name= $result['name'];
+		//$surname = $result['surname'];
+        $coordinator = $result['coordinator'];
+		$chairman = $result['chairman'];
+		$person_num = $result['person_num'];
+		$book_person = $result['book_person'];
+		$user_book = $result['user_book'];
+		$other = $result['other'];
+		$rec_date = $result['rec_date'];
+        $approve = $result['approve'];
+        $officer = $result['officer'];
+        $officer_date = $result['officer_date'];
+        $reason = $result['reason'];
 
-			if(($M%2) == 0)
+		if(isset($user_book)){
+    $sql_person="select * from person_main where  status='0' and person_id=? ";
+
+    $dbquery_person = $connect->prepare($sql_person);
+    $dbquery_person->bind_param("i", $user_book);
+    $dbquery_person->execute();
+    $result_qperson=$dbquery_person->get_result();
+ While ($result_person = mysqli_fetch_array($result_qperson))
+{
+     $name=$result_person['name'];
+     $surname=$result_person['surname'];
+}
+        }
+
+            if(($M%2) == 0)
 			$color="#FFFFB";
 			else  	$color="#FFFFFF";
 echo "<Tr bgcolor='$color'>";
 echo "<Td align='left'>";
-echo thai_date_3($book_date);
+echo thai_date_3($book_date_start);
 echo "</Td>";
-echo "<Td align='left'>$room_ar[$room]</Td>";
+echo "<Td align='left'>";
+echo thai_date_3($book_date_end);
+echo "</Td>";
+echo "<Td align='left'>";
+if(isset($room_ar[$room])){
+echo $room_ar[$room];
+}
+echo "</Td>";
 echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time น.</Td>";
-echo "<td>$result[objective]</td>";
-if($result['person_num']>0){
-echo "<td align='center'>$result[person_num]&nbsp;คน</td>";
-}
-else{
-echo "<td align='center'>&nbsp;</td>";
-}
-echo "<td>$result[other]</td>";
-echo "<Td>$name&nbsp;&nbsp;$surname</Td>";
-echo "<Td>";
+echo "<td>$result[chairman]/$result[objective]</td>";
+
+echo "<td>$result[other]/$result[coordinator]</td>";
+echo "<Td>$name $surname(<font size='1px'>";
 echo thai_date_4($rec_date);
-echo "</Td>";
+//echo $rec_date;
+
+    echo "</font>)</Td>";
 
 if($result['approve']==1){
 echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุมัติ'></Td>";
@@ -308,9 +410,22 @@ else{
 echo "<Td align='center'><input type='checkbox' name='$id' id='$id' value='1'></Td>";
 }
 
-if($result['approve']>=1){
-		if(isset($person_ar[$officer])){
-		echo "<td>$person_ar[$officer]</td>";
+if($approve>=1){
+		if(isset($officer)){
+    $sql_person="select * from person_main where  status='0' and person_id=? ";
+
+    $dbquery_person = $connect->prepare($sql_person);
+    $dbquery_person->bind_param("i", $officer);
+    $dbquery_person->execute();
+    $result_qperson=$dbquery_person->get_result();
+ While ($result_person = mysqli_fetch_array($result_qperson))
+{
+     $name=$result_person['name'];
+     $surname=$result_person['surname'];
+}
+		echo "<td>$name $surname(<font size='1px'>";
+        echo thai_date_4($officer_date);
+        echo "</font>)</td>";
 		}
 		else{
 		echo "<td></td>";
@@ -320,8 +435,8 @@ else{
 echo "<td></td>";
 }
 
-if($result['reason']!=""){
-echo "<Td align='left'>$result[reason]</Td>";
+if($reason!=""){
+echo "<Td align='left'>$reason</Td>";
 }
 else{
 echo "<td></td>";
@@ -334,13 +449,12 @@ echo "</Tr>";
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 }
-echo "</Table>";
-echo "</form>";
+echo "</form></Table>";
 }
 
-if(!(($index==1) or ($index==5))){
+if(!(($getindex==1) or ($getindex==2) or ($getindex==3) or ($getindex==11) or ($getindex==5))) {
 echo "<br>";
-echo "&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
 }
 ?>
 

@@ -102,7 +102,7 @@ echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้�
 echo   "<td align='left'>&nbsp;&nbsp;ใช่&nbsp;&nbsp;<input  type=radio name='meeting_permission1' value='1'>&nbsp;&nbsp;ไม่ใช่&nbsp;&nbsp;<input  type=radio name='meeting_permission1' value='0'  checked></td></tr>";
 
 echo "<input type='hidden' name='index' value='4'>";
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
 	&nbsp;&nbsp;&nbsp;</td>";
 //echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
@@ -202,7 +202,7 @@ echo   "<td align='left'>&nbsp;&nbsp;ใช่&nbsp;&nbsp;<input  type=radio nam
 echo "<Input Type=Hidden Name='index' Value='6'>";
 echo "<Input Type=Hidden Name='person_id' Value='$personuser_id'>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 //echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "<Br>";
@@ -238,7 +238,7 @@ $sql_show = "select meeting_permission.id, meeting_permission.p1, person_main.na
 echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/permission' method='post'>";
 echo  "<table width=50% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Input Type=Hidden Name='index' Value='1'>";
-echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='submit' name='smb' value='เพิ่มเจ้าหน้าที่'></Td></Tr>";
+echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='submit' name='smb' class='btn btn-success' value='เพิ่มเจ้าหน้าที่'></Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td><td  align='center'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
 echo "<tr bgcolor='#CC9900'><Td  align='center' width='80'>เจ้าหน้าที่</Td></tr>";

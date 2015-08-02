@@ -11,4 +11,5 @@ while($result = mysqli_fetch_array($query)){
 	$sub_department_name = $result['sub_department_name'];
 echo "<option value='$sub_department'>$sub_department_name</option>";
 }
+//echo "aaaaa";
 ?>

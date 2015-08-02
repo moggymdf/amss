@@ -5,8 +5,8 @@
 </head>
 <body>
 <?php
-require_once "../../../amssplus_connect.php";
-
+require_once "../../../database_connect.php";
+if(is_numeric($_GET['id'])){
 $sql = "select * from car_car where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $result = mysqli_fetch_array($dbquery);
@@ -18,6 +18,7 @@ echo "<br>";
 echo "<div align='center'>";
 echo $name;
 echo "</div>";
+}
 ?>
 </body>
 </html>

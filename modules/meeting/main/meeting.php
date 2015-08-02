@@ -157,8 +157,7 @@ echo "</Table>";
 echo "<Br>";
 echo "<INPUT TYPE='hidden' name='room_index' value=$room_index>";
 echo "<INPUT TYPE='hidden' name='index' value=4>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>";
 
 echo "</form>";
 }
@@ -275,8 +274,9 @@ echo "</Table>";
 echo "<Br>";
 echo "<INPUT TYPE='hidden' name='room_index' value=$room_index>";
 echo "<INPUT TYPE='hidden' name='index' value=4>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>";
+
+//		echo "&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
 
 echo "</form>";
 }
@@ -323,35 +323,35 @@ $date_time_now = date("Y-m-d H:i:s");
 //ตรวจสอบ
 if(isset($_POST['room'])){
 $room=mysqli_real_escape_string($connect,$_POST['room']);
-}else {$room=""; }
+}else {$room=""; exit; }
 if(isset($_POST['book_date_start'])){
 $book_date_start=mysqli_real_escape_string($connect,$_POST['book_date_start']);
     $book_date_start=explode("/", $book_date_start);
     $book_date_start=$book_date_start[2]."-".$book_date_start[1]."-".$book_date_start[0];  //ปี เดือน วัน
-}else {$book_date_start=""; }
+}else {$book_date_start=""; exit; }
 if(isset($_POST['book_date_end'])){
 $book_date_end=mysqli_real_escape_string($connect,$_POST['book_date_end']);
     $book_date_end=explode("/", $book_date_end);
     $book_date_end=$book_date_end[2]."-".$book_date_end[1]."-".$book_date_end[0];  //ปี เดือน วัน
-}else {$book_date_end=""; }
+}else {$book_date_end=""; exit;}
 if(isset($_POST['start_time'])){
 $start_time=mysqli_real_escape_string($connect,$_POST['start_time']);
-}else {$start_time=""; }
+}else {$start_time=""; exit;}
 if(isset($_POST['finish_time'])){
 $finish_time=mysqli_real_escape_string($connect,$_POST['finish_time']);
-}else {$finish_time=""; }
+}else {$finish_time=""; exit;}
 if(isset($_POST['chairman'])){
 $chairman=mysqli_real_escape_string($connect,$_POST['chairman']);
-}else {$chairman=""; }
+}else {$chairman=""; exit;}
 if(isset($_POST['objective'])){
 $objective=mysqli_real_escape_string($connect,$_POST['objective']);
-}else {$objective=""; }
+}else {$objective=""; exit;}
 if(isset($_POST['person_num'])){
 $person_num=mysqli_real_escape_string($connect,$_POST['person_num']);
 }else {$person_num=""; }
 if(isset($_POST['coordinator'])){
 $coordinator=mysqli_real_escape_string($connect,$_POST['coordinator']);
-}else {$coordinator=""; }
+}else {$coordinator=""; exit;}
 if(isset($_POST['other'])){
 $other=mysqli_real_escape_string($connect,$_POST['other']);
 }else {$other=""; }
@@ -367,8 +367,6 @@ if ($dbquery_insert = $connect->prepare($sql_insert)) {
     $dbquery_insert->bind_param("issiississsss", $room , $book_date_start , $book_date_end , $start_time , $finish_time , $chairman , $objective , $person_num , $user , $user , $date_time_now , $coordinator , $other);
      $dbquery_insert->execute();
     $result_insert=$dbquery_insert->get_result();
-
-    // execute it and all...
 } else {
     die("Errormessage: ". $connect->error);
 }
@@ -380,13 +378,13 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 
 //ส่วนของการแยกหน้า
 if($room_index>=1){
-$sql_meeting="select id from meeting_main  where room=$room_index ";
+$sql_meeting="select id from meeting_main  where room=$room_index and user_book=? ";
 }
 else{
-$sql_meeting="select id from meeting_main";
+$sql_meeting="select id from meeting_main where user_book=? ";
 }
     $dbquery_meeting = $connect->prepare($sql_meeting);
-    //$dbquery_meeting->bind_param("i", $room_index);
+    $dbquery_meeting->bind_param("i", $user);
     $dbquery_meeting->execute();
     $result_meeting=$dbquery_meeting->get_result();
 
@@ -405,6 +403,8 @@ $page=$totalpages;
 		if($page<2){
 		$page=1;
 		}
+$start=0;
+
 }
 else{
 		if($totalpages<$_REQUEST['page']){
@@ -416,14 +416,16 @@ else{
 		else{
 		$page=$_REQUEST['page'];
 		}
+    $start=($page-1)*$pagelen;
 }
 
-$start=($page-1)*$pagelen;
+//$start=($page-1)*$pagelen;
 
 if(($totalpages>1) and ($totalpages<16)){
 echo "<div align=center>";
 echo "หน้า	";
 			for($i=1; $i<=$totalpages; $i++)	{
+                if($start==0){$page=1;}
 					if($i==$page){
 					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
 					}
@@ -493,24 +495,25 @@ $room_ar[$result_room['room_code']]=$result_room['room_name'];
 
 if($room_index>=1){
 //$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num, meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname ,meeting_main.coordinator,meeting_main.chairman from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date  from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' and person_main.department='$system_user_department' order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date  from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' and person_main.department=? order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 }
 else{
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department='$system_user_department' order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department=? order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 }
     $dbquery_join = $connect->prepare($sql_join);
-    //$dbquery_join->bind_param("i", $room_index);
+    $dbquery_join->bind_param("i", $system_user_department);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
 //$dbquery = mysqli_query($connect,$sql);
 
 echo  "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='7' align='left'><INPUT TYPE='button' name='smb' value='จองห้องประชุมในสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=1&room_index=$room_index\"'>";
+echo "<Tr><Td colspan='13' align='left'><INPUT TYPE='button' name='smb' class='btn btn-success' value='จองห้องประชุมในสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=1&room_index=$room_index\"'>";
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-echo "<INPUT TYPE='button' name='smb' value='จองห้องประชุมต่างสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=11\"'>";
+echo "<INPUT TYPE='button' name='smb' class='btn btn-danger' value='จองห้องประชุมต่างสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=11\"'>";
 echo "</Td>";
 
+/*
 echo "<Td colspan='5' align='right'>";
 
 echo "<form  name='frm1'>";
@@ -536,9 +539,10 @@ echo "&nbsp;<INPUT TYPE='button' name='smb' value='เลือก' onclick='got
 echo "</form>";
 
 echo "</Td>";
+*/
 echo "</Tr>";
 
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>วันเวลาจอง</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -582,11 +586,11 @@ echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time �
 echo "<td>$result[chairman]/$result[objective]</td>";
 
 echo "<td>$result[other]/$result[coordinator]</td>";
-echo "<Td>";
+echo "<Td>$name $surname (";
 echo thai_date_4($rec_date);
 //echo $rec_date;
 
-    echo "</Td>";
+    echo ")</Td>";
 
 if($result['book_person']==$user){
 echo "<Td align='center'><a href=?option=meeting&task=main/meeting&index=2&id=$id&page=$page&room_index=$room_index><img src=images/drop.png border='0' alt='ลบ'></Td>";

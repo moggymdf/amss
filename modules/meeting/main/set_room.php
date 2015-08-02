@@ -68,9 +68,9 @@ echo "</div></td></tr>";
 echo   "<tr><td align='right'>อนุญาตเปิดให้ใช้งาน&nbsp;&nbsp;</td>";
 echo   "<td align='left'>&nbsp;&nbsp;ใช่&nbsp;&nbsp;<input  type=radio name='active' value='1' checked>&nbsp;&nbsp;ไม่ใช่&nbsp;&nbsp;<input  type=radio name='active' value='0' ></td></tr>";
 
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
 	&nbsp;&nbsp;&nbsp;";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' class='btn btn-warning' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "</form>";
 }
@@ -87,7 +87,7 @@ echo "<tr><td align=center>";
 echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/set_room&index=3' method='post'> ";
 echo "<Input id='iddel' Type='Hidden' Name='iddel' value='$getid'>";
 echo "<INPUT TYPE='submit' name='smb' value='ยืนยัน'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/set_room\"'";
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back'  value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/set_room\"'";
 echo "</form>";
 echo "</td></tr></table>";
 }
@@ -188,8 +188,8 @@ echo "<Tr><Td align='right'>รูปภาพ&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'>INPUT_IMAGES";
 echo "</div></td></tr>";
 */
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' class='btn btn-warning' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden id='id' Name='id' Value='$getid'>";
@@ -232,7 +232,7 @@ $sql= "select * from meeting_room where department=? and (active='1' or active =
     $dbquery->execute();
     $result_dep=$dbquery->get_result();
 echo  "<table width=50% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มห้องประชุม' onclick='location.href=\"?option=meeting&task=main/set_room&index=1\"'</Td></Tr>";
+echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' class='btn btn-success' value='เพิ่มห้องประชุม' onclick='location.href=\"?option=meeting&task=main/set_room&index=1\"'</Td></Tr>";
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center' >ชื่อห้องประชุม</Td><td align='center'>จำนวนคนสูงสุด</td><td align='center'>สถานะ</td><Td align='center' width='50'>แก้ไข</Td><Td align='center' width='50'>ลบห้องประชุม</Td></Tr>";
 $M=1;
 While ($result = mysqli_fetch_array($result_dep))

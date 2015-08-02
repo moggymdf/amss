@@ -1,7 +1,41 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
+?>
 
+<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("select#department").change(function(){
+		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
+			  url: "admin/section/default/return_ajax_subdep.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
+			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
+			  async: false
+		}).responseText;
+		$("select#subdep").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
+		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
+        removeOptions(document.getElementById("person_id")); // clear dropdrowlist person_id when click department
+	});
+});
+$(function(){
+	$("select#subdep").change(function(){
+		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
+			  url: "admin/section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
+			  data:"subdep="+$(this).val(), // ส่งตัวแปร GET ชื่อ subdep ให้มีค่าเท่ากับ ค่าของ subdepartment
+			  async: false
+		}).responseText;
+		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
+		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
+	});
+});
+function removeOptions(selectbox){
+    var i;
+    for(i=selectbox.options.length-1;i>=1;i--){
+        selectbox.remove(i);
+    }
+}
+</script>
+<?php
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
@@ -18,20 +52,28 @@ echo "<Font color='#006666' Size=3><B>เพิ่มพนักงานขั
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
-echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status='0' order by name";
+echo "<Tr><Td align='right'>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='department' id='department' size='1'>";
+echo  "<option  value = ''>เลือกสำนัก</option>" ;
+$sql = "select * from  system_department order by department";
 $dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
-   {
-		$person_id = $result['person_id'];
-		$name = $result['name'];
-		$surname = $result['surname'];
-		echo  "<option value = $person_id>$name $surname</option>" ;
-	}
+While ($result_department = mysqli_fetch_array($dbquery)){
+echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+}
 echo "</select>";
 echo "</div></td></tr>";
+
+echo "<Tr><Td align='right'>เลือกกลุ่ม&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='subdep' id='subdep' size='1'>";
+echo  "<option  value = ''>เลือกกลุ่ม</option>" ;
+echo "</select>";
+echo "</div></td></tr>";
+echo "<Tr><Td align='right'>เลือกบุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
+echo  "<option  value = ''>เลือกบุคลากร</option>" ;
+echo "</select>";
+echo "</div></td></tr>";
+
 
 echo   "<tr><td align='right'>ปฏิบัติหน้าที่&nbsp;&nbsp;</td>";
 echo   "<td align='left'>ใช่<input  type=radio name='status' value='1' checked>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='status' value='0'></td></tr>";
@@ -74,14 +116,50 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
-$sql = "select * from car_driver where id='$_GET[id]'";
+
+$sql = "select a.*,b.department,b.sub_department from car_driver a left outer join person_main b on a.person_id=b.person_id where a.id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
-echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
+
+echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+echo "<Tr><Td align='right'>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='department' id='department' size='1'>";
+echo  "<option  value = ''>เลือกสำนัก</option>" ;
+$sql = "select * from  system_department order by department";
+$dbquery = mysqli_query($connect,$sql);
+While ($result_department = mysqli_fetch_array($dbquery)){
+		if($result_department['department']==$ref_result['department']){
+		echo  "<option  value ='$result_department[department]' selected>$result_department[department] $result_department[department_name]</option>" ;
+		}
+		else{
+		echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+		}
+}
+echo "</select>";
+echo "</div></td></tr>";
+
+echo "<Tr><Td align='right'>เลือกกลุ่ม&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='subdep' id='subdep' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status='0' order by name";
+$sql = "select  * from system_subdepartment where department='$ref_result[department]' order by sub_department_name";
+$dbquery = mysqli_query($connect,$sql);
+While ($result = mysqli_fetch_array($dbquery))
+   {
+		$sub_department = $result['sub_department'];
+		$sub_department_name = $result['sub_department_name'];
+		if($sub_department==$ref_result['sub_department']){
+		echo  "<option value = $sub_department selected>$sub_department_name</option>" ;
+		}
+		else{
+		echo  "<option value = $sub_department>$sub_department_name</option>" ;
+		}
+	}
+echo "</select>";
+echo "</div></td></tr>";
+echo "<Tr><Td align='right'>เลือกบุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
+echo  "<option  value = ''>เลือก</option>" ;
+$sql = "select  * from person_main where department='$ref_result[department]' and sub_department = '$ref_result[sub_department]'and status='0' order by name";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {
@@ -89,10 +167,10 @@ While ($result = mysqli_fetch_array($dbquery))
 		$name = $result['name'];
 		$surname = $result['surname'];
 		if($person_id==$ref_result['person_id']){
-		echo  "<option value = $person_id selected>$name $surname</option>";
+		echo  "<option value = $person_id selected>$name $surname</option>" ;
 		}
 		else{
-		echo  "<option value = $person_id>$name $surname</option>";
+		echo  "<option value = $person_id>$name $surname</option>" ;
 		}
 	}
 echo "</select>";

@@ -71,7 +71,6 @@ While ($result = mysqli_fetch_array($dbquery))
 	}
 echo "</select>";
 echo "</Td></Tr>";
-
 echo "<Tr><Td align='right'>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือกสำนัก</option>" ;

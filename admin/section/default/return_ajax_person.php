@@ -14,4 +14,3 @@ while($result = mysqli_fetch_array($query)){
 echo "<option value='$person_id'>$prename$name&nbsp;$surname</option>";
 }
 ?>
-

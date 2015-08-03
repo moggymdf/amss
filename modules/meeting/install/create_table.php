@@ -4,7 +4,7 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 
 //ส่วนการสร้างตารางระบบย่อย
 $sql_create="CREATE TABLE `meeting_main` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `room` tinyint(4) NOT NULL,
   `book_date_start` date NOT NULL,
   `book_date_end` date NOT NULL,
@@ -37,7 +37,7 @@ $sql_create="CREATE TABLE `meeting_permission` (
 $query = mysqli_query($connect,$sql_create);
 
 $sql_create="CREATE TABLE `meeting_room` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `room_code` tinyint(4) NOT NULL,
   `room_name` varchar(100) NOT NULL,
   `department` tinyint(4) NOT NULL,

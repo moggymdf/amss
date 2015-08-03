@@ -39,7 +39,7 @@ $postindex=mysqli_real_escape_string($connect,$_POST['index']);
 if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 
 echo "<table width='100%' border='0' align='center' >";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ทะเบียนจองห้องประชุม</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>รายการจองห้องประชุม</strong></font><br><br></td></tr>";
 echo "</table>";
 }
 
@@ -77,11 +77,8 @@ echo "<Tr align='left'><Td align='right'>วันทีเริ่มใช้
 
 echo "<Td align='left'>";
 echo "<table><tr><td>";
-?>
-              <input class="form-control" type="text" name="book_date_start" autoclose='true' data-provide="datepicker" data-date-language="th" value=""  Size="15">
-
-
-<?php
+echo "<input class='form-control' type='text' name='book_date_start'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
+";
 echo "</Td><td>&nbsp;&nbsp;ถึงวันที่&nbsp;&nbsp;<td><td>";
 
 echo "<input class='form-control' type='text' name='book_date_end'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
@@ -155,7 +152,6 @@ echo "<Tr align='left'><Td align='right'>ผู้ประสานงาน/�
 echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='other' Size='100'></Td></Tr>";
 echo "</Table>";
 echo "<Br>";
-echo "<INPUT TYPE='hidden' name='room_index' value=$room_index>";
 echo "<INPUT TYPE='hidden' name='index' value=4>";
 echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>";
 
@@ -173,20 +169,34 @@ echo "<Br><Br>";
 echo "<Table width='70%' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr align='left'><Td align='right'>เลือกห้องประชุม&nbsp;&nbsp;</Td><Td><Select  name='room'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from meeting_room where department!=? and active='1'  order by id";
+$sql = "select * from meeting_room where department!=? and active='1'  order by department,id";
     $dbquery = $connect->prepare($sql);
     $dbquery->bind_param("i", $system_user_department);
     $dbquery->execute();
     $result_room=$dbquery->get_result();
 While ($result = mysqli_fetch_array($result_room))
    {
+
+	$room_depart = $result['department'];
+
+    //แสดงชื่อหน่วยงาน
+    $sql_depart="select * from system_department where department=? ";
+    $dbquery_depart = $connect->prepare($sql_depart);
+    $dbquery_depart->bind_param("i", $room_depart);
+    $dbquery_depart->execute();
+    $result_qdepart=$dbquery_depart->get_result();
+ While ($result_depart = mysqli_fetch_array($result_qdepart))
+{
+     $department_name=$result_depart['department_name'];
+ }
+
 		$room_code = $result['room_code'];
 		$room_name = $result['room_name'];
 		if($room_index==$room_code){
-		echo  "<option value = $room_code selected>$room_name</option>";
+		echo  "<option value = $room_code selected>$room_name($department_name)</option>";
 		}
 		else{
-		echo  "<option value = $room_code>$room_name</option>";
+		echo  "<option value = $room_code>$room_name($department_name)</option>";
 		}
 	}
 echo "</select>";
@@ -196,9 +206,8 @@ echo "<Tr align='left'><Td align='right'>วันทีเริ่มใช้
 
 echo "<Td align='left'>";
 echo "<table><tr><td>";
-?>
-              <input class="form-control" type="text" name="book_date_start" autoclose='true' data-provide="datepicker" data-date-language="th" value=""  Size="15">
-<?php
+echo "<input class='form-control' type='text' name='book_date_start'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
+";
 echo "</Td><td>&nbsp;&nbsp;ถึงวันที่&nbsp;&nbsp;<td><td>";
 
 echo "<input class='form-control' type='text' name='book_date_end'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
@@ -272,7 +281,6 @@ echo "<Tr align='left'><Td align='right'>ผู้ประสานงาน/�
 echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='other' Size='100'></Td></Tr>";
 echo "</Table>";
 echo "<Br>";
-echo "<INPUT TYPE='hidden' name='room_index' value=$room_index>";
 echo "<INPUT TYPE='hidden' name='index' value=4>";
 echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>";
 
@@ -288,22 +296,14 @@ if(isset($_GET['id'])){
 $getid=mysqli_real_escape_string($connect,$_GET['id']);
 }else {$getid="";}
 
-/*
-if(isset($_GET['page'])){
-$getpage=mysqli_real_escape_string($connect,$_GET['page']);
-}else {$getpage="";}
 
-if(isset($_GET['room_index'])){
-$getroom_index=mysqli_real_escape_string($connect,$_GET['room_index']);
-}else {$getroom_index="";}
-*/
 
 if($getindex==2) {
 echo "<table width='500' border='0' align='center'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=meeting&task=main/meeting&index=3&id=$getid&page=$_REQUEST[page]&room_index=$_REQUEST[room_index]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/meeting&page=$_REQUEST[page]&room_index=$_REQUEST[room_index]\"'";
+echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=meeting&task=main/meeting&index=3&id=$getid&page=$_REQUEST[page]\"'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/meeting&page=$_REQUEST[page]\"'";
 echo "</td></tr></table>";
 }
 
@@ -357,11 +357,7 @@ $other=mysqli_real_escape_string($connect,$_POST['other']);
 }else {$other=""; }
 
 $sql_insert = "insert into meeting_main (id , room , book_date_start , book_date_end , start_time, finish_time , chairman , objective , person_num , book_person , user_book , rec_date , approve , reason , coordinator, other , officer , officer_date) values ('',?,?,?,?,?,?,?,?,?,?,?,'','',?,?,'','')";
-//    $dbquery_insert = $connect->prepare($sql_insert);
 
-//    $dbquery_insert->bind_param("issiississsss", $room , $book_date_start , $book_date_end , $start_time , $finish_time , $chairman , $objective , $person_num , $user , $user , $date_time_now , $coordinator , $other);
-//    $dbquery_insert->execute();
-//    $result_insert=$dbquery_insert->get_result();
 if ($dbquery_insert = $connect->prepare($sql_insert)) {
 
     $dbquery_insert->bind_param("issiississsss", $room , $book_date_start , $book_date_end , $start_time , $finish_time , $chairman , $objective , $person_num , $user , $user , $date_time_now , $coordinator , $other);
@@ -376,13 +372,16 @@ if ($dbquery_insert = $connect->prepare($sql_insert)) {
 //ส่วนแสดงผล
 if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 
+if(isset($_POST['status_index'])){
+$poststatus_index=mysqli_real_escape_string($connect,$_POST['status_index']);
+    if($poststatus_index!=""){
+    $showstatus=" and meeting_main.approve=$poststatus_index ";
+    }else{$showstatus="";}
+}else {$poststatus_index=""; $showstatus="";}
+
 //ส่วนของการแยกหน้า
-if($room_index>=1){
-$sql_meeting="select id from meeting_main  where room=$room_index and user_book=? ";
-}
-else{
-$sql_meeting="select id from meeting_main where user_book=? ";
-}
+
+$sql_meeting="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.person_id=? $showstatus order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time ";
     $dbquery_meeting = $connect->prepare($sql_meeting);
     $dbquery_meeting->bind_param("i", $user);
     $dbquery_meeting->execute();
@@ -391,7 +390,7 @@ $sql_meeting="select id from meeting_main where user_book=? ";
 $num_rows = mysqli_num_rows($result_meeting);
 
 $pagelen=20;  // 1_กำหนดแถวต่อหน้า
-$url_link="option=meeting&task=main/meeting&room_index=$room_index";  // 2_กำหนดลิงค์ฺ
+$url_link="option=meeting&task=main/meeting";  // 2_กำหนดลิงค์ฺ
 $totalpages=ceil($num_rows/$pagelen);
 
 if(!isset($_REQUEST['page'])){
@@ -493,56 +492,39 @@ While ($result_room = mysqli_fetch_array($result_meetroom))
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
 }
 
-if($room_index>=1){
-//$sql="select meeting_main.id, meeting_main.room, meeting_main.book_date, meeting_main.start_time, meeting_main.finish_time, meeting_main.objective, meeting_main.person_num, meeting_main.other, meeting_main.book_person, meeting_main.rec_date, meeting_main.approve, meeting_main.reason, person_main.name ,person_main.surname ,meeting_main.coordinator,meeting_main.chairman from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' order by meeting_main.book_date,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date  from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where meeting_main.room='$room_index' and person_main.department=? order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
-}
-else{
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department=? order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
-}
+$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.person_id=? $showstatus order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
+
     $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("i", $system_user_department);
+    $dbquery_join->bind_param("i", $user);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
 //$dbquery = mysqli_query($connect,$sql);
 
 echo  "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='13' align='left'><INPUT TYPE='button' name='smb' class='btn btn-success' value='จองห้องประชุมในสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=1&room_index=$room_index\"'>";
+echo "<Tr><Td colspan='13' align='left'><table width='100%'><tr><td align='left'><INPUT TYPE='button' name='smb' class='btn btn-success' value='จองห้องประชุมในสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=1\"'>";
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 echo "<INPUT TYPE='button' name='smb' class='btn btn-danger' value='จองห้องประชุมต่างสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=11\"'>";
-echo "</Td>";
+echo "</Td><td align='right'>";
 
-/*
-echo "<Td colspan='5' align='right'>";
-
+//เพิ่มการเลือกสถานะ
 echo "<form  name='frm1'>";
-echo "&nbsp;<Select  name='room_index' size='1'>";
-echo  '<option value ="" >ทุกห้องประชุม</option>' ;
-    $sql_room = "SELECT *  FROM meeting_room where department=? and active='1' order by room_code";
-    $sql_room = $connect->prepare($sql_room);
-    $sql_room->bind_param("i", $system_user_department);
-    $sql_room->execute();
-    $result_showroom=$sql_room->get_result();
-		//$dbquery_room = mysqli_query($connect,$sql_room);
-				While ($result_room = mysqli_fetch_array($result_showroom ))
-				{
-						if ($room_index==$result_room ['room_code']){
-						echo "<option value=$result_room[room_code]  selected>$result_room[room_name]</option>";
-						}
-						else{
-						echo "<option value=$result_room[room_code]>$result_room[room_name]</option>";
-						}
-				}
-					echo "</select>";
-echo "&nbsp;<INPUT TYPE='button' name='smb' value='เลือก' onclick='goto_url2(1)'>";
+
+echo "&nbsp;<Select  name='status_index' size='1'>";
+echo "<option value ='' >ทุกสถานะ</option>" ;
+echo "<option value ='0' >รอการอนุมัติ</option>" ;
+echo "<option value ='1' >อนุมัติแล้ว</option>" ;
+echo "<option value ='2' >ไม่อนุมัติ</option>" ;
+echo "</select>";
+echo "&nbsp;<INPUT TYPE='button' name='smb' class='btn btn-info' value='เลือก'  onclick='goto_url2(1)'>";
 echo "</form>";
 
-echo "</Td>";
-*/
-echo "</Tr>";
 
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
+echo "</td></tr></table>";
+
+echo "</td></Tr>";
+
+echo "<Tr class='success' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -567,9 +549,9 @@ While ($result = mysqli_fetch_array($result_joinroom)){
 		$other = $result['other'];
 		$rec_date = $result['rec_date'];
 
-            if(($M%2) == 0)
-			$color="#FFFFB";
-			else  	$color="#FFFFFF";
+            //if(($M%2) == 0)
+			$color="";
+			//else  	$color="#FFFFFF";
 echo "<Tr bgcolor='$color'>";
 echo "<Td align='left'>";
 echo thai_date_3($book_date_start);
@@ -593,7 +575,7 @@ echo thai_date_4($rec_date);
     echo ")</Td>";
 
 if($result['book_person']==$user){
-echo "<Td align='center'><a href=?option=meeting&task=main/meeting&index=2&id=$id&page=$page&room_index=$room_index><img src=images/drop.png border='0' alt='ลบ'></Td>";
+echo "<Td align='center'><a href=?option=meeting&task=main/meeting&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></Td>";
 }
 else{
 echo "<td></td>";
@@ -695,6 +677,8 @@ function goto_url(val){
 			alert("กรุณาระบุจำนวนผู้เข้าประชุม");
 		}else if(frm1.coordinator.value == ""){
 			alert("กรุณาระบุผู้ประสานงานและเบอร์โทรศัพท์");
+		}else if(frm1.book_date_start.value > frm1.book_date_end.value){
+			alert("วันที่เริ่มต้นมากกว่าวันที่สิ้นสุด กรุณาเลือกวันที่ใหม่");
 		}else{
 			callfrm("?option=meeting&task=main/meeting");   //page ประมวลผล
 		}

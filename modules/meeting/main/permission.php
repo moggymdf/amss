@@ -8,6 +8,7 @@ $admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_meeting']);
 if($admin_meeting!='meeting'){
 exit();
 }
+
 ?>
 <script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
 <script type="text/javascript">

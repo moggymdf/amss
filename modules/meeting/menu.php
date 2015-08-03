@@ -14,7 +14,7 @@ echo "<tr bgcolor='#FFCC00'><td>";
 echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "<li><a href='./'>รายการหลัก</a></li>";
 	if($_SESSION['admin_meeting']=="meeting"){
-	echo "<li><a href='?option=meeting' class='dir'>ตั้งค่าระบบ</a>";
+	echo "<li><a href='#' class='dir'>ตั้งค่าระบบ</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=meeting&task=main/permission'>กำหนดเจ้าหน้าที่</a></li>";
 			echo "<li><a href='?option=meeting&task=main/set_room'>กำหนดห้องประชุม</a></li>";
@@ -22,19 +22,19 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 	if($_SESSION['login_group']<=4){
-	echo "<li><a href='?option=meeting' class='dir'>จองห้องประชุม</a>";
+	echo "<li><a href='#' class='dir'>จองห้องประชุม</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=meeting&task=main/meeting'>จองห้องประชุม</a></li>";
 			echo "<li><a href='?option=meeting&task=main/search'>ค้นหาห้องประชุมว่าง</a></li>";
 			if(($result_permission['p1']==1) or ($_SESSION['admin_meeting']=="meeting")){
 			echo "<li><a href='?option=meeting&task=main/officer'>อนุญาตให้ใช้ห้องประชุม</a></li>";
-			echo "<li><a href='?option=meeting&task=main/meeting'>รายการจองของคนในสำนัก</a></li>";
+			echo "<li><a href='?option=meeting&task=main/meeting_dep'>รายการจองของคนในสำนัก</a></li>";
 			}
 	echo "</ul>";
 	echo "</li>";
 	}
 	if($_SESSION['login_group']<=4){
-	echo "<li><a href='?option=meeting' class='dir'>รายงาน</a>";
+	echo "<li><a href='#' class='dir'>รายงาน</a>";
 		echo "<ul>";
 			if(($result_permission['p1']==1) or ($_SESSION['admin_meeting']=="meeting")){
 			echo "<li><a href='?option=meeting&task=main/meeting'>สรุปการใช้ห้องประชุมในสำนัก</a></li>";
@@ -43,7 +43,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</ul>";
 	echo "</li>";
 	}
-	echo "<li><a href='?option=meeting' class='dir'>คู่มือ</a>";
+	echo "<li><a href='#' class='dir'>คู่มือ</a>";
 		echo "<ul>";
 				echo "<li><a href='modules/meeting/manual/meeting.pdf' target='_blank'>คู่มือจองห้องประชุม</a></li>";
 		echo "</ul>";

@@ -4,7 +4,7 @@
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_meeting']);
-if(!(($result_permission['p1']==1) or ($admin_meeting=="meeting"))){
+if($admin_meeting!="meeting"){
 exit();
 }
 
@@ -12,6 +12,21 @@ require_once "modules/meeting/time_inc.php";
 $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 $system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+
+    //ตรวจสอบสิทธิ์ผู้ใช้
+    $sql_permis = "select * from  meeting_permission where person_id=? ";
+    $dbquery_permis = $connect->prepare($sql_permis);
+    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->execute();
+    $result_qpermis=$dbquery_permis->get_result();
+    While ($result_permis = mysqli_fetch_array($result_qpermis))
+    {
+        $user_permis=$result_permission['p1'];
+    }
+    if($user_permis!=1){
+        exit();
+    }
+
 
 if(isset($_GET['index'])){
 $getindex=mysqli_real_escape_string($connect,$_GET['index']);
@@ -35,7 +50,7 @@ echo "<br />";
 if(!(($getindex==1) or ($getindex==2) or ($getindex==5))){
 
 echo "<table width='100%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>ส่วนของเจ้าหน้าที่ห้องประชุม $system_user_department_name</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>การอนุญาตใช้ห้องประชุม $system_user_department_name</strong></font><br><br></td></tr>";
 echo "</table>";
 }
 
@@ -206,6 +221,12 @@ $date_time_now = date("Y-m-d H:i:s");
 if(!(($getindex==1) or ($getindex==2) or ($getindex==11) or ($getindex==5))){
 
 //ส่วนของการแยกหน้า
+if(isset($_POST['status_index'])){
+$poststatus_index=mysqli_real_escape_string($connect,$_POST['status_index']);
+    if($poststatus_index!=""){
+    $showstatus=" and meeting_main.approve=$poststatus_index ";
+    }else{$showstatus="";}
+}else {$poststatus_index=""; $showstatus="";}
 
 $sql_meeting="select id from meeting_main where user_book=? ";
 
@@ -319,7 +340,7 @@ While ($result_room = mysqli_fetch_array($result_meetroom))
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
 }
 
-$sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? order by meeting_main.book_date_start,meeting_main.room,meeting_main.start_time,meeting_main.rec_date desc limit $start,$pagelen";
+$sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showstatus order by  meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time,meeting_main.rec_date desc limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);
     $dbquery_join->bind_param("i", $system_user_department);
@@ -329,10 +350,25 @@ $sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting
 //$dbquery = mysqli_query($connect,$sql);
 echo "<form id='frm1' name='frm1'>";
 echo  "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><td colspan='15' align='right'><INPUT TYPE='checkbox' name='allchk'  id='allckk' onclick='CheckAll()'> เลือก/ไม่เลือกทั้งหมด</Td></Tr>";
+echo "<Tr><td colspan='15'><table width='100%'><tr><td align='left'>";
+
+//เพิ่มการเลือกสถานะ
+echo "<form  name='frm1'>";
+
+echo "&nbsp;<Select  name='status_index' size='1'>";
+echo "<option value ='' >ทุกสถานะ</option>" ;
+echo "<option value ='0' >รอการอนุมัติ</option>" ;
+echo "<option value ='1' >อนุมัติแล้ว</option>" ;
+echo "<option value ='2' >ไม่อนุมัติ</option>" ;
+echo "</select>";
+echo "&nbsp;<INPUT TYPE='button' name='smb' class='btn btn-info' value='เลือก'  onclick='goto_url2(1)'>";
+echo "</form>";
 
 
-echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
+echo "</td><td align='right'><INPUT TYPE='checkbox' name='allchk'  id='allckk' onclick='CheckAll()'> เลือก/ไม่เลือกทั้งหมด</Td></table></td></Tr>";
+
+
+echo "<Tr class='info' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -375,9 +411,9 @@ While ($result = mysqli_fetch_array($result_joinroom)){
 }
         }
 
-            if(($M%2) == 0)
-			$color="#FFFFB";
-			else  	$color="#FFFFFF";
+            //if(($M%2) == 0)
+			$color="";
+	//		else  	$color="#FFFFFF";
 echo "<Tr bgcolor='$color'>";
 echo "<Td align='left'>";
 echo thai_date_3($book_date_start);
@@ -491,6 +527,10 @@ function goto_url_update2(val){
 	}else if(val==1){
 		callfrm("?option=meeting&task=main/officer&index=4");   //page ประมวลผล
 	}
+}
+
+function goto_url2(val){
+callfrm("?option=meeting&task=main/officer");
 }
 
 function CheckAll() {

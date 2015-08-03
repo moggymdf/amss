@@ -98,9 +98,9 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมในส�
     echo "<tr><td><table class='table table-hover table-bordered table-striped table-condensed'>";
 
     //แสดงรายการที่มีการจอง
-    $sql_roombook="select * from meeting_main where room=?  and (book_date_start between ? and ?) and (book_date_end between ? and ?) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
+    $sql_roombook="select * from meeting_main where room=?  and ((? between book_date_start and book_date_end) or (? between book_date_start and book_date_end )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
     $dbquery_roombook = $connect->prepare($sql_roombook);
-    $dbquery_roombook->bind_param("issss", $room_code,$search_date_start,$search_date_end,$search_date_start,$search_date_end);
+    $dbquery_roombook->bind_param("iss", $room_code,$search_date_start,$search_date_end);
     $dbquery_roombook->execute();
     $result_qroombook=$dbquery_roombook->get_result();
     $numroombook = mysqli_num_rows($result_qroombook);
@@ -168,7 +168,8 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมในส�
     echo "<td>รายละเอียด : เด๋วเอาปุ่มใส่</td>";
     echo "</tr>";
     echo "<tr><td align='left' colspan='5'>เรื่อง : ($chairman)$objective</td></tr>";
-    echo "<tr><td align='left' colspan='5' height='1px'></td></tr>";
+    echo "<tr><td align='left' colspan='5' height='1px' ></td></tr>";
+    echo "<tr><td align='left' colspan='5' height='1px' ></td></tr>";
      }//แสดงรายการที่มีการจอง
     }
      }else{ //ตรวจสอบมีการจองห้องหรือไม่
@@ -200,9 +201,9 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมต่า�
     echo "<tr><td><table class='table table-hover table-bordered table-striped table-condensed'>";
 
     //แสดงรายการที่มีการจอง
-    $sql_roombook="select * from meeting_main where room=?  and (book_date_start between ? and ?) and (book_date_end between ? and ?) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
+    $sql_roombook="select * from meeting_main where room=?  and ((? between book_date_start and book_date_end) or (? between book_date_start and book_date_end )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
     $dbquery_roombook = $connect->prepare($sql_roombook);
-    $dbquery_roombook->bind_param("issss", $room_code,$search_date_start,$search_date_end,$search_date_start,$search_date_end);
+    $dbquery_roombook->bind_param("iss", $room_code,$search_date_start,$search_date_end);
     $dbquery_roombook->execute();
     $result_qroombook=$dbquery_roombook->get_result();
     $numroombook = mysqli_num_rows($result_qroombook);
@@ -267,9 +268,10 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมต่า�
     echo "<td>เวลา : $start_time น. - $finish_time น.</td>";
     echo "<td>ผู้จอง : $name $surname($department_name)</td>";
     echo "<td>สถานะ : $showstatus</td>";
-    echo "<td>รายละเอียด : เด๋วเอาปุ่มใส่</td>";
+    echo "<td>ผู้เข้าประชุม : $person_num คน</td>";
     echo "</tr>";
     echo "<tr><td align='left' colspan='5'>เรื่อง : ($chairman)$objective</td></tr>";
+    echo "<tr><td align='left' colspan='5' height='1px'></td></tr>";
     echo "<tr><td align='left' colspan='5' height='1px'></td></tr>";
      }//แสดงรายการที่มีการจอง
     }

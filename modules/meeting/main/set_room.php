@@ -14,6 +14,20 @@ $login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 $system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
 
+    //ตรวจสอบสิทธิ์ผู้ใช้
+    $sql_permis = "select * from  meeting_permission where person_id=? ";
+    $dbquery_permis = $connect->prepare($sql_permis);
+    $dbquery_permis->bind_param("i", $login_user_id);
+    $dbquery_permis->execute();
+    $result_qpermis=$dbquery_permis->get_result();
+    While ($result_permis = mysqli_fetch_array($result_qpermis))
+    {
+        $user_permis=$result_permission['p1'];
+    }
+    if($user_permis!=1){
+        exit();
+    }
+
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){

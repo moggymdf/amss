@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -61,7 +63,7 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
+echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'> $department_name";
 echo "</div></td></tr>";
@@ -158,7 +160,7 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข เจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'> $department_name";
 echo "</div></td></tr>";
@@ -234,7 +236,7 @@ $sql_show = "select work_permission.id, work_permission.p1, person_main.name, pe
     $result_show = $dbquery_show->get_result();
 
 echo "<form id='frm1' name='frm1' action='?option=work&task=permission' method='post'>";
-echo  "<table width=50% border=0 align=center>";
+echo  "<table width=50% border=0 align=center  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Input Type=Hidden Name='index' Value='1'>";
 echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='submit' name='smb' value='เพิ่มเจ้าหน้าที่'></Td></Tr>";
 

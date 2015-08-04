@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -39,7 +41,7 @@ function removeOptions(selectbox){
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table width='50%' border='0' align='center'>";
+echo "<tableclass='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr align='center'><td><font color='#006666' size='3'><strong>พนักงานขับรถ</strong></font></td></tr>";
 echo "</table>";
 }
@@ -51,8 +53,8 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มพนักงานขับรถ</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
-echo "<Tr><Td align='right'>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<Table class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><Td align='right' width=40%>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือกสำนัก</option>" ;
 $sql = "select * from  system_department order by department";
@@ -62,7 +64,6 @@ echo  "<option  value ='$result_department[department]'>$result_department[depar
 }
 echo "</select>";
 echo "</div></td></tr>";
-
 echo "<Tr><Td align='right'>เลือกกลุ่ม&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='subdep' id='subdep' size='1'>";
 echo  "<option  value = ''>เลือกกลุ่ม</option>" ;
@@ -73,22 +74,17 @@ echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
 echo  "<option  value = ''>เลือกบุคลากร</option>" ;
 echo "</select>";
 echo "</div></td></tr>";
-
-
-echo   "<tr><td align='right'>ปฏิบัติหน้าที่&nbsp;&nbsp;</td>";
-echo   "<td align='left'>ใช่<input  type=radio name='status' value='1' checked>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='status' value='0'></td></tr>";
-
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='right'>ปฏิบัติหน้าที่&nbsp;&nbsp;</td>";
+echo "<td align='left'>ใช่&nbsp;&nbsp;<input  type=radio name='status' value='1' checked>&nbsp;&nbsp;ไม่ใช่&nbsp;&nbsp;<input  type=radio name='status' value='0'></td></tr>";
+echo "<tr><td align='right'></td>";
+echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "</form>";
 }
 
 //ส่วนยืนยันการลบข้อมูล
 if($index==2) {
-echo "<table width='500' border='0' align='center'>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
 echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/set_driver&index=3&id=$_GET[id]\"'>
@@ -121,8 +117,8 @@ $sql = "select a.*,b.department,b.sub_department from car_driver a left outer jo
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
 
-echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
-echo "<Tr><Td align='right'>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<Table  class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><Td align='right' width=40%>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือกสำนัก</option>" ;
 $sql = "select * from  system_department order by department";
@@ -184,11 +180,9 @@ echo "</div></td></tr>";
 			$p1_check2="checked";
 			}
 echo   "<tr><td align='right'>ปฏิบัติหน้าที่&nbsp;&nbsp;</td>";
-echo   "<td align='left'>ใช่<input  type=radio name='status' value='1' $p1_check1>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='status' value='0' $p1_check2></td></tr>";
-
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+echo   "<td align='left'>ใช่&nbsp;&nbsp;<input  type=radio name='status' value='1' $p1_check1>&nbsp;&nbsp;ไม่ใช่&nbsp;&nbsp;<input  type=radio name='status' value='0' $p1_check2></td></tr>";
+echo "<tr><td align='right'></td>";
+echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
@@ -207,7 +201,7 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql = "select car_driver.id, car_driver.status, person_main.prename, person_main.name, person_main.surname from car_driver left join person_main on car_driver.person_id=person_main.person_id order by car_driver.id";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width=50% border=0 align=center>";
+echo  "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มพนักงานขับรถ' onclick='location.href=\"?option=car&task=main/set_driver&index=1\"'</Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อพนักงานขับรถ</Td><td  align='center'>สถานะ</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";

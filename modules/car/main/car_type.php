@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -9,7 +11,7 @@ exit();
 echo "<br />";
 
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table width='50%' border='0' align='center'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr align='center'><td><font color='#006666' size='3'><strong>ประเภทยานพาหนะ</strong></font></td></tr>";
 echo "</table>";
 }
@@ -20,20 +22,21 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มข้อมูล</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table   width='60%' Border='0'>";
-echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัส</Td><Td><Input Type='Text' Name='code' Size='5'></Td></Tr>";
-echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อประเภท</Td><Td><Input Type='Text' Name='name'  Size='40'></Td></Tr>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr align='left'><Td align='right' width=40%>รหัส</Td><Td><Input Type='Text' Name='code' Size='5'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'>ชื่อประเภท</Td><Td><Input Type='Text' Name='name'  Size='40'></Td></Tr>";
+echo "<Tr align='left'><Td align='right'></Td><Td><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></Td></Tr>";
 echo "<Br>";
 echo "</Table>";
 echo "<Br>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "";
 
 echo "</form>";
 }
 //ส่วนยืนยันการลบข้อมูล
 if($index==2) {
-echo "<table width='500' border='0' align='center'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
 echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/car_type&index=3&id=$_GET[id]&page=$_REQUEST[page]\"'>
@@ -69,7 +72,7 @@ $sql = "select * from  car_type where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $result = mysqli_fetch_array($dbquery);
 
-echo "<Table   width=70% Border=0 Bgcolor=#Fcf9d8>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัส</Td><Td><Input Type='Text' Name='code' Size='5' value='$result[code]'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อประเภท</Td><Td><Input Type='Text' Name='name' id='pay_type_name' Size='40' value='$result[name]'></Td></Tr>";
@@ -192,7 +195,7 @@ echo "</div>";
 
 $sql = "select * from car_type  order by code  limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width=60% border=0 align=center>";
+echo  "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/car_type&index=1\"'>";
 echo "</Td></Tr>";
 echo "<Tr bgcolor=#FFCCCC align='center' class=style2><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td>ชื่อ</Td><Td width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";

@@ -1,5 +1,40 @@
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+<link href="modules/work/css/datepicker.css" rel="stylesheet" media="screen">
+    <script src="//getbootstrap.com/2.3.2/assets/js/jquery.js"></script>
+    <script src="//getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
+
+    <script src="modules/meeting/js/bootstrap-datepicker.js"></script>
+       <script src="modules/meeting/js/bootstrap-datepicker.th.js"></script>
+
+
+    <script type="text/javascript">
+      $(function(){
+        $('pre[data-source]').each(function(){
+          var $this = $(this),
+            $source = $($this.data('source'));
+
+          var text = [];
+          $source.each(function(){
+            var $s = $(this);
+            if ($s.attr('type') == 'text/javascript'){
+              text.push($s.html().replace(/(\n)*/, ''));
+            } else {
+              text.push($s.clone().wrap('<div>').parent().html()
+                .replace(/(\"(?=[[{]))/g,'\'')
+                .replace(/\]\"/g,']\'').replace(/\}\"/g,'\'') // javascript not support lookbehind
+                .replace(/\&quot\;/g,'"'));
+            }
+          });
+
+          $this.text(text.join('\n\n').replace(/\t/g, '    '));
+        });
+
+        prettyPrint();
+        demo();
+      });
+    </script>
+
 
 <script language='javascript'>
 //<!–

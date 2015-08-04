@@ -36,9 +36,26 @@ printWin.print();
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
 $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
-if(!($login_status<=105 or $result_permission['p1']==1)){	
-exit();
-}
+//if(!($login_status<=105 or $result_permission['p1']==1)){
+//echo "<div align='center'><h2> เฉพาะระดับ ผอ.สำนักขึ้นไป </h2></div>";
+//exit();
+//}
+$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+
+//ตรวจสอบสิทธิ์ผู้ใช้
+    $sql_permis = "select * from  meeting_permission where person_id=? ";
+    $dbquery_permis = $connect->prepare($sql_permis);
+    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->execute();
+    $result_qpermis=$dbquery_permis->get_result();
+    While ($result_permis = mysqli_fetch_array($result_qpermis))
+    {
+        $user_permis=$result_permis['p1'];
+    }
+    if($user_permis!=1){
+    echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
+        exit();
+    }
 
 $thai_month_arr=array(
 	"01"=>"มกราคม",

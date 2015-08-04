@@ -165,7 +165,7 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมในส�
     echo "<td>เวลา : $start_time น. - $finish_time น.</td>";
     echo "<td>ผู้จอง : $name $surname($department_name)</td>";
     echo "<td>สถานะ : $showstatus</td>";
-    echo "<td>รายละเอียด : เด๋วเอาปุ่มใส่</td>";
+   echo "<td>ผู้เข้าประชุม : $person_num คน</td>";
     echo "</tr>";
     echo "<tr><td align='left' colspan='5'>เรื่อง : ($chairman)$objective</td></tr>";
     echo "<tr><td align='left' colspan='5' height='1px' ></td></tr>";

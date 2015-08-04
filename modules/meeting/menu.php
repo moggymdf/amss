@@ -37,8 +37,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "<li><a href='#' class='dir'>รายงาน</a>";
 		echo "<ul>";
 			if(($result_permission['p1']==1) or ($_SESSION['admin_meeting']=="meeting")){
-			echo "<li><a href='?option=meeting&task=main/meeting'>สรุปการใช้ห้องประชุมในสำนัก</a></li>";
-			echo "<li><a href='?option=meeting&task=main/meeting'>สรุปการใช้ห้องประชุมนอกสำนัก</a></li>";
+			echo "<li><a href='?option=meeting&task=main/report1'>สรุปการใช้ห้องประชุมในสำนัก</a></li>";
 			}
 	echo "</ul>";
 	echo "</li>";

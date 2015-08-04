@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -38,7 +40,7 @@ function removeOptions(selectbox){
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table width='50%' border='0' align='center'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr align='center'><td><font color='#006666' size='3'><strong>เจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</strong></font></td></tr>";
 echo "</table>";
 }
@@ -50,9 +52,8 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>กำหนดเจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8' style='padding:15px;'>";
-
-echo "<Tr><Td align='right'>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><Td align='right' width=40%>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='department' id='department' size='1'>";
 echo  "<option  value = ''>เลือกสำนัก</option>" ;
 $sql = "select * from  system_department order by department";
@@ -62,7 +63,6 @@ echo  "<option  value ='$result_department[department]'>$result_department[depar
 }
 echo "</select>";
 echo "</div></td></tr>";
-
 echo "<Tr><Td align='right'>เลือกกลุ่ม&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select name='subdep' id='subdep' size='1'>";
 echo  "<option  value = ''>เลือกกลุ่ม</option>" ;
@@ -79,18 +79,16 @@ echo   "<tr><td align='right'>ผู้ให้ความเห็นชอ�
 echo   "<td align='left'><input  type='radio' name='car_permission1' value='2'></td></tr>";
 echo   "<tr><td align='right'>ผู้อนุมัติ&nbsp;&nbsp;</td>";
 echo   "<td align='left'><input  type='radio' name='car_permission1' value='3'></td></tr>";
-
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='right'></td>";
+echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+	&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "</form>";
 }
 
 //ส่วนยืนยันการลบข้อมูล
 if($index==2) {
-echo "<table width='500' border='0' align='center'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
 echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/permission&index=3&id=$_GET[id]\"'>
@@ -120,7 +118,7 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 
 $sql_user = "select a.department,a.sub_department,a.person_id from person_main a left outer join car_permission b on a.person_id=b.person_id  where b.id='".$_GET['id']."' ";
 $dbquery_user = mysqli_query($connect,$sql_user);
@@ -226,8 +224,8 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql = "select car_permission.id, car_permission.p1, person_main.prename, person_main.name, person_main.surname from car_permission left join person_main on car_permission.person_id=person_main.person_id  order by car_permission.p1";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width='60%' border='0' align='center'>";
-echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/permission&index=1\"'></Td></Tr>";
+echo  "<table class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><Td colspan='7' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/permission&index=1\"'></Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td><td  align='center' colspan='3'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
 echo "<tr bgcolor='#CC9900'><Td  align='center' width='80'>เจ้าหน้าที่</Td><Td  align='center' width='80'>ผู้เห็นชอบ</Td><Td  align='center' width='80'>ผู้อนุมัติ</Td></tr>";

@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -36,7 +38,7 @@ $full_name_ar[$person_id]="$prename$name&nbsp;&nbsp;$surname";
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1)  or ($index==2) or ($index==5) or ($index==7))){
-echo "<table width='100%' border='0' align='center'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr align='center'><td><font color='#006666' size='3'><strong>ทะเบียนการขออนุญาตใช้รถราชการ</strong></font></td></tr>";
 echo "</table>";
 }
@@ -64,8 +66,8 @@ $pic = $result['pic'];
 			}
 }
 echo "<Br>";
-echo "<Table width='80%'>";
-echo "<Tr align='left'><Td align='right' width='150'>เรื่อง&nbsp;&nbsp;</Td><Td>ขออนุญาตใช้รถราชการ</Td></Tr>";
+echo "<Table class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr align='left'><Td align='right' width='40%'>เรื่อง&nbsp;&nbsp;</Td><Td>ขออนุญาตใช้รถราชการ</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>เรียน&nbsp;&nbsp;</Td><Td>ผู้อำนวยการ$_SESSION[office_name]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ข้าพเจ้า&nbsp;&nbsp;</Td><Td>$_SESSION[login_prename]$_SESSION[login_name]&nbsp;&nbsp;$_SESSION[login_surname]&nbsp;&nbsp;ตำแหน่ง$_SESSION[login_userposition]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td><Select  name='car'  size='1'>";
@@ -151,7 +153,7 @@ echo "</form>";
 
 //ส่วนยืนยันการลบข้อมูล
 if($index==2) {
-echo "<table width='500' border='0' align='center'>";
+echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
 echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/car_request&index=3&id=$_GET[id]&page=$_REQUEST[page]&car_index=$car_index\"'>
@@ -186,13 +188,13 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไขรายการ</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='90%' Border='0'>";
+echo "<Table  class='table table-hover table-bordered table-striped table-condensed'>";
 $sql = "select * from car_main where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
 $id=$ref_result['id'];
 
-echo "<Tr align='left'><Td align='right'>เรื่อง&nbsp;&nbsp;</Td><Td>ขออนุญาตใช้รถราชการ</Td></Tr>";
+echo "<Tr align='left'><Td align='right' width=40%>เรื่อง&nbsp;&nbsp;</Td><Td>ขออนุญาตใช้รถราชการ</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>เรียน&nbsp;&nbsp;</Td><Td>ผู้อำนวยการ$_SESSION[office_name]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ข้าพเจ้า&nbsp;&nbsp;</Td><Td>$_SESSION[login_prename]$_SESSION[login_name]&nbsp;&nbsp;$_SESSION[login_surname]&nbsp;&nbsp;ตำแหน่ง$_SESSION[login_userposition]</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>ขออนุญาตใช้รถราชการ&nbsp;&nbsp;</Td><Td><Select  name='car'  size='1'>";
@@ -353,7 +355,7 @@ echo "<Font color='#006666' Size=3><B>รายละเอียด</B></Font>"
 echo "</Cener>";
 echo "<Br>";
 echo "<Br>";
-echo "<Table  align='center' width='80%' Border='0'>";
+echo "<Table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr ><Td colspan='2' align='right'><INPUT TYPE='button' name='smb' value='<<กลับหน้าก่อน' onclick='location.href=\"?option=car&task=main/car_request&page=$_GET[page]&car_index=$car_index\"'></Td></Tr>";
 $sql = "select * from car_main where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
@@ -374,7 +376,7 @@ $result_name = mysqli_fetch_array($dbquery_name);
 		$position_name = $result_name['position_name'];
 		$full_name="$prename$name&nbsp;&nbsp;$surname";
 
-echo "<Tr align='left'><Td align='right'>วันที่&nbsp;&nbsp;</Td><Td>";
+echo "<Tr align='left'><Td align='right' width=40%>วันที่&nbsp;&nbsp;</Td><Td>";
 echo thai_date_3($rec_date);
 echo "</Td></Tr>";
 echo "<Tr align='left'><Td align='right'>เรื่อง&nbsp;&nbsp;</Td><Td>ขออนุญาตใช้รถราชการ</Td></Tr>";
@@ -441,7 +443,7 @@ echo "<Tr align='left'><Td align='right'>&nbsp;&nbsp;</Td><Td>ผู้ขับ
 echo "<tr><td colspan='2'>";
 echo "<fieldset>";
 echo "<legend>&nbsp;<B>ส่วนเจ้าหน้าที่</B>: &nbsp;</legend>";
-echo "<table>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr align='left'><Td align='right'>เห็นควรให้&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='driver'  size='1' disabled>";
 echo  "<option  value = ''>เลือก</option>" ;
@@ -479,7 +481,7 @@ echo "</tr>";
 echo "<tr><td colspan='2'>";
 echo "<fieldset>";
 echo "<legend>&nbsp;<B>ส่วนความเห็นชอบ</B>: &nbsp;</legend>";
-echo "<table>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr align='left'><Td align='right'>ความเห็น&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='group_comment' Size='80' value='$ref_result[group_comment]' disabled></Td></Tr>";
 $group_sign=$ref_result['group_sign'];
 echo "<Tr align='left'><Td align='right'>ลงชื่อ&nbsp;&nbsp;</Td><Td>";
@@ -497,7 +499,7 @@ echo "</tr>";
 echo "<tr><td colspan='2'>";
 echo "<fieldset>";
 echo "<legend>&nbsp;<B>ส่วนการอนุมัติ</B>: &nbsp;</legend>";
-echo "<table>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr align='left'><Td align='right'>คำสั่ง(ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='grant_comment' Size='80' value='$ref_result[grant_comment]' disabled></Td></Tr>";
 		$commander_grant_check1=""; $commander_grant_check2="";
 		if($ref_result['commander_grant']==1){
@@ -632,7 +634,7 @@ $sql="select car_main.id, car_main.person_id, car_main.car_start, car_main.car_f
 }
 $dbquery = mysqli_query($connect,$sql);
 
-echo  "<table width=95% border=0 align=center>";
+echo  "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='ขออนุญาตใช้รถราชการ' onclick='location.href=\"?option=car&task=main/car_request&index=1&car_index=$car_index\"'></Td>";
 echo "<Td colspan='6' align='right'>";
 echo "<form  name='frm1'>";

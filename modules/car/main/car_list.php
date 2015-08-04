@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -50,7 +52,7 @@ function file_upload() {
 
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table width='100%' border='0' align='center'>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr align='center'><td><font color='#006666' size='3'><strong>ยานพาหนะ</strong></font></td></tr>";
 echo "</table>";
 }
@@ -62,8 +64,8 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มยานพาหนะ</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table   width='60%' Border='0'>";
-echo "<Tr align='left'><Td  align='right'>ประเภท&nbsp;&nbsp;</Td>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr align='left'><Td  align='right' width=40%>ประเภท&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='car_type' id='car_type' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql = "select * from  car_type  order by code";
@@ -90,37 +92,31 @@ echo  "<option value = '2'>2.พาหนะปัจจุบันอนุญ
 echo  "<option value = '3'>3.พาหนะที่เคยใช้งาน </option>";
 echo "</select>";
 echo "</div></td></tr>";
-
 echo  "<tr align='left'>";
 echo  "<td align='right'>ไฟล์รูปภาพ&nbsp;&nbsp;</td>";
 echo  "<td align='left'><input name = 'userfile' type = 'file'></td>";
 echo  "</tr>";
-
-echo "<Br>";
+echo  "<tr align='left'>";
+echo  "<td align='right'></td><td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td>";
+echo  "</tr>";
 echo "</Table>";
-echo "<Br>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
 echo "</form>";
-echo "<br /><br />";
 }
-
 //ส่วนยืนยันการลบข้อมูล
 if($index==2) {
-echo "<table width='500' border='0' align='center'>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
 echo "<tr><td align=center>";
 echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/car_list&index=3&id=$_GET[id]&page=$_REQUEST[page]\"'>
 		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=car&task=main/car_list&page=$_REQUEST[page]\"'";
 echo "</td></tr></table>";
 }
-
 //ส่วนลบข้อมูล
 if($index==3){
 $sql = "delete from car_car where id=$_GET[id]";
 $dbquery = mysqli_query($connect,$sql);
 }
-
 //ส่วนเพิ่มข้อมูล
 if($index==4){
 $basename = basename($_FILES['userfile']['name']);
@@ -157,8 +153,8 @@ $sql = "select * from  car_car where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $result_ref = mysqli_fetch_array($dbquery);
 
-echo "<Table  width='60%' Border='0' >";
-echo "<Tr align='left'><Td  align='right'>ประเภท&nbsp;&nbsp;</Td>";
+echo "<table  class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr align='left'><Td  align='right' width=40%>ประเภท&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='car_type' id='car_type' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql = "select * from  car_type  order by code";
@@ -177,11 +173,8 @@ echo "</select>";
 echo "</div></td></tr>";
 
 echo "<Tr align='left'><Td  align='right'>รหัสยานพาหนะ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_code' id='car_code' Size='3'  maxlength='3'  value='$result_ref[car_code]'  onkeydown='integerOnly()'></Td></Tr>";
-
 echo "<Tr align='left'><Td  align='right'>เลขทะเบียน&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_number' id='car_number' Size='20' value='$result_ref[car_number]' ></Td></Tr>";
-
 echo "<Tr align='left'><Td  align='right'>ชื่อยานพาหนะ&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='car_name' id='car_name' Size='60' value='$result_ref[name]' ></Td></Tr>";
-
 echo "<Tr><Td align='right'>สถานะ&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='status'  id='status' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
@@ -206,18 +199,17 @@ echo  "<option value = '2' $selected_2>2.พาหนะปัจจุบัน
 echo  "<option value = '3' $selected_3>3.พาหนะที่เคยใช้งาน </option>";
 echo "</select>";
 echo "</div></td></tr>";
-
 echo  "<tr align='left'>";
 echo  "<td align='right'>ไฟล์รูปภาพ&nbsp;&nbsp;</td>";
 echo  "<td align='left'><input name = 'userfile' type = 'file'></td>";
 echo  "</tr>";
+echo  "<tr align='left'>";
+echo  "<td align='right'></td>";
+echo  "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td>";
+echo  "</tr>";
 echo "</Table>";
-echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'>";
-
 echo "</form>";
 }
 
@@ -347,13 +339,11 @@ echo "</div>";
 //จบแยกหน้า
 
 $sql = "select car_car.id, car_car.car_code, car_car.name as car_name, car_car.car_number, car_type.name, car_car.status, car_car.pic from  car_car left join car_type on car_car.car_type=car_type.code  order by  car_car.car_type, car_car.car_code limit $start,$pagelen";
-
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width='85%' border='0' align='center'>";
-echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/car_list&index=1\"'>";
+echo  "<table  class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><Td colspan='9' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/car_list&index=1\"'>";
 echo "</Td></Tr>";
-
-echo "<Tr bgcolor=#FFCCCC align=center class=style2><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td width='200'>ประเภทยานพาหนะ</Td><Td>ชื่อยานพาหนะ</Td><Td>เลขทะเบียน</Td><Td>สถานะภาพ</Td><Td align='center' width='50'>รูป</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor=#FFCCCC align=center ><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td width='200'>ประเภทยานพาหนะ</Td><Td>ชื่อยานพาหนะ</Td><Td>เลขทะเบียน</Td><Td>สถานะภาพ</Td><Td align='center' width='50'>รูป</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -378,7 +368,7 @@ While ($result = mysqli_fetch_array($dbquery))
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
 
-		echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td><Td>$car_code</Td><Td align='left'>$car_type</Td><Td align=left>$car_name</Td><Td align=left>$car_number</Td><Td align=left>$status</Td>";
+		echo "<Tr  bgcolor=$color align=center ><Td>$N</Td><Td>$car_code</Td><Td align='left'>$car_type</Td><Td align=left>$car_name</Td><Td align=left>$car_number</Td><Td align=left>$status</Td>";
 if($result['pic']!=""){
 echo "<Td align='center'><a href='modules/car/main/pic_show.php?&id=$id' target='_blank'><img src=images/admin/user.gif border='0' alt='รูปภาพ'></a></Td>";
 }

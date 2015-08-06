@@ -3,10 +3,37 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-$login_admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
-if(!(($result_permission['p1']==1) or ($login_admin_work=='work'))) {
-exit();
-}
+//if(isset($_SESSION['admin_work'])){
+//$login_admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
+//}else{$login_admin_work="";}
+//if($login_admin_work=='work') {
+//exit();
+//}
+
+$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+
+//ตรวจสอบสิทธิ์ผู้ใช้
+    $sql_permis = "select * from  meeting_permission where person_id=? ";
+    $dbquery_permis = $connect->prepare($sql_permis);
+    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->execute();
+    $result_qpermis=$dbquery_permis->get_result();
+    While ($result_permis = mysqli_fetch_array($result_qpermis))
+    {
+        $user_permis=$result_permis['p1'];
+        //echo $user_permis;
+    }
+
+    if(isset($user_permis)){
+    if($user_permis!=1 or $login_status<105 ){
+        echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
+        exit();
+    }
+    }else{
+        $user_permis="";
+        exit();
+    }
+
 require_once "modules/work/time_inc.php";	
 
 $officer=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
@@ -58,9 +85,8 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 		$( "#datepicker" ).datepicker({
 			showButtonPanel: true,
 			dateFormat: 'yy-mm-dd',
-			changeMonth: true,
-			changeYear: true,
-			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+            monthNames: ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+			'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'], // Names of months for drop-down and formatting
 			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส'],
 			onSelect:function(dateText){  document.frmSearchDate.submit();}
 		});
@@ -189,7 +215,7 @@ $sql_show = "select * from person_main where status='0' and department = ? order
             $dbquery_show->execute();
             $result_personshow = $dbquery_show->get_result();
 
-echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered table-striped table-condensed'>";
+echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered table-condensed'>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ลบ</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td><Td></Td></Tr>";
@@ -204,14 +230,17 @@ while($result = $result_personshow->fetch_array())
 		$surname = $result['surname'];
 		$position_code= $result['position_code'];
 		$department= $result['department'];
-			if(($M%2) == 0){
-			$color="#FFFFC";
-			$color2="#FFFFC";
-			}
-			else {
-			$color="#FFFFFF";
-			$color2="#FFFFFF";
-			}
+
+        $color="#FFFFFF";
+        $color2="#FFFFFF";
+        //	if(($M%2) == 0){
+		//	$color="#FFFFC";
+        // $color2="#FFFFC";
+		//	}
+		//	else {
+        //$color="#FFFFFF";
+        //$color2="#FFFFFF";
+		//	}
 			
 //check การลา  --->ยังไม่ได้เชื่อมกับระบบลา
 /*	$sql_la="select * from la_main where (la_start<='$today_date' and '$today_date'<=la_finish) and person_id='$person_id' ";

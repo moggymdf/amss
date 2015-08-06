@@ -31,10 +31,18 @@ $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
     {
         $user_permis=$result_permis['p1'];
     }
-    if($user_permis!=1){
-    echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
+    if(isset($user_permis)){
+    if($user_permis!=1 or $login_status<105 ){
+        echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
         exit();
     }
+    }else{
+        $user_permis="";
+    }
+//    if($user_permis!=1){
+//    echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
+//        exit();
+//    }
 
 
 require_once "modules/work/time_inc.php";	

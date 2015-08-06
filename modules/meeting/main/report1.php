@@ -249,7 +249,7 @@ echo "<table width=100% border=0 align=center class='table table-hover table-bor
     echo "<tr><td width='40%' align='right'>$month[$i] : </td><td align='left'>".$count_month[$i];
     if($count_month[$i]=="" or $count_month[$i]==0){ echo "";
                                                     } else{
-    echo " ครั้ง [<a href='?option=meeting&task=main/report2$get_room&start_date=$monthstart[$i]&end_date=$monthend[$i]' target='_blank'>รายละเอียดการจอง</a>]  ";
+    echo " ครั้ง [<a href='?option=meeting&task=main/report2$get_room&start_date=$monthstart[$i]&end_date=$monthend[$i]' target='_blank'>รายละเอียดการใช้งาน</a>]  ";
     }
     echo "</td></tr>";
      }

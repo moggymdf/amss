@@ -6,8 +6,8 @@ function printContentDiv(content){
 var printReady = document.getElementById(content);
 //var txt= 'nn';
 var txt= '';
-echo "aaaaaaaa";
-if (document.getElementsByTagName != null){
+
+    if (document.getElementsByTagName != null){
 var txtheadTags = document.getElementsByTagName('head');
 if (txtheadTags.length > 0){
 var str=txtheadTags[0].innerHTML;
@@ -35,9 +35,9 @@ printWin.print();
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
 $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
-if($login_status>=105){
-exit();
-}
+//if($login_status>=105){
+//exit();
+//}
 
 $thai_month_arr=array(
 	"01"=>"มกราคม",
@@ -82,9 +82,8 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 		$( "#datepicker" ).datepicker({
 			showButtonPanel: true,
 			dateFormat: 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true,
-			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+            monthNames: ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+			'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'], // Names of months for drop-down and formatting
 			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส'],
 			onSelect:function(dateText){  document.frmSearchDate.submit();}
 		});

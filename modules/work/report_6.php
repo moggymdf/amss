@@ -77,25 +77,8 @@ $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
 //}
 $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 
-//ตรวจสอบสิทธิ์ผู้ใช้
-    $sql_permis = "select * from  meeting_permission where person_id=? ";
-    $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
-    $dbquery_permis->execute();
-    $result_qpermis=$dbquery_permis->get_result();
-    While ($result_permis = mysqli_fetch_array($result_qpermis))
-    {
-        $user_permis=$result_permis['p1'];
-        //echo $user_permis;
-    }
-    if(isset($user_permis)){
-    if($user_permis!=1 or $login_status<105 ){
-        echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
-        exit();
-    }
-    }else{
-        $user_permis="";
-    }
+//หน่วยงานผู้บริหาร
+$managerdepart=0;
 
 
 require_once "modules/work/time_inc.php";
@@ -179,17 +162,9 @@ $sql= "select position_code,id from person_main where person_id=? ";
     }
 	//$connect->close();
 
-if(($result_position_id>0 and $result_position_id<=11) and ($department_id==0)){
 $sql_work = "select work_main.person_id as person_id, work_main.work as work,person_main.prename as prename,person_main.name as name,person_main.surname as surname,person_main.position_code as position_code,person_main.department as department from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date=?) and (person_main.department=0) and ((person_main.position_code>0) and (person_main.position_code<=11))  order by person_main.department, person_main.position_code, person_main.person_order";
     $dbquery_work = $connect->prepare($sql_work);
     $dbquery_work->bind_param("s",$f2_date);
-
-}else{
-$sql_work = "select work_main.person_id as person_id, work_main.work as work,person_main.prename as prename,person_main.name as name,person_main.surname as surname,person_main.position_code as position_code,person_main.department as department from work_main left join person_main on work_main.person_id=person_main.person_id where (work_main.work_date=?) and (person_main.department=?) order by person_main.department, person_main.position_code, person_main.person_order";
-    $dbquery_work = $connect->prepare($sql_work);
-    $dbquery_work->bind_param("si",$f2_date,$department_id);
-
-}
 
     $dbquery_work->execute();
     $result_daywork = $dbquery_work->get_result();

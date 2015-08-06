@@ -52,9 +52,13 @@ $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
     {
         $user_permis=$result_permis['p1'];
     }
-    if($user_permis!=1){
-    echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
+    if(isset($user_permis)){
+    if($user_permis!=1 or $login_status<105 ){
+        echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
         exit();
+    }
+    }else{
+        $user_permis="";
     }
 
 $thai_month_arr=array(
@@ -112,9 +116,8 @@ $department_id=mysqli_real_escape_string($connect,$_SESSION['system_user_departm
 		$( "#datepicker" ).datepicker({
 			showButtonPanel: true,
 			dateFormat: 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true,
-			monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+            monthNames: ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+			'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'], // Names of months for drop-down and formatting
 			dayNamesMin: ['อา','จ','อ','พ','พฤ','ศ','ส'],
 			onSelect:function(dateText){  document.frmSearchDate.submit();}
 		});
@@ -153,9 +156,13 @@ $sql= "select position_code,id from person_main where person_id=? ";
 		$result_person_id = $result_person['id'];
         //$department_id = $department_id;
     }
+    if(($result_position_id>0) and ($result_position_id<=11) and ($result_position_id!=9) ){
+      $showwhereposit=" and ((position_code>0) and (position_code<=11) ) ";
+    }else{$showwhereposit="";}
+    //echo $result_position_id;
 	//$connect->close();
 $N=1;
-    $sql_sumworkperson= "select * from person_main where department = ? order by position_code ";
+    $sql_sumworkperson= "select * from person_main where department = ? $showwhereposit   order by position_code ";
     $dbquery_sumwork = $connect->prepare($sql_sumworkperson);
     $dbquery_sumwork->bind_param("i", $department_id);
     $dbquery_sumwork->execute();

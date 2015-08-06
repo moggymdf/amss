@@ -2,6 +2,7 @@
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+$login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
 //sd page 
 $sql_permission = "select * from work_permission where person_id=?";
     $dbquery_permiss = $connect->prepare($sql_permission);
@@ -13,6 +14,15 @@ $sql_permission = "select * from work_permission where person_id=?";
          $permission = $result_permission["p1"];
      }
 
+if(isset($permission)){
+    if($permission!=1 or $login_status<105 ){
+        echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
+        exit();
+    }
+    }else{
+        $permission="";
+    }
+
 $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 
 
@@ -22,7 +32,6 @@ $admin_work="";
 $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 }
 
-$login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
 
 echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"; 
 echo "<tr bgcolor='#FFCC00'><td>";
@@ -49,15 +58,15 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
     echo "</ul>";
 	echo "</li>";
 	}	
-	if($login_status<=105 or $permission==1){	
+	if(isset($login_user_id)){
 	echo "<li><a href='?option=work' class='dir'>รายงาน</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>";
 			echo "<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>";
-	if($login_status<105){
+//	if($login_status<105){
 			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนักรายวัน</a></li>";
-			//echo "<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการรายสำนักในรอบเดือน</a></li>";
-    }
+			echo "<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการผู้บริหารงานวัน</a></li>";
+//    }
 		echo "</ul>";
 	echo "</li>";
 	}

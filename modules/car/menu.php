@@ -35,7 +35,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 
-	if($_SESSION['login_status']<=4 and $result_permission['p1']==1){
+	if($_SESSION['login_group']<=4 and $result_permission['p1']==1){
 	echo "<li><a href='?option=car' class='dir'>เจ้าหน้าที่</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=car&task=main/car_officer'>เจ้าหน้าที่ลงความเห็น</a></li>";
@@ -44,7 +44,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 
-	if($_SESSION['login_status']<=4 and $result_permission['p1']>=2){
+	if($_SESSION['login_group']<=4 and $result_permission['p1']>=2){
 	echo "<li><a href='?option=car' class='dir'>ลงความเห็น/อนุมัติ</a>";
 		echo "<ul>";
 			if($result_permission['p1']==2){
@@ -57,7 +57,7 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 
-	if($_SESSION['login_status']<=4){
+	if($_SESSION['login_group']<=4){
 	echo "<li><a href='?option=car' class='dir'>รายงาน</a>";
 		echo "<ul>";
 			echo "<li><a href='?option=car&task=main/car_report'>รายงานการใช้ยานหานะ</a></li>";

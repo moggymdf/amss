@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -36,52 +34,120 @@ function removeOptions(selectbox){
     }
 }
 </script>
+
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<br>
+
+<div class="container">
+  <div class="panel panel-default">
+
 <?php
 //ส่วนหัว
-echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>เจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</strong></font></td></tr>";
-echo "</table>";
+?><div class="panel-heading"><h3 class="panel-title">เจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</h3></div><?
 }
-
 //ส่วนฟอร์มรับข้อมูล
 if($index==1){
-echo "<form id='frm1' name='frm1'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>กำหนดเจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</Font>";
-echo "</Cener>";
-echo "<Br><Br>";
+?>
+      <div class="panel-heading"><h3 class="panel-title">กำหนดเจ้าหน้าที่ ผู้ให้ความเห็นชอบ  และผู้อนุมัติ</h3></div>
+      <div class="panel-body">
+        <form id='frm1' name='frm1' class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">เลือกสำนัก</label>
+          <div class="col-sm-4">
+            <label >
+                <Select name='department' id='department' class="form-control">
+                    <option  value = ''>เลือกสำนัก</option>
+                    <?$sql = "select * from  system_department order by department";
+                    $dbquery = mysqli_query($connect,$sql);
+                    While ($result_department = mysqli_fetch_array($dbquery)){
+                    echo "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
+                    }?>
+                </select>
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">เลือกกลุ่ม</label>
+          <div class="col-sm-4">
+            <label >
+                <Select name='subdep' id='subdep' class='form-control'>
+                    <option  value = ''>เลือกกลุ่ม</option>
+                </select>
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">เลือกผู้ดูแล(Admin)</label>
+          <div class="col-sm-4">
+            <label >
+                <Select name='person_id' id='person_id' class='form-control'>
+                    <option  value = ''>เลือกบุคลากร</option>
+                </select>
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+            <div class="col-sm-4">
+            <div class="input-group">
+            <span class="input-group-addon">
+                <input type="radio" aria-label="..." name='car_permission1' value='1'>
+            </span>
+            <input type="text" class="form-control" value="เจ้าหน้าที่" readonly>
+            </div><!-- /input-group -->
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+            <div class="col-sm-4">
+            <div class="input-group">
+            <span class="input-group-addon">
+                <input type="radio" aria-label="..." name='car_permission1' value='2'>
+            </span>
+            <input type="text" class="form-control" value="ผู้ให้ความเห็นชอบ" readonly>
+            </div><!-- /input-group -->
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+            <div class="col-sm-4">
+            <div class="input-group">
+            <span class="input-group-addon">
+                <input type="radio" aria-label="..." name='car_permission1' value='3'>
+            </span>
+            <input type="text" class="form-control" value="ผู้อนุมัติ" readonly>
+            </div><!-- /input-group -->
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+          <div class="col-sm-4">
+            <label ><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class="btn btn-large btn-success">
+	&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class='btn btn-large btn-info'></label>
+          </div>
+        </div>
+        <hr>
+      </div>
+          </form>
+<?
+
 echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td align='right' width=40%>เลือกสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select name='department' id='department' size='1'>";
-echo  "<option  value = ''>เลือกสำนัก</option>" ;
-$sql = "select * from  system_department order by department";
-$dbquery = mysqli_query($connect,$sql);
-While ($result_department = mysqli_fetch_array($dbquery)){
-echo  "<option  value ='$result_department[department]'>$result_department[department] $result_department[department_name]</option>" ;
-}
-echo "</select>";
-echo "</div></td></tr>";
-echo "<Tr><Td align='right'>เลือกกลุ่ม&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select name='subdep' id='subdep' size='1'>";
-echo  "<option  value = ''>เลือกกลุ่ม</option>" ;
-echo "</select>";
-echo "</div></td></tr>";
-echo "<Tr><Td align='right'>เลือกผู้ดูแล(Admin)&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select name='person_id' id='person_id' size='1'>";
-echo  "<option  value = ''>เลือกบุคลากร</option>" ;
-echo "</select>";
-echo "</div></td></tr>";
-echo   "<tr><td align='right'>เจ้าหน้าที่&nbsp;&nbsp;</td>";
-echo   "<td align='left'><input  type='radio' name='car_permission1' value='1'></td></tr>";
-echo   "<tr><td align='right'>ผู้ให้ความเห็นชอบ&nbsp;&nbsp;</td>";
-echo   "<td align='left'><input  type='radio' name='car_permission1' value='2'></td></tr>";
-echo   "<tr><td align='right'>ผู้อนุมัติ&nbsp;&nbsp;</td>";
-echo   "<td align='left'><input  type='radio' name='car_permission1' value='3'></td></tr>";
-echo "<tr><td align='right'></td>";
-echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "<td align='left'></td></tr>";
 echo "</Table>";
 echo "</form>";
 }
@@ -225,7 +291,7 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 $sql = "select car_permission.id, car_permission.p1, person_main.prename, person_main.name, person_main.surname from car_permission left join person_main on car_permission.person_id=person_main.person_id  order by car_permission.p1";
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='7' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/permission&index=1\"'></Td></Tr>";
+echo "<Tr><Td colspan='7' align='left'><INPUT class='btn btn-large btn-primary' TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/permission&index=1\"'></Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td><td  align='center' colspan='3'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
 echo "<tr bgcolor='#CC9900'><Td  align='center' width='80'>เจ้าหน้าที่</Td><Td  align='center' width='80'>ผู้เห็นชอบ</Td><Td  align='center' width='80'>ผู้อนุมัติ</Td></tr>";
@@ -240,22 +306,23 @@ While ($result = mysqli_fetch_array($dbquery))
 			$p1_pic="";
 			$p2_pic="";
 			$p3_pic="";
+            $txt_pic="<span class='glyphicon glyphicon-ok'></span>";
 			if($result['p1']==1){
-			$p1_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";	
+			$p1_pic=$txt_pic;
 			}
 			else if($result['p1']==2){
-			$p2_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";	
+			$p2_pic=$txt_pic;
 			}
 			else if($result['p1']==3){
-			$p3_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";
+			$p3_pic=$txt_pic;
 			}
 			
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
 		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$prename$name $surname</Td><Td align='center'>$p1_pic</Td><Td align='center'>$p2_pic</Td><Td align='center'>$p3_pic</Td>
-		<Td align='center' width='50' ><a href=?option=car&task=main/permission&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></Td>
-		<Td align='center' width='50'><a href=?option=car&task=main/permission&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>
+		<Td align='center' width='50' ><a href=?option=car&task=main/permission&index=2&id=$id><span class='glyphicon glyphicon-remove'></span></a></Td>
+		<Td align='center' width='50'><a href=?option=car&task=main/permission&index=5&id=$id><span class='glyphicon glyphicon-pencil'></span></a></Td>
 	</Tr>";
 $M++;
 	}
@@ -291,3 +358,6 @@ function goto_url_update(val){
 	}
 }
 </script>
+      </div>
+</div>
+</body>

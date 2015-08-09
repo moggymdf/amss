@@ -34,7 +34,7 @@ $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
     }
 //echo        " 555 ". $user_permis;
 
-require_once "modules/work/time_inc.php";	
+require_once "modules/work/time_inc.php";
 
 $officer=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 
@@ -74,7 +74,7 @@ $postindex=mysqli_real_escape_string($connect,$_POST['index']);
 }else {$postindex="";}
 if($postindex==4){
 $rec_date=date("Y-m-d H:i:s");
-    
+
     $sql = "select person_id from person_main where department = ? and status='0' order by department,position_code,person_order";
     $dbquery_personid = $connect->prepare($sql);
     $dbquery_personid->bind_param("i", $department);
@@ -102,13 +102,13 @@ $postperson_id="";
 
     $delete = "delete_chk".$person_id;
     //echo $delete;
-    //$deletework = $_POST[$delete];   
+    //$deletework = $_POST[$delete];
     //echo $deletework;
 if(!isset($_POST[$delete])){
 //$_POST[$delete]="";
 $postdelete="";
 }else{$postdelete=mysqli_real_escape_string($connect,$_POST[$delete]);
-}		
+}
         //echo "555 ".$postperson_id;
 			if(($postperson_id>0) and ($postdelete!=1)){
 					if($data_num>0){
@@ -125,7 +125,7 @@ $postdelete="";
                     $dbquery_insert->execute();
                     $result_insert = $dbquery_insert->get_result();
                     }
-			}	
+			}
 			if(($postperson_id>0) and ($postdelete==1)){
 			$sql_delete = "delete from work_main where work_date=? and person_id=?";
             $dbquery_delete = $connect->prepare($sql_delete);
@@ -133,7 +133,7 @@ $postdelete="";
             $dbquery_delete->execute();
             $result_delete = $dbquery_delete->get_result();
              }
-	}	
+	}
 }
 
 //ส่วนแสดงหลัก
@@ -152,9 +152,9 @@ $sql_person = "select * from person_main where status='0'and department = ?";
             $result_personwork = $dbquery_work->get_result();
     while($result_work = $result_personwork->fetch_array())
         {
-         $work_ar[$person_id]=$result_work['work'];		
+         $work_ar[$person_id]=$result_work['work'];
          }
-        
+
         }
 
 echo "<form id='frm1' name='frm1'>";
@@ -191,17 +191,17 @@ while($result = $result_personshow->fetch_array())
         //$color2="#FFFFFF";
 		//	}
 
-			
+
 //check การลา  --->ยังไม่ได้เชื่อมกับระบบลา
 /*	$sql_la="select * from la_main where (la_start<='$today_date' and '$today_date'<=la_finish) and person_id='$person_id' ";
 	$dbquery_la = mysqli_query($connect,$sql_la);
 		if($dbquery_la){
-		$la_num=mysqli_num_rows($dbquery_la);	
+		$la_num=mysqli_num_rows($dbquery_la);
 				if($la_num>=1){
 						$result_la = mysqli_fetch_array($dbquery_la);
 						if($result_la['la_type']==1){
 						$color="#FF3366";
-						} 
+						}
 						else if($result_la['la_type']==2){
 						$color="#FFFF00";
 						}
@@ -214,20 +214,20 @@ while($result = $result_personshow->fetch_array())
 				$sql_cancel="select * from la_cancel where (cancel_la_start<='$today_date' and '$today_date'<=cancel_la_finish) and person_id='$person_id' ";
 				$dbquery_cancel = mysqli_query($connect,$sql_cancel);
 						if($dbquery_cancel){
-						$la_num_cancel=mysqli_num_rows($dbquery_cancel);	
+						$la_num_cancel=mysqli_num_rows($dbquery_cancel);
 								if($la_num_cancel>=1){
 								$color=$color2;
 								}
 						}
-						
+
 				}
 		}
-			
+
 //check การไปราชการ  -->ยังไม่ได้เชื่อมกับระบบไปราชการ
 	$sql_date="select * from permission_date where person_id='$person_id' and date='$today_date' ";
 	$dbquery_date = mysqli_query($connect,$sql_date);
 		if($dbquery_date){
-		$date_num=mysqli_num_rows($dbquery_date);	
+		$date_num=mysqli_num_rows($dbquery_date);
 				if($date_num>=1){
 				$color="#00FFFF";
 				}
@@ -235,15 +235,15 @@ while($result = $result_personshow->fetch_array())
 */
 
 //เพิ่มในส่วนของงานแสดงผลในเฟส 1
-$check_index1="";	
-$check_index2="";	
-$check_index3="";	
-$check_index4="";	
-$check_index5="";	
-$check_index6="";	
-$check_index7="";	
-$check_index8="";	
-$check_index9="";	
+$check_index1="";
+$check_index2="";
+$check_index3="";
+$check_index4="";
+$check_index5="";
+$check_index6="";
+$check_index7="";
+$check_index8="";
+$check_index9="";
 
 if(!isset($postindex)){
 $postindex="";
@@ -252,7 +252,7 @@ $postindex="";
 if($postindex==2){
 $check_index1="checked";
 }
-if(isset($work_ar[$person_id])){    
+if(isset($work_ar[$person_id])){
 if($work_ar[$person_id]==1){
 $check_index1="checked";
 }
@@ -289,7 +289,7 @@ $color="#FF0000";
 $check_index9="checked";
 }
 }
-    
+
 echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
 echo "<Td><input type='checkbox' name='delete_chk$person_id' id='delete_chk$person_id'  value='1'>";
 echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
@@ -345,7 +345,7 @@ echo "</form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=work&task=check");   // page ย้อนกลับ 
+		callfrm("?option=work&task=check");   // page ย้อนกลับ
 	}else if(val==1){
 	callfrm("?option=work&task=check");   //page ประมวลผล
 	}

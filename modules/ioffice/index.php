@@ -6,6 +6,14 @@
 <script src="./ckeditor_4.5.2_full/ckeditor.js"></script>
 
 <?php
+	// Define Variable
+  	if(isset($_POST["searchtext"])){ }else{ $_POST["searchtext"]=""; }
+  	if(isset($_SESSION["searchtext"])){ }else{ $_SESSION["searchtext"]=""; }
+  	if(isset($_POST["searchbookstatusid"])){ }else{ $_POST["searchbookstatusid"]=""; }
+  	if(isset($_SESSION["searchbookstatusid"])){ }else{ $_SESSION["searchbookstatusid"]=""; }
+?>
+
+<?php
 if(isset($_REQUEST['index'])){
 $index=$_REQUEST['index'];
 }

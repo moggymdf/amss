@@ -1,7 +1,9 @@
 <?php
-include ("../database_connect.php");
-if($result_version['system_version']<0.3 ){
-	require_once('file_update/v_0_3.php');
+if($result_version['system_version']<0.3){
+	require_once('update/file_update/update_0_3.php');
+}
+if($result_version['system_version']<0.4){
+	require_once('update/file_update/update_0_4.php');
 }
 
 //ส่วนบันทึกเวอร์ชั่นปัจจุบัน

@@ -58,8 +58,10 @@ echo  "<option  value = ''>เลือก</option>" ;
 echo "</select>";
 echo "</div></td></tr>";
 
-echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้าหน้าที่&nbsp;&nbsp;</td>";
+echo   "<tr><td align='right'>เพิ่ม ลบแก้ไขข้อมูลบุคลากร&nbsp;&nbsp;</td>";
 echo   "<td align='left'>ใช่<input  type=radio name='person_permission1' value='1' checked>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='person_permission1' value='0'></td></tr>";
+echo   "<tr><td align='right'>การรักษาราชการแทน&nbsp;&nbsp;</td>";
+echo   "<td align='left'>ใช่<input  type=radio name='person_permission2' value='1'>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='person_permission2' value='0' checked></td></tr>";
 
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>&nbsp;&nbsp;</td>";
@@ -82,15 +84,13 @@ echo "</td></tr></table>";
 if($index==3){
 $sql = "delete from person_permission where id=$_GET[id]";
 $dbquery = mysqli_query($connect,$sql);
-echo "<script>document.location.href='?option=person&task=permission'; </script>\n";
 }
 
 //ส่วนบันทึกข้อมูล
 if($index==4){
 $rec_date = date("Y-m-d");
-$sql = "insert into person_permission (person_id, p1, officer,rec_date) values ('$_POST[person_id]', '$_POST[person_permission1]','$_SESSION[login_user_id]','$rec_date')";
+$sql = "insert into person_permission (person_id, p1, p2, officer,rec_date) values ('$_POST[person_id]', '$_POST[person_permission1]','$_POST[person_permission2]','$_SESSION[login_user_id]','$rec_date')";
 $dbquery = mysqli_query($connect,$sql);
-echo "<script>document.location.href='?option=person&task=permission'; </script>\n";
 }
 
 //ส่วนฟอร์มแก้ไขข้อมูล
@@ -148,12 +148,24 @@ echo "</div></td></tr>";
 			$p1_check1="";
 			$p1_check2="checked";
 			}
-echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้าหน้าที่ได้&nbsp;&nbsp;</td>";
+
+			if($ref_result['p2']==1){
+			$p2_check1="checked";
+			$p2_check2="";
+			}
+			else{
+			$p2_check1="";
+			$p2_check2="checked";
+			}
+echo   "<tr><td align='right'>เพิ่ม ลบแก้ไขข้อมูลบุคลากร&nbsp;&nbsp;</td>";
 echo   "<td align='left'>ใช่<input  type=radio name='person_permission1' value='1' $p1_check1>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='person_permission1' value='0' $p1_check2></td></tr>";
 
+echo   "<tr><td align='right'>การรักษาราชการแทน&nbsp;&nbsp;</td>";
+echo   "<td align='left'>ใช่<input  type=radio name='person_permission2' value='1' $p2_check1>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='person_permission2' value='0' $p2_check2></td></tr>";
+
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'></td></tr>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
@@ -163,20 +175,19 @@ echo "</form>";
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
 $rec_date = date("Y-m-d");
-$sql = "update person_permission set  person_id='$_POST[person_id]', p1='$_POST[person_permission1]', officer='$_SESSION[login_user_id]', rec_date='$rec_date' where id='$_POST[id]'";
+$sql = "update person_permission set  person_id='$_POST[person_id]', p1='$_POST[person_permission1]',  p2='$_POST[person_permission2]', officer='$_SESSION[login_user_id]', rec_date='$rec_date' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
-echo "<script>document.location.href='?option=person&task=permission'; </script>\n";
 }
 
 //ส่วนแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
-$sql = "select person_permission.id, person_permission.p1, person_main.name, person_main.surname from person_permission left join person_main on person_permission.person_id=person_main.person_id order by person_permission.id";
+$sql = "select person_permission.id, person_permission.p1, person_permission.p2, person_main.name, person_main.surname from person_permission left join person_main on person_permission.person_id=person_main.person_id order by person_permission.id";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width=50% border=0 align=center>";
+echo  "<table width='55%' border='0' align='center'>";
 echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=person&task=permission&index=1\"'</Td></Tr>";
 
-echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td><td  align='center'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
-echo "<tr bgcolor='#CC9900'><Td  align='center' width='80'>เจ้าหน้าที่</Td></tr>";
+echo "<Tr bgcolor='#FFCCCC'><Td align='center' rowspan='2'>ที่</Td><Td  align='center' rowspan='2'>ชื่อเจ้าหน้าที่</Td><td  align='center' colspan='2'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
+echo "<tr bgcolor='#CC9900'><Td align='center' width='110'>เจ้าหน้าที่บุคลากร</Td><Td align='center' width='110'>รักษาราชการแทน</Td></tr>";
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
 	{
@@ -188,10 +199,15 @@ While ($result = mysqli_fetch_array($dbquery))
 			else{
 			$p1_pic="<img src=images/no.png border='0' alt='ไม่มีสิทธิ์'>";
 			}
+			if($result['p2']==1){
+			$p2_pic="<img src=images/yes.png border='0' alt='มีสิทธิ์'>";			}
+			else{
+			$p2_pic="<img src=images/no.png border='0' alt='ไม่มีสิทธิ์'>";
+			}
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
-		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$name $surname</Td><Td align='center'>$p1_pic</Td>
+		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$name $surname</Td><Td align='center'>$p1_pic</Td><Td align='center'>$p2_pic</Td>
 		<Td align='center' width='50' ><a href=?option=person&task=permission&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></Td>
 		<Td align='center' width='50'><a href=?option=person&task=permission&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>
 	</Tr>";

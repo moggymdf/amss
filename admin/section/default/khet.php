@@ -20,7 +20,7 @@ echo "<Table   width=60% Border='0'>";
 echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัส สพท.&nbsp;</Td><Td><Input Type='Text' Name='khet_code' Size='5' onkeydown='integerOnly()'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อ สพท.&nbsp;</Td><Td><Input Type='Text' Name='khet_name' Size='60'></Td></Tr>";
-
+echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อย่อ สพท.&nbsp;</Td><Td><Input Type='Text' Name='khet_precis' Size='40'></Td></Tr>";
 echo "<Tr align='left'><Td ></Td><Td align='right'>ประเภท สพท.&nbsp;</Td><Td>";
 echo "<Select  name='khet_type' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
@@ -45,8 +45,8 @@ echo "</Td></Tr>";
 echo "<Br>";
 echo "</Table>";
 echo "<Br>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)'>";
 
 echo "</form>";
 }
@@ -67,7 +67,7 @@ $dbquery = mysqli_query($connect,$sql);
 
 //ส่วนเพิ่มข้อมูล
 if($index==4){
-$sql = "insert into system_khet (khet_code, khet_name, khet_type, khet_group) values ( '$_POST[khet_code]','$_POST[khet_name]','$_POST[khet_type]', '$_POST[khet_group]')";
+$sql = "insert into system_khet (khet_code,khet_name,khet_precis,khet_type, khet_group) values ( '$_POST[khet_code]','$_POST[khet_name]','$_POST[khet_precis]','$_POST[khet_type]', '$_POST[khet_group]')";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -86,6 +86,7 @@ echo "<Table width='70%' Border='0'>";
 echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัส สพท.&nbsp;</Td><Td><Input Type='Text' Name='khet_code' Size='5' value='$ref_result[khet_code]' onkeydown='integerOnly()'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อ สพท.&nbsp;</Td><Td><Input Type='Text' Name='khet_name' Size='60' value='$ref_result[khet_name]'></Td></Tr>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อย่อ สพท.&nbsp;</Td><Td><Input Type='Text' Name='khet_precis' Size='40' value='$ref_result[khet_precis]'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ประเภท สพท.&nbsp;</Td><Td>";
 if($ref_result['khet_type']==1){
@@ -131,27 +132,27 @@ echo "<Br>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'>";
 
 echo "</form>";
 }
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
-$sql = "update system_khet set khet_code='$_POST[khet_code]',khet_name='$_POST[khet_name]',khet_type='$_POST[khet_type]',khet_group='$_POST[khet_group]' where id='$_POST[id]'";
+$sql = "update system_khet set khet_code='$_POST[khet_code]',khet_name='$_POST[khet_name]',khet_precis='$_POST[khet_precis]',khet_type='$_POST[khet_type]',khet_group='$_POST[khet_group]' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
 
 //ส่วนการแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
 
-$sql = "select system_khet.id, system_khet.khet_code, system_khet.khet_type, system_khet.khet_name, system_khet_group.name from system_khet left join system_khet_group on system_khet.khet_group=system_khet_group.code order by system_khet.khet_type,system_khet.khet_code";
+$sql = "select system_khet.id, system_khet.khet_code, system_khet.khet_type, system_khet.khet_name, system_khet.khet_precis,system_khet_group.name from system_khet left join system_khet_group on system_khet.khet_group=system_khet_group.code order by system_khet.khet_type,system_khet.khet_code";
 $dbquery = mysqli_query($connect,$sql);
 
-echo  "<table width=75% border=0 align=center>";
+echo  "<table width='95%' border='0' align='center'>";
 echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?file=khet&index=1\"'></Td></Tr>";
 
-echo "<Tr bgcolor=#FFCCCC align='center' class=style2><Td width='50'>ที่</Td> <Td>รหัสสพท.</Td><Td>ชื่อสพท.</Td><Td>ประเภท</Td><Td>กลุ่มสพท.</Td><Td   width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td><Td>รหัสสพท.</Td><Td>ชื่อสพท.</Td><Td>ชื่อย่อสพท.</Td><Td>ประเภท</Td><Td>กลุ่มสพท.</Td><Td   width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
 $N=1;
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -159,6 +160,7 @@ While ($result = mysqli_fetch_array($dbquery))
 		$id = $result['id'];
 		$khet_code= $result['khet_code'];
 		$khet_name= $result['khet_name'];
+		$khet_precis= $result['khet_precis'];
 		$khet_type= $result['khet_type'];
 		$khet_group= $result['name'];
 			if($khet_type==1){
@@ -175,7 +177,7 @@ While ($result = mysqli_fetch_array($dbquery))
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
 
-		echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td> <Td>$khet_code</Td><Td align=left>$khet_name</Td><Td align=left>$khet_type_text</Td><Td align=left>$khet_group</Td><Td><div align=center><a href=?file=khet&index=2&id=$id><img src=../images/drop.png border='0' alt='ลบ'></a></div></Td><Td><a href=?file=khet&index=5&id=$id><img src=../images/edit.png border='0' alt='แก้ไข'></a></div></Td>
+		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td><Td>$khet_code</Td><Td align='left'>$khet_name</Td><Td align='left'>$khet_precis</Td><Td align='left'>$khet_type_text</Td><Td align='left'>$khet_group</Td><Td align='center'><a href=?file=khet&index=2&id=$id><img src=../images/drop.png border='0' alt='ลบ'></a></Td><Td><a href=?file=khet&index=5&id=$id><img src=../images/edit.png border='0' alt='แก้ไข'></a></Td>
 	</Tr>";
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า

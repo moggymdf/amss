@@ -1,8 +1,24 @@
+<!-- Bootstrap Include -->
+<link rel="stylesheet" type="text/css" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
+<script src="./bootstrap-3.3.5-dist/js/jquery-1.11.3.min.js"></script>
+<script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+<script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
+<!-- Bootstrap Popover -->
+<script>
+	$(function () {
+ 		$('[data-toggle="popover"]').popover()
+	})
+</script>
+
+<!-- Bootstrap Confirmation -->
+<script>
+	$('[data-toggle="confirmation"]').confirmation()
+</script>
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 ?>
-<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script> 
+
 <script type="text/javascript">
 $(function(){
 	$("select#department").change(function(){
@@ -34,8 +50,6 @@ function removeOptions(selectbox){
     }
 }
 </script>
-
-
 <!doctype html>
 <html>
 <head>
@@ -48,7 +62,6 @@ function removeOptions(selectbox){
 
 <div class="container">
   <div class="panel panel-default">
-
 <?php
 //ส่วนหัว
 if(!(($index==1) or ($index==2) or ($index==5))){
@@ -137,34 +150,25 @@ if($index==1){
         <div class="form-group">
           <label class="col-sm-3 control-label text-right"></label>
           <div class="col-sm-4">
-            <label ><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class="btn btn-large btn-success">
-	&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class='btn btn-large btn-info'></label>
+            <label >
+                <button type="button" name="smb" class="btn btn-primary" onclick='goto_url(1)'>
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>ตกลง
+                </button>&nbsp;
+                <button type="button" name="back" class="btn btn-default" onclick='goto_url(0)'>
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>ย้อนกลับ
+                </button>
+            </label>
           </div>
         </div>
         <hr>
       </div>
-          </form>
+</form>
 <?
-
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<td align='left'></td></tr>";
-echo "</Table>";
-echo "</form>";
-}
-
-//ส่วนยืนยันการลบข้อมูล
-if($index==2) {
-echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
-echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=car&task=main/permission&index=3&id=$_GET[id]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=car&task=main/permission\"'";
-echo "</td></tr></table>";
 }
 
 //ส่วนลบข้อมูล
 if($index==3){
-$sql = "delete from car_permission where id=$_GET[id]";
+echo $sql = "delete from car_permission where id=$_GET[id]";
 $dbquery = mysqli_query($connect,$sql);
 echo "<script>document.location.href='?option=car&task=main/permission'; </script>\n";
 }
@@ -290,11 +294,29 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql = "select car_permission.id, car_permission.p1, person_main.prename, person_main.name, person_main.surname from car_permission left join person_main on car_permission.person_id=person_main.person_id  order by car_permission.p1";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='7' align='left'><INPUT class='btn btn-large btn-primary' TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=car&task=main/permission&index=1\"'></Td></Tr>";
+?>
 
-echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td><td  align='center' colspan='3'>สิทธื์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
-echo "<tr bgcolor='#CC9900'><Td  align='center' width='80'>เจ้าหน้าที่</Td><Td  align='center' width='80'>ผู้เห็นชอบ</Td><Td  align='center' width='80'>ผู้อนุมัติ</Td></tr>";
+  <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <a href="?option=car&task=main/permission&index=1" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;เพิ่มข้อมูล</a>
+            </div>
+        </div>
+    </div>
+      <table class="table table-hover table-striped table-condensed table-responsive">
+    <thead>
+        <tr>
+          <th>ที่</th>
+          <th>ชื่อเจ้าหน้าที่</th>
+          <th>เจ้าหน้าที่</th>
+          <th>ผู้เห็นชอบ</th>
+          <th>ผู้อนุมัติ</th>
+          <th>ลบ</th>
+          <th>แก้ไข</th>
+        </tr>
+
+          </thead>
+          <tbody><?
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
 	{
@@ -316,22 +338,28 @@ While ($result = mysqli_fetch_array($dbquery))
 			else if($result['p1']==3){
 			$p3_pic=$txt_pic;
 			}
-			
-			if(($M%2) == 0)
-			$color="#FFFFC";
-			else  	$color="#FFFFFF";
-		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$prename$name $surname</Td><Td align='center'>$p1_pic</Td><Td align='center'>$p2_pic</Td><Td align='center'>$p3_pic</Td>
-		<Td align='center' width='50' ><a href=?option=car&task=main/permission&index=2&id=$id><span class='glyphicon glyphicon-remove'></span></a></Td>
-		<Td align='center' width='50'><a href=?option=car&task=main/permission&index=5&id=$id><span class='glyphicon glyphicon-pencil'></span></a></Td>
-	</Tr>";
+    ?>
+              <Tr>
+    <Td><?=$M?></Td>
+    <Td><? echo $prename.$name." ".$surname;?></Td>
+    <Td><?=$p1_pic?></Td>
+    <Td><?=$p2_pic?></Td>
+    <Td><?=$p3_pic?></Td>
+    <Td><a href=?option=car&task=main/permission&index=3&id=<?=$id?> data-toggle='confirmation' class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span></a></Td>
+    <Td><a href=?option=car&task=main/permission&index=5&id=<?=$id?> class='btn btn-warning'><span class='glyphicon glyphicon-pencil' ></span></a></Td>
+</Tr>
+    <?
 $M++;
 	}
-echo "</Table>";
+    ?>
+          </tbody>
+      </table>
+<?
 }
-
 ?>
+
 <script>
-function goto_url(val){
+    function goto_url(val){
 	if(val==0){
 		callfrm("?option=car&task=main/permission");   // page ย้อนกลับ 
 	}else if(val==1){
@@ -345,7 +373,6 @@ function goto_url(val){
 		}
 	}
 }
-
 function goto_url_update(val){
 	if(val==0){
 		callfrm("?option=car&task=main/permission");   // page ย้อนกลับ 

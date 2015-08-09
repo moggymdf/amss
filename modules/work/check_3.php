@@ -11,7 +11,7 @@ require_once "modules/work/time_inc.php";
 //หน่วยงานผู้บริหาร
 $managerdepart=0;
 //หน่วนงานผู้ดูแลการลงเวลาผู้บริหาร
-$addmanagerdepart=2;
+$addmanagerdepart=4;
 
 $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 

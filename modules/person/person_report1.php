@@ -231,7 +231,7 @@ $sql = "select * from system_subdepartment where sub_department='$result[positio
 $query_sub = mysqli_query($connect,$sql);
 while($result_sub = mysqli_fetch_array($query_sub)){
 	$sub_department_name = $result_sub['sub_department_name'];
-	echo " (หัวหน้า$sub_department_name)";
+	echo " (ผอ.$sub_department_name)";
 }
 
 echo "</Td>";

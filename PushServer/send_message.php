@@ -2,7 +2,7 @@
 if (isset($_GET['message'])) {
     $message = $_GET['message'];
 } else {
-    $message = "สำนักงานเขตพื้นที่การศึกษาประถมศึกษาสุรินทร์ เขต 3";
+    $message = "Smart OBEC";
 }
 include_once 'db_functions.php';
 include_once './gcm.php';

@@ -11,6 +11,7 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 		$_SESSION['system_user_school_name']="";
 		$_SESSION['system_user_specialunit']="";
 		$_SESSION['system_user_specialunit_name']="";
+		$_SESSION['system_delegate']="";   //รักษาราชการแทน
 
 		if(trim($_POST['username'])==""){
 		echo "<script>document.location.href='index.php';</script>\n";
@@ -86,6 +87,17 @@ if($result1){
 						$_SESSION['system_user_subdepartment']=$result_user['sub_department'];
 						}
 						//*
+						//**รักษาราชการแทน
+						if($result_user['position_code']==2 or $result_user['position_code']==3){
+							$system_today=date("Y-m-d");
+							$sql_delegate="select * from person_delegate where person_id='$result1[person_id]' and start<='$system_today' and finish>='$system_today'";
+							$query_delegate=mysqli_query($connect,$sql_delegate);
+							$result_delegate = mysqli_fetch_array($query_delegate);
+								if($result_delegate){
+								$_SESSION['system_delegate']=1;
+								}
+						}
+						//**
 				}
 				else{
 				//ตรวจสอบบุคลากรสพท

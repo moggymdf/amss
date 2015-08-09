@@ -23,8 +23,9 @@ echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อสถานศ�
 echo "<Tr align='left'><Td ></Td><Td align='right'>ประเภทสถานศึกษา&nbsp;</Td><Td>";
 echo "<Select  name='school_type' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option  value = '1'>สถานศึกษารัฐบาล</option>" ;
-echo  "<option  value = '2'>สถานศึกษาเอกชน</option>" ;
+echo  "<option  value = '1'>การศึกษาพิเศษ</option>" ;
+echo  "<option  value = '2'>ประถมศึกษา</option>" ;
+echo  "<option  value = '3'>มัธยมศึกษา</option>" ;
 echo "</select>";
 echo "</Td></Tr>";
 
@@ -81,7 +82,7 @@ $sql = "select * from  system_school where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
 
-echo "<Table width='70%' Border='0'>";
+echo "<Table width='50%' Border='0'>";
 echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัสสถานศึกษา&nbsp;</Td><Td><Input Type='Text' Name='school_code' Size='5' value='$ref_result[school_code]' onkeydown='integerOnly()'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อสถานศึกษา&nbsp;</Td><Td><Input Type='Text' Name='school_name' Size='60' value='$ref_result[school_name]'></Td></Tr>";
@@ -90,20 +91,34 @@ echo "<Tr align='left'><Td ></Td><Td align='right'>ประเภทสถา�
 if($ref_result['school_type']==1){
 $seclect1="selected";
 $seclect2="";
+$seclect3="";
 }
 else if($ref_result['school_type']==2){
 $seclect1="";
 $seclect2="selected";
+$seclect3="";
+}
+else if($ref_result['school_type']==2){
+$seclect1="";
+$seclect2="selected";
+$seclect3="";
+}
+else if($ref_result['school_type']==3){
+$seclect1="";
+$seclect2="";
+$seclect3="selected";
 }
 else{
 $seclect1='';
 $seclect2='';
+$seclect3="";
 }
 
 echo "<Select  name='school_type' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option  value = '1' $seclect1>สถานศึกษารัฐบาล</option>" ;
-echo  "<option  value = '2' $seclect2>สถานศึกษาเอกชน</option>" ;
+echo  "<option  value = '1' $seclect1>การศึกษาพิเศษ</option>" ;
+echo  "<option  value = '2' $seclect2>ประถมศึกษา</option>" ;
+echo  "<option  value = '3' $seclect3>มัธยมศึกษา</option>" ;
 echo "</select>";
 echo "</Td></Tr>";
 
@@ -236,7 +251,7 @@ echo "</div>";
 $sql = "select system_school.id, system_school.school_code, system_school.school_name, system_school.school_type, system_khet.khet_name from system_school left join system_khet on system_school.khet_code=system_khet.khet_code order by system_khet.khet_type,system_school.school_code limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
 
-echo  "<table width=75% border=0 align=center>";
+echo  "<table width='75%' border='0' align='center'>";
 echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?file=school&task=school&index=1\"'></Td></Tr>";
 
 echo "<Tr bgcolor=#FFCCCC align='center'><Td width='50'>ที่</Td><Td width='120'>รหัสสถานศึกษา</Td><Td>ชื่อสถานศึกษา</Td><Td>ประเภท</Td><Td>สพท.</Td><Td   width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
@@ -250,10 +265,13 @@ While ($result = mysqli_fetch_array($dbquery))
 		$school_type= $result['school_type'];
 		$khet_name= $result['khet_name'];
 			if($school_type==1){
-			$school_type_text="สถานศึกษารัฐบาล";
+			$school_type_text="<font color='#FF0000'>การศึกษาพิเศษ</font>";
 			}
 			else if($school_type==2){
-			$school_type_text="<font color='#FF0000'>สถานศึกษาเอกชน</font>";
+			$school_type_text="ประถมศึกษา";
+			}
+			else if($school_type==3){
+			$school_type_text="มัธยมศึกษา";
 			}
 			else{
 			$school_type_text="";
@@ -263,7 +281,7 @@ While ($result = mysqli_fetch_array($dbquery))
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
 
-		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td> <Td>$school_code</Td><Td align=left>$school_name</Td><Td align=left>$school_type_text</Td><Td align=left>$khet_name</Td><Td><div align=center><a href=?file=school&task=school&index=2&id=$id&page=$page><img src=../images/drop.png border='0' alt='ลบ'></a></div></Td><Td><a href=?file=school&task=school&index=5&id=$id&page=$page><img src=../images/edit.png border='0' alt='แก้ไข'></a></div></Td>
+		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td> <Td>$school_code</Td><Td align='left'>$school_name</Td><Td align='left'>$school_type_text</Td><Td align='left'>$khet_name</Td><Td><div align='center'><a href=?file=school&task=school&index=2&id=$id&page=$page><img src=../images/drop.png border='0' alt='ลบ'></a></div></Td><Td><a href=?file=school&task=school&index=5&id=$id&page=$page><img src=../images/edit.png border='0' alt='แก้ไข'></a></div></Td>
 	</Tr>";
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
@@ -276,7 +294,7 @@ echo "</Table>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?file=school&task=school");   // page ย้อนกลับ
+		callfrm("?file=school");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.school_code.value == ""){
 			alert("กรุณากรอกรหัสตำแหน่ง");
@@ -285,14 +303,14 @@ function goto_url(val){
 		}else if(frm1.school_type.value==""){
 			alert("กรุณาเลือกประเภทสถานศึกษา");
 		}else{
-			callfrm("?file=school&task=school&index=4");   //page ประมวลผล
+			callfrm("?file=school&index=4");   //page ประมวลผล
 		}
 	}
 }
 
 function goto_url_update(val){
 	if(val==0){
-		callfrm("?file=school&task=school");   // page ย้อนกลับ
+		callfrm("?file=school");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.school_code.value == ""){
 			alert("กรุณากรอกรหัสตำแหน่ง");
@@ -301,7 +319,7 @@ function goto_url_update(val){
 		}else if(frm1.school_type.value==""){
 			alert("กรุณาเลือกประเภทสถานศึกษา");
 		}else{
-			callfrm("?file=school&task=school&index=6");   //page ประมวลผล
+			callfrm("?file=school&index=6");   //page ประมวลผล
 		}
 	}
 }

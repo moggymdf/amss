@@ -67,13 +67,13 @@ $thai_month_arr=array(
 	"03"=>"มีนาคม",
 	"04"=>"เมษายน",
 	"05"=>"พฤษภาคม",
-	"06"=>"มิถุนายน",	
+	"06"=>"มิถุนายน",
 	"07"=>"กรกฎาคม",
 	"08"=>"สิงหาคม",
 	"09"=>"กันยายน",
 	"10"=>"ตุลาคม",
 	"11"=>"พฤศจิกายน",
-	"12"=>"ธันวาคม"					
+	"12"=>"ธันวาคม"
 );
 
 //แปลงรูปแบบ date
@@ -170,8 +170,8 @@ $N=1;
     while($result_allperson = $result_shownallperson->fetch_array())
 	   {
 
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;$work_sum_total=0;		
-        
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;$work_sum_total=0;
+
             $person_id = $result_allperson['person_id'];
             $prename=$result_allperson['prename'];
             $name= $result_allperson['name'];
@@ -185,11 +185,11 @@ $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work
             $dbquery_work->bind_param("sss",$start_date,$end_date,$person_id);
             $dbquery_work->execute();
             $result_daywork = $dbquery_work->get_result();
-            
+
             while($result_work = $result_daywork->fetch_array())
 	           {
              $work = $result_work['work'];
-  		
+
 			if($work==1){
 			$work_1_sum=$work_1_sum+1;
 			}
@@ -198,33 +198,33 @@ $work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work
 			}
 			else if($work==3){
 			$work_3_sum=$work_3_sum+1;
-			}			
+			}
 			else if($work==4){
 			$work_4_sum=$work_4_sum+1;
-			}			
+			}
 			else if($work==5){
 			$work_5_sum=$work_5_sum+1;
-			}			
+			}
 			else if($work==6){
 			$work_6_sum=$work_6_sum+1;
-			}			
+			}
 			else if($work==7){
 			$work_7_sum=$work_7_sum+1;
-			}			
+			}
 			else if($work==8){
 			$work_8_sum=$work_8_sum+1;
-			}			
+			}
 			else if($work==9){
 			$work_9_sum=$work_9_sum+1;
-			}			
+			}
         }
- 
+
             if(($N%2) == 0)
 			$color="#FFFFC";
 			else  $color="#FFFFFF";
-       
-        
-            $sql_post= "select position_name from person_position where position_code=? ";   
+
+
+            $sql_post= "select position_name from person_position where position_code=? ";
             $dbquery_post = $connect->prepare($sql_post);
             $dbquery_post->bind_param("i",$position_code);
             $dbquery_post->execute();

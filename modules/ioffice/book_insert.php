@@ -62,7 +62,7 @@
               <table border="0" cellspacing="0" cellpadding="0" id="myTable">
                 <tr>
                   <td width="60%"><input class="form-control" name="UploadedFile[]" type="file" class="BrowsFile" id="UploadedFile" size="55"></td>
-                  <td width="40%">&nbsp;<a href="javascript:insRow();" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>&nbsp;เพิ่มช่องรับเอกสาร</a></td>
+                  <td width="40%">&nbsp;<a href="javascript:insRow();" class="btn btn-success"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>&nbsp;เพิ่มช่องรับเอกสาร</a></td>
                 </tr>
               </table>
             </div>
@@ -77,7 +77,7 @@
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-6">
-            <button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-ok"></span>&nbsp;บันทึก</button>&nbsp;<button type="submit" class="btn btn-default btn-sm" onClick="history.go(-1);return true;"><span class="glyphicon glyphicon-remove"></span>&nbsp;ยกเลิก</button>
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span>&nbsp;บันทึก</button>&nbsp;<button type="submit" class="btn btn-default" onClick="history.go(-1);return true;"><span class="glyphicon glyphicon-remove"></span>&nbsp;ยกเลิก</button>
           </div>
         </div>
       </form>

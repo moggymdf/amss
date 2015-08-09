@@ -49,6 +49,19 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 
+	if($_SESSION['login_group']==1){
+	echo "<li><a href='?option=person' class='dir'>รักษาราชการแทน</a>";
+		echo "<ul>";
+			if($result_permission['p2']==1){
+			echo "<li><a href='?option=person&task=delegate'>เจ้าหน้าที่บันทึกข้อมูล</a></li>";
+			}
+			if(!($result_permission['p2']==1)){
+			echo "<li><a href='?option=person&task=report_delegate'>ผู้รักษาราชการแทน</a></li>";
+			}
+	echo "</ul>";
+	echo "</li>";
+	}
+
 	if(($_SESSION['admin_person']=="person") or ($result_permission['p1']==1)){
 	echo "<li><a href='?option=person' class='dir'>บุคลากรในอดีต</a>";
 		echo "<ul>";

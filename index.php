@@ -1,8 +1,3 @@
-<!-- Bootstrap Include -->
-<link rel="stylesheet" type="text/css" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
-<script src="./bootstrap-3.3.5-dist/js/jquery-1.11.3.min.js"></script>
-<script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-<script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
 <?php
 session_start();
 /** Set flag that this is a parent file */
@@ -34,9 +29,10 @@ if(isset($_POST['user_os'])){
 <link href="css/dropdown/dropdown.css" media="all" rel="stylesheet" type="text/css" />
 <link href="css/dropdown/themes/adobe.com/default.advanced.css" media="all" rel="stylesheet" type="text/css" />
 <!-- jquery and bootstrap libraries -->
-<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.min.css">
-<script src="js/jquery/jquery.min.js"></script>
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css">-->
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.min.css">-->
+<!--<script src="js/jquery/jquery.min.js"></script>-->
+
 <script type="text/javascript" src="main_js.js"></script>
 
 </head>
@@ -96,6 +92,6 @@ mysqli_close($connect);
 !Warning! Javascript must be enabled for proper operation of the Administrator
 </noscript>
 <br />
-<script src="js/bootstrap/bootstrap.min.js"></script>
+<!--<script src="js/bootstrap/bootstrap.min.js"></script>-->
 </body>
 </html>

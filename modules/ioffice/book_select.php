@@ -164,10 +164,10 @@
                       $resultlastcomment = mysqli_query($connect, $sqllastcomment);
                       $rowlastcomment = mysqli_fetch_assoc($resultlastcomment);
                     ?>
-                    <td><a tabindex="0" class="btn btn-default btn-xs" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
+                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
                     <td>
                       <!-- Modal for Read -->
-                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน</button>
+                      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน</button>
                       <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $row['bookid']; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                           <div class="modal-content">
@@ -224,7 +224,7 @@
                                       echo "<td>".$rowcomment["commentdetail"]."</td>";
                                       echo "<td>".$rowcomment["prename"].$rowcomment["name"]." ".$rowcomment["surname"]."</td>";
                                       echo "<td>".$rowcomment["position_name"]."</td>";
-                                      echo "<td><a tabindex='0' class='btn btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='หน่วยงาน' data-content='".$rowcomment["department_name"]."''>".$rowcomment["department_precis"]."</a></td>";
+                                      echo "<td><a tabindex='0' class='btn' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='หน่วยงาน' data-content='".$rowcomment["department_name"]."''>".$rowcomment["department_precis"]."</a></td>";
                                       echo "<td>".ThaiTimeConvert(strtotime($rowcomment['commentdate']),"","2")."</td>";
                                       echo "<td>".$rowcomment["bookstatusname"]."</td>";
                                       echo "</tr>";
@@ -245,28 +245,31 @@
                       <?php
                         switch ($row["bookstatusid"]) {
                           case '1':
-                            echo "<a href='?option=ioffice&task=book_update&bookid=".$row['bookid']."' class='btn btn-warning btn-xs'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>&nbsp;แก้ไข</a>&nbsp;<a href='?option=ioffice&task=book_manage&action=delete&bookid=".$row['bookid']."' class='btn btn-danger btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span>&nbsp;ลบ</a>";
+                            echo "<a href='?option=ioffice&task=book_update&bookid=".$row['bookid']."' class='btn btn-warning'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>&nbsp;แก้ไข</a>&nbsp;<a href='?option=ioffice&task=book_manage&action=delete&bookid=".$row['bookid']."' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span>&nbsp;ลบ</a>";
                             break;
                           case '2':
-                            echo "<a href='?option=ioffice&task=book_manage&action=update_status3&bookid=".$row['bookid']."' class='btn btn-danger btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ยกเลิก</a>";
+                            echo "<a href='?option=ioffice&task=book_manage&action=update_status3&bookid=".$row['bookid']."' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ยกเลิก</a>";
                             break;
                           case '3':
-                            echo "<a href='?option=ioffice&task=book_manage&action=copy&bookid=".$row['bookid']."' class='btn btn-info btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-duplicate' aria-hidden='true'></span>&nbsp;คัดลอก</a>";
+                            echo "<a href='?option=ioffice&task=book_manage&action=copy&bookid=".$row['bookid']."' class='btn btn-info' data-toggle='confirmation'><span class='glyphicon glyphicon-duplicate' aria-hidden='true'></span>&nbsp;คัดลอก</a>";
+                            break;
+                          case '4':
+                            echo "<a href='?option=ioffice&task=book_manage&action=update_status3&bookid=".$row['bookid']."' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ยกเลิก</a>";
                             break;
                             case '20':
-                            echo "<a href='#' class='btn btn-success btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
+                            echo "<a href='#' class='btn btn-success' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
                             break;
                             case '21':
-                            echo "<a href='#' class='btn btn-success btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
+                            echo "<a href='#' class='btn btn-success' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
                             break;
                             case '22':
-                            echo "<a href='#' class='btn btn-success btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
+                            echo "<a href='#' class='btn btn-success' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
                             break;
                           case '30':
                             echo "&nbsp;";
                             break;
                           case '40':
-                            echo "<a href='?option=ioffice&task=book_manage&action=copy&bookid=".$row['bookid']."' class='btn btn-info btn-xs' data-toggle='confirmation'><span class='glyphicon glyphicon-duplicate' aria-hidden='true'></span>&nbsp;คัดลอก</a>";
+                            echo "<a href='?option=ioffice&task=book_manage&action=copy&bookid=".$row['bookid']."' class='btn btn-info' data-toggle='confirmation'><span class='glyphicon glyphicon-duplicate' aria-hidden='true'></span>&nbsp;คัดลอก</a>";
                             break;
                           default:
                             echo "&nbsp;";

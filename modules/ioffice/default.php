@@ -1,12 +1,12 @@
 <?php
 	if($_SESSION['user_os']=='mobile'){
-	include("modules/person/person_report1_mobile.php");
+	include("modules/ioffice/ioffice_report1_mobile.php");
 	}
 	else{
 	echo "<br />";
 	echo "<br />";
 	echo "<br />";
-	echo "<div align='center'><img src='images/admin/teacher.jpg' border='0'></div>";
+	echo "<div align='center'><img src='./modules/ioffice/images/ioffice.png' class='img-responsive'></div>";
 	}
 ?>
 

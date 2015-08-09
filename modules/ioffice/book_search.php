@@ -1,4 +1,11 @@
 <?php
+  // Define Variable
+  if(isset($_POST["searchtext"])){ }else{ $_POST["searchtext"]=""; }
+  if(isset($_SESSION["searchtext"])){ }else{ $_SESSION["searchtext"]=""; }
+  if(isset($_POST["searchbookstatusid"])){ }else{ $_POST["searchbookstatusid"]=""; }
+  if(isset($_SESSION["searchbookstatusid"])){ }else{ $_SESSION["searchbookstatusid"]=""; }
+  if(isset($_POST["searchdepartmentid"])){ }else{ $_POST["searchdepartmentid"]=""; }
+  if(isset($_SESSION["searchdepartmentid"])){ }else{ $_SESSION["searchdepartmentid"]=""; }
   // Search Condition
   if($_POST["searchtext"]){
     $searchtext = $_POST["searchtext"];
@@ -198,7 +205,7 @@
                     <td><?php echo ThaiTimeConvert(strtotime($row['postdate']),"","2"); ?></td>
                     <td><?php echo $row['prename'].$row['name']." ".$row['surname']; ?></td>
                     <td><?php echo $row["sub_department_name"]; ?></td>
-                    <td><a tabindex="0" class="btn btn-default btn-xs" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="หน่วยงาน" data-content="<?php echo $row["department_name"]; ?>"><?php echo $row["department_precis"]; ?></a></td>
+                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="หน่วยงาน" data-content="<?php echo $row["department_name"]; ?>"><?php echo $row["department_precis"]; ?></a></td>
                     <?php
                       $sqllastcomment = " SELECT * FROM ioffice_bookcomment b
                                           LEFT JOIN person_main pm ON(b.comment_personid=pm.person_id)
@@ -206,10 +213,10 @@
                       $resultlastcomment = mysqli_query($connect, $sqllastcomment);
                       $rowlastcomment = mysqli_fetch_assoc($resultlastcomment);
                     ?>
-                    <td><a tabindex="0" class="btn btn-default btn-xs" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
+                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
                     <td>
                       <!-- Modal for Read -->
-                      <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน</button>
+                      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน</button>
                       <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $row['bookid']; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                           <div class="modal-content">

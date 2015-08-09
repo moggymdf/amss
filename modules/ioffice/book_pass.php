@@ -130,7 +130,7 @@
                     <td><?php echo ThaiTimeConvert(strtotime($row['postdate']),"","2"); ?></td>
                     <td><?php echo $row['prename'].$row['name']." ".$row['surname']; ?></td>
                     <td><?php echo $row["sub_department_name"]; ?></td>
-                    <td><a tabindex="0" class="btn btn-default btn-xs" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="หน่วยงาน" data-content="<?php echo $row["department_name"]; ?>"><?php echo $row["department_precis"]; ?></a></td>
+                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="หน่วยงาน" data-content="<?php echo $row["department_name"]; ?>"><?php echo $row["department_precis"]; ?></a></td>
                     <?php
                       $sqllastcomment = " SELECT * FROM ioffice_bookcomment b
                                           LEFT JOIN person_main pm ON(b.comment_personid=pm.person_id)
@@ -138,9 +138,10 @@
                       $resultlastcomment = mysqli_query($connect, $sqllastcomment);
                       $rowlastcomment = mysqli_fetch_assoc($resultlastcomment);
                     ?>
-                    <td><a tabindex="0" class="btn btn-default btn-xs" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>                    <td>
+                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
+                    <td>
                       <!-- Modal for Read -->
-                      <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน&nbsp;/&nbsp;สั่งการ</button>
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน&nbsp;/&nbsp;สั่งการ</button>
                       <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $row['bookid']; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                           <div class="modal-content">
@@ -199,7 +200,7 @@
                                       echo "<td>".$rowcomment["commentdetail"]."</td>";
                                       echo "<td>".$rowcomment["prename"].$rowcomment["name"]." ".$rowcomment["surname"]."</td>";
                                       echo "<td>".$rowcomment["position_name"]."</td>";
-                                      echo "<td><a tabindex='0' class='btn btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='หน่วยงาน' data-content='".$rowcomment["department_name"]."''>".$rowcomment["department_precis"]."</a></td>";
+                                      echo "<td><a tabindex='0' class='btn' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='หน่วยงาน' data-content='".$rowcomment["department_name"]."''>".$rowcomment["department_precis"]."</a></td>";
                                       echo "<td>".ThaiTimeConvert(strtotime($rowcomment['commentdate']),"","2")."</td>";
                                       echo "<td>".$rowcomment["bookstatusname"]."</td>";
                                       echo "</tr>";

@@ -1,8 +1,6 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-//sd page
-
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
@@ -20,6 +18,8 @@ echo "<Table   width=60% Border='0'>";
 echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัส&nbsp;</Td><Td><Input Type='Text' Name='unit_code' Size='5' onkeydown='integerOnly()'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อหน่วยงาน&nbsp;</Td><Td><Input Type='Text' Name='unit_name' Size='60'></Td></Tr>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อย่อหน่วยงาน&nbsp;</Td><Td><Input Type='Text' Name='unit_precis' Size='40'></Td></Tr>";
+
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ประเภทหน่วยงาน&nbsp;</Td><Td>";
 echo "<Select  name='unit_type' size='1'>";
@@ -37,8 +37,8 @@ echo "</Td></Tr>";
 echo "<Br>";
 echo "</Table>";
 echo "<Br>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)'>";
 
 echo "</form>";
 }
@@ -59,7 +59,7 @@ $dbquery = mysqli_query($connect,$sql);
 
 //ส่วนเพิ่มข้อมูล
 if($index==4){
-$sql = "insert into system_special_unit (unit_code, unit_name, unit_type) values ( '$_POST[unit_code]','$_POST[unit_name]','$_POST[unit_type]')";
+$sql = "insert into system_special_unit (unit_code,unit_name,unit_precis,unit_type) values ( '$_POST[unit_code]','$_POST[unit_name]','$_POST[unit_precis]','$_POST[unit_type]')";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -78,6 +78,7 @@ echo "<Table width='70%' Border='0'>";
 echo "<Tr align='left'><Td width=20></Td><Td align='right'>รหัสหน่วยงาน&nbsp;</Td><Td><Input Type='Text' Name='unit_code' Size='5' value='$ref_result[unit_code]' onkeydown='integerOnly()'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อหน่วยงาน&nbsp;</Td><Td><Input Type='Text' Name='unit_name' Size='60' value='$ref_result[unit_name]'></Td></Tr>";
+echo "<Tr align='left'><Td ></Td><Td align='right'>ชื่อย่อหน่วยงาน&nbsp;</Td><Td><Input Type='Text' Name='unit_precis' Size='60' value='$ref_result[unit_precis]'></Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ประเภทหน่วยงาน&nbsp;</Td><Td>";
 echo "<Select  name='unit_type' size='1'>";
@@ -101,27 +102,26 @@ echo "<Br>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'>";
+echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'>";
 
 echo "</form>";
 }
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
-$sql = "update system_special_unit set unit_code='$_POST[unit_code]',unit_name='$_POST[unit_name]',unit_type='$_POST[unit_type]' where id='$_POST[id]'";
+$sql = "update system_special_unit set unit_code='$_POST[unit_code]',unit_name='$_POST[unit_name]',unit_precis='$_POST[unit_precis]',unit_type='$_POST[unit_type]' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
 
 //ส่วนการแสดงผล
 if(!(($index==1) or ($index==2) or ($index==5))){
-
-$sql = "select system_special_unit.id, system_special_unit.unit_code, system_special_unit.unit_type, system_special_unit.unit_name, system_specialunit_group.name from system_special_unit left join system_specialunit_group on system_special_unit.unit_type=system_specialunit_group.code order by system_special_unit.unit_type,system_special_unit.unit_code";
+$sql = "select system_special_unit.id, system_special_unit.unit_code, system_special_unit.unit_type, system_special_unit.unit_name,system_special_unit.unit_precis,system_specialunit_group.name from system_special_unit left join system_specialunit_group on system_special_unit.unit_type=system_specialunit_group.code order by system_special_unit.unit_type,system_special_unit.unit_code";
 $dbquery = mysqli_query($connect,$sql);
 
-echo  "<table width=75% border='0' align='center'>";
+echo  "<table width='95%' border='0' align='center'>";
 echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?file=special_unit&index=1\"'></Td></Tr>";
 
-echo "<Tr bgcolor=#FFCCCC align='center'><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td>ชื่อหน่วยงาน</Td><Td>ประเภท</Td><Td   width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor=#FFCCCC align='center'><Td width='50'>ที่</Td><Td width='100'>รหัส</Td><Td>ชื่อหน่วยงาน</Td><Td>ชื่อย่อหน่วยงาน</Td><Td>ประเภท</Td><Td width='50'>ลบ</Td><Td width='50'>แก้ไข</Td></Tr>";
 $N=1;
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -129,21 +129,19 @@ While ($result = mysqli_fetch_array($dbquery))
 		$id = $result['id'];
 		$unit_code= $result['unit_code'];
 		$unit_name= $result['unit_name'];
+		$unit_precis= $result['unit_precis'];
 		$unit_type= $result['unit_type'];
 		$unit_type= $result['name'];
-
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
-
-		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td> <Td>$unit_code</Td><Td align=left>$unit_name</Td><Td align=left>$unit_type</Td><Td><div align=center><a href=?file=special_unit&index=2&id=$id><img src=../images/drop.png border='0' alt='ลบ'></a></div></Td><Td><a href=?file=special_unit&index=5&id=$id><img src=../images/edit.png border='0' alt='แก้ไข'></a></div></Td>
+		echo "<Tr  bgcolor=$color align='center'><Td>$N</Td> <Td>$unit_code</Td><Td align='left'>$unit_name</Td><Td align='left'>$unit_precis</Td><Td align='left'>$unit_type</Td><Td align='center'><a href=?file=special_unit&index=2&id=$id><img src=../images/drop.png border='0' alt='ลบ'></a></Td><Td><a href=?file=special_unit&index=5&id=$id><img src=../images/edit.png border='0' alt='แก้ไข'></a></Td>
 	</Tr>";
 $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 	}
 echo "</Table>";
 }
-
 
 ?>
 <script>

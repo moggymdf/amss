@@ -8,7 +8,7 @@ if($admin_work!='work'){
 exit();
 }
 ?>
-<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script> 
+<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
 <script type="text/javascript">
 $(function(){
 	$("select#department").change(function(){
@@ -16,8 +16,8 @@ $(function(){
 			  url: "admin/section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
 			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
 			  async: false
-		}).responseText;		
-		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2 
+		}).responseText;
+		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
 		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
 	});
 });
@@ -79,7 +79,7 @@ echo  "<option  value = ''>เลือกบุคลากร</option>" ;
    {
      $personname = $result_personname['prename'].$result_personname['name']." ".$result_personname['surname'];
      $personid = $result_personname['person_id'];
-    
+
     $sql = "select  * from work_permission where person_id=?";
     $dbquery_permiss = $connect->prepare($sql);
     $dbquery_permiss->bind_param("i", $personid);
@@ -139,7 +139,7 @@ $sql = "delete from work_permission where id=?";
 if($postindex==4){
 $personid=mysqli_real_escape_string($connect,$_POST['person_id']);
 $work_permission1=mysqli_real_escape_string($connect,$_POST['work_permission1']);
-    
+
 $rec_date = date("Y-m-d");
 $sql = "insert into work_permission (person_id, p1, officer,rec_date) values (?,?,?,?)";
     $dbquery_addwork = $connect->prepare($sql);
@@ -216,7 +216,7 @@ if ($postindex==6){
 $person_id=mysqli_real_escape_string($connect,$_POST['person_id']);
 $work_permission1=mysqli_real_escape_string($connect,$_POST['work_permission1']);
 $idpermis=mysqli_real_escape_string($connect,$_POST['idpermis']);
-    
+
 $rec_date = date("Y-m-d");
 $sql_update = "update work_permission set  person_id=?, p1=?, officer=?, rec_date=? where id=?";
                     $dbquery_update = $connect->prepare($sql_update);
@@ -269,7 +269,7 @@ echo "</Table></form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=work&task=permission");   // page ย้อนกลับ 
+		callfrm("?option=work&task=permission");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");
@@ -281,7 +281,7 @@ function goto_url(val){
 
 function goto_url_update(val){
 	if(val==0){
-		callfrm("?option=work&task=permission");   // page ย้อนกลับ 
+		callfrm("?option=work&task=permission");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");

@@ -11,13 +11,10 @@ if(!isset($_SESSION['admin_mail'])){
 $_SESSION['admin_mail']="";
 }
 
-echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>";
-echo "<tr bgcolor='#FFCC00'><td>";
-echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
-	echo "<li><a href='./'>รายการหลัก</a></li>";
+	//echo "<li class='dropdown'><a href='./'>รายการหลัก</a></li>";
 	if($_SESSION['admin_mail']=="mail"){
-	echo "<li><a href='?option=mail' class='dir'>ตั้งค่าระบบ</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=mail' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=mail&task=main/permission'>กำหนดเจ้าหน้าที่</a></li>";
 			echo "<li><a href='?option=mail&task=main/group'>กำหนดกลุ่มบุคลากร</a></li>";
 			echo "<li><a href='?option=mail&task=main/group_member'>กำหนดสมาชิกกลุ่มบุคลากร</a></li>";
@@ -26,27 +23,25 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	echo "</li>";
 	}
 	if($_SESSION['login_group']==1){
-	echo "<li><a href='?option=mail&task=main/receive' class='dir'>ทะเบียนรับ</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=mail&task=main/receive' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนรับ</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=mail&task=main/receive'>ทะเบียนจดหมายรับมา</a></li>";
 	echo "</ul>";
 	echo "</li>";
 
-	echo "<li><a href='?option=mail&task=main/send' class='dir'>ทะเบียนส่ง</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=mail&task=main/send' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนส่ง</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=mail&task=main/send'>ทะเบียนจดหมายส่งไป</a></li>";
 		echo "</ul>";
 	echo "</li>";
-	echo "<li><a href='?option=mail&task=main/send&index=1' class='dir'>เขียนจดหมาย</a>";
+	echo "<li><a href='?option=mail&task=main/send&index=1' <span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>&nbsp;เขียนจดหมาย</a>";
 	echo "</li>";
 	}
 
-	echo "<li><a href='?option=mail' class='dir'>คู่มือ</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=mail' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 				echo "<li><a href='modules/mail/manual/mail.pdf' target='_blank'>คู่มือไปรษณีย์</a></li>";
 		echo "</ul>";
 	echo "</li>";
-echo "</ul>";
-echo "</td></tr>";
-echo "</table>";
+
 ?>

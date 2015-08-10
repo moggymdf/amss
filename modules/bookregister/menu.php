@@ -11,13 +11,9 @@ if(!isset($_SESSION['admin_bookregister'])){
 $_SESSION['admin_bookregister']="";
 }
 
-echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>";
-echo "<tr bgcolor='#FFCC00'><td>";
-echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
-	echo "<li><a href='./'>รายการหลัก</a></li>";
 	if($_SESSION['admin_bookregister']=="bookregister" or $result_permission['saraban_status']==1){			//กำหนดสิทธิ์ให้เห็นเมนู  admin และ สารบรรณกลาง สพฐ.
-	echo "<li><a href='?option=bookregister' class='dir'>ตั้งค่าระบบ</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=permission'>กำหนดเจ้าหน้าที่</a></li>";
 			echo "<li><a href='?option=bookregister&task=year'>กำหนดปีปฏิทิน สพฐ.</a></li>";
 			echo "<li><a href='?option=bookregister&task=main/office_no'>กำหนดเลขที่หนังสือ</a></li>";
@@ -28,8 +24,8 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	}
 	//เมนูสารบรรณสำนัก
 	if($result_permission['saraban_status']==2){			//กำหนดสิทธิ์ให้เห็นเมนู  สารบรรณสำนัก
-	echo "<li><a href='?option=bookregister' class='dir'>ตั้งค่าระบบสำนัก</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบสำนัก</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=permission_de'>กำหนดเจ้าหน้าที่</a></li>";
 			echo "<li><a href='?option=bookregister&task=year_de'>กำหนดปีปฏิทิน สำนัก</a></li>";
 			echo "<li><a href='?option=bookregister&task=main/office_no'>กำหนดเลขที่หนังสือ</a></li>";
@@ -40,8 +36,8 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 	}
 	//เมนูสารบรรณกลุ่ม
 	if($result_permission['saraban_status']==3){			//กำหนดสิทธิ์ให้เห็นเมนู  สารบรรณกลุ่ม
-	echo "<li><a href='?option=bookregister' class='dir'>ตั้งค่าระบบกลุ่ม</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบกลุ่ม</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 //			echo "<li><a href='?option=bookregister&task=permission'>กำหนดเจ้าหน้าที่</a></li>";
 			echo "<li><a href='?option=bookregister&task=year_g'>กำหนดปีปฏิทิน กลุ่ม</a></li>";
 		//	echo "<li><a href='?option=bookregister&task=main/office_no'>กำหนดเลขที่หนังสือ</a></li>";
@@ -54,14 +50,14 @@ echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
 
 	//เมนูทะเบียนหนังสือ สารบรรณกลุ่ม
 	if($result_permission['saraban_status']==3){			//กำหนดสิทธิ์ให้เห็นเมนู  สารบรรณกลุ่ม
-echo "<li><a href='?option=bookregister&task=main/receive_g' class='dir'>ทะเบียนหนังสือรับกลุ่ม</a>";
-		echo "<ul>";
+echo "<li class='dropdown'><a href='?option=bookregister&task=main/receive_g' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือรับกลุ่ม</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/receive_g'>ทะเบียนหนังสือรับกลุ่ม</a></li>";
 		echo "</ul>";
 	echo "</li>";
 
-	echo "<li><a href='?option=bookregister&task=main/send_g' class='dir'>ทะเบียนหนังสือส่งกลุ่ม</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister&task=main/send_g' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือส่งกลุ่ม</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/send_g'>ทะเบียนหนังสือส่งกลุ่ม</a></li>";
 		echo "</ul>";
 	echo "</li>";
@@ -69,33 +65,33 @@ echo "<li><a href='?option=bookregister&task=main/receive_g' class='dir'>ทะ�
 
 //เมนูทะเบียนหนังสือ สารบรรณสำนัก
 	if($result_permission['saraban_status']==2){			//กำหนดสิทธิ์ให้เห็นเมนู  สารบรรณสำนัก
-echo "<li><a href='?option=bookregister&task=main/receive_de' class='dir'>ทะเบียนหนังสือรับสำนัก</a>";
-		echo "<ul>";
+echo "<li class='dropdown'><a href='?option=bookregister&task=main/receive_de' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือรับสำนัก</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/receive_de'>ทะเบียนหนังสือรับสำนัก</a></li>";
 		echo "</ul>";
 	echo "</li>";
 
-	echo "<li><a href='?option=bookregister&task=main/send_de' class='dir'>ทะเบียนหนังสือส่งสำนัก</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister&task=main/send_de' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือส่งสำนัก</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/send_de'>ทะเบียนหนังสือส่งสำนัก</a></li>";
 		echo "</ul>";
 	echo "</li>";
 	}
 
 	if($_SESSION['admin_bookregister']=="bookregister" or $result_permission['saraban_status']==1){		 //กำหนดสิทธิ์ให้เห็นเมนู  admin และ สารบรรณกลาง สพฐ.
-	echo "<li><a href='?option=bookregister&task=main/receive' class='dir'>ทะเบียนหนังสือรับ สพฐ.</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister&task=main/receive' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือรับ สพฐ.</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/receive'>ทะเบียนหนังสือรับ สพฐ.</a></li>";
 		echo "</ul>";
 	echo "</li>";
 
-	echo "<li><a href='?option=bookregister&task=main/send' class='dir'>ทะเบียนหนังสือส่ง สพฐ.</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister&task=main/send' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือส่ง สพฐ.</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/send'>ทะเบียนหนังสือส่ง สพฐ.</a></li>";
 		echo "</ul>";
 	echo "</li>";
-	echo "<li><a href='?option=bookregister&task=main/command' class='dir'>ทะเบียนคำสั่ง สพฐ.</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister&task=main/command' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-tasks' aria-hidden='true'></span>&nbsp;ทะเบียนคำสั่ง สพฐ.</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 			echo "<li><a href='?option=bookregister&task=main/command'>ทะเบียนคำสั่ง สพฐ.</a></li>";
 		echo "</ul>";
 //	echo "</li>";
@@ -107,12 +103,10 @@ echo "<li><a href='?option=bookregister&task=main/receive_de' class='dir'>ทะ
 //	echo "</li>";
 }
 
-	echo "<li><a href='?option=bookregister' class='dir'>คู่มือ</a>";
-		echo "<ul>";
+	echo "<li class='dropdown'><a href='?option=bookregister' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>";
+		echo "<ul class='dropdown-menu' role='menu'>";
 				echo "<li><a href='modules/bookregister/manual/bookregister.pdf' target='_blank'>คู่มือ</a></li>";
 		echo "</ul>";
 	echo "</li>";
-echo "</ul>";
-echo "</td></tr>";
-echo "</table>";
+
 ?>

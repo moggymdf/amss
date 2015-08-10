@@ -35,7 +35,7 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 	if($admin_work=="work"){
 		?>
 	<li class='dropdown'>
-		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>
+		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>
 		<ul class='dropdown-menu' role='menu'>
 			<li>
 				<a href='?option=work&task=permission'>

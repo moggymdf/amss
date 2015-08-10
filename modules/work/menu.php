@@ -35,7 +35,7 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 	if($admin_work=="work"){
 		?>
 	<li class='dropdown'>
-		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>
+		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ <span class='caret'></span></a>
 		<ul class='dropdown-menu' role='menu'>
 			<li>
 				<a href='?option=work&task=permission'>
@@ -44,11 +44,11 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 			</li>
 		</ul>
 	</li>
-	<?
+	<?php
 	}
 	if(($admin_work=="work") or ($login_status<=4 and $permission==1)){
 		?>
-		<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล</a>
+		<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล <span class='caret'></span></a>
 			<ul class='dropdown-menu' role='menu'>
 				<li>
 					<a href='?option=work&task=check'>
@@ -60,7 +60,7 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 						<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง
 					</a>
 				</li>
-				<?
+				<?php
         //บันทึกข้อมูลผู้บริหาร
         if($system_user_department==4){ ?>
 					<li>
@@ -68,15 +68,15 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร
 						</a>
 					</li>
-					<?   } ?>
+					<?php   } ?>
 
 			</ul>
 		</li>
-		<?
+		<?php
 	}
 	if(isset($login_user_id)){ ?>
 			<li class='dropdown'>
-				<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-stats' aria-hidden='true'></span>&nbsp;รายงาน</a>
+				<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-stats' aria-hidden='true'></span>&nbsp;รายงาน <span class='caret'></span></a>
 				<ul class='dropdown-menu' role='menu'>
 					<li>
 						<a href='?option=work&task=report_1'>
@@ -101,10 +101,10 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 
 				</ul>
 			</li>
-			<?	} ?>
+			<?php	} ?>
 
 				<li class='dropdown'>
-					<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>
+					<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ <span class='caret'></span></a>
 					<ul class='dropdown-menu' role='menu'>
 						<li>
 							<a href='modules/work/manual/work.pdf' target='_blank'>

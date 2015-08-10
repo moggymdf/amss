@@ -1,9 +1,9 @@
 <?php
-if($_SESSION['user_os']=='mobile'){
-//include("./modules/work/menu_mobile.php");
+if(isset($_REQUEST['index'])){
+$index=$_REQUEST['index'];
 }
 else{
-//include("./modules/work/menu.php");
+$index="";
 }
 //ผนวกไฟล์
 if($task!=""){
@@ -13,4 +13,3 @@ else {
 include("default.php");
 }
 ?>
-

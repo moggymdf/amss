@@ -11,37 +11,52 @@ if(!isset($_SESSION['admin_mail'])){
 $_SESSION['admin_mail']="";
 }
 
-	//echo "<li class='dropdown'><a href='./'>รายการหลัก</a></li>";
-	if($_SESSION['admin_mail']=="mail"){
-	echo "<li class='dropdown'><a href='?option=mail' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>";
-		echo "<ul class='dropdown-menu' role='menu'>";
-			echo "<li><a href='?option=mail&task=main/permission'>กำหนดเจ้าหน้าที่</a></li>";
-			echo "<li><a href='?option=mail&task=main/group'>กำหนดกลุ่มบุคลากร</a></li>";
-			echo "<li><a href='?option=mail&task=main/group_member'>กำหนดสมาชิกกลุ่มบุคลากร</a></li>";
-			echo "<li><a href='?option=mail&task=main/group_member_report'>รายงานกลุ่มและสมาชิก</a></li>";
-		echo "</ul>";
-	echo "</li>";
-	}
-	if($_SESSION['login_group']==1){
-	echo "<li class='dropdown'><a href='?option=mail&task=main/receive' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนรับ</a>";
-		echo "<ul class='dropdown-menu' role='menu'>";
-			echo "<li><a href='?option=mail&task=main/receive'>ทะเบียนจดหมายรับมา</a></li>";
-	echo "</ul>";
-	echo "</li>";
+	if($_SESSION['admin_mail']=="mail"){ ?>
+	<li class='dropdown'>
+		<a href='?option=mail' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
+			<span class='glyphicon glyphicon-cog' aria-hidden='true'></span>
+			&nbsp;ตั้งค่าระบบ <span class='caret'></span>
+		</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='?option=mail&task=main/permission'>กำหนดเจ้าหน้าที่</a></li>
+			<li><a href='?option=mail&task=main/group'>กำหนดกลุ่มบุคลากร</a></li>
+			<li><a href='?option=mail&task=main/group_member'>กำหนดสมาชิกกลุ่มบุคลากร</a></li>
+			<li><a href='?option=mail&task=main/group_member_report'>รายงานกลุ่มและสมาชิก</a></li>
+		</ul>
+	</li>
+	<?php }
+	if($_SESSION['login_group']==1){ ?>
+	<li class='dropdown'>
+		<a href='?option=mail&task=main/receive' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
+			<span class='glyphicon glyphicon-copy' aria-hidden='true'></span>
+			&nbsp;ทะเบียนรับ <span class='caret'></span>
+		</a>
 
-	echo "<li class='dropdown'><a href='?option=mail&task=main/send' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนส่ง</a>";
-		echo "<ul class='dropdown-menu' role='menu'>";
-			echo "<li><a href='?option=mail&task=main/send'>ทะเบียนจดหมายส่งไป</a></li>";
-		echo "</ul>";
-	echo "</li>";
-	echo "<li><a href='?option=mail&task=main/send&index=1' <span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>&nbsp;เขียนจดหมาย</a>";
-	echo "</li>";
-	}
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='?option=mail&task=main/receive'>ทะเบียนจดหมายรับมา</a></li>
+		</ul>
+	</li>
 
-	echo "<li class='dropdown'><a href='?option=mail' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>";
-		echo "<ul class='dropdown-menu' role='menu'>";
-				echo "<li><a href='modules/mail/manual/mail.pdf' target='_blank'>คู่มือไปรษณีย์</a></li>";
-		echo "</ul>";
-	echo "</li>";
+	<li class='dropdown'>
+		<a href='?option=mail&task=main/send' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
+			<span class='glyphicon glyphicon-paste' aria-hidden='true'></span>
+			&nbsp;ทะเบียนส่ง <span class='caret'></span>
+		</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='?option=mail&task=main/send'>ทะเบียนจดหมายส่งไป</a></li>
+		</ul>
+	</li>
+	<li>
+		<a href='?option=mail&task=main/send&index=1'><span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>&nbsp;เขียนจดหมาย</a>
+	</li>
+	<?php } ?>
 
-?>
+	<li class='dropdown'>
+		<a href='?option=mail' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
+			<span class='glyphicon glyphicon-book' aria-hidden='true'></span>
+			&nbsp;คู่มือ <span class='caret'></span>
+		</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='modules/mail/manual/mail.pdf' target='_blank'>คู่มือไปรษณีย์</a></li>
+		</ul>
+	</li>

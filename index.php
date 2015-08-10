@@ -18,7 +18,9 @@ if(!isset($_SESSION['login_surname'])){ $_SESSION['login_surname']=""; }
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>SMART-OBEC</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <?php
 if(isset($_SESSION['user_os'])){
 	if($_SESSION['user_os']=='mobile'){
@@ -79,7 +81,7 @@ if(isset($_POST['user_os'])){
               if($result = mysqli_query($connect, $sql)){
                 while ($row = $result->fetch_assoc()) {
                   echo "<li class='dropdown'>";
-                  echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>".$row["menugroup_desc"]."<span class='caret'></span></a>";
+                  echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-link' aria-hidden='true'></span>&nbsp;".$row["menugroup_desc"]."<span class='caret'></span></a>";
                   echo    "<ul class='dropdown-menu' role='menu'>";
                   $sqlmodule = "SELECT * FROM system_module WHERE workgroup=".$row["menugroup"]." and module_active=1 ORDER BY module_order";
                   if($resultmodule = mysqli_query($connect, $sqlmodule)){

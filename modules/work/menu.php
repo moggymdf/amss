@@ -32,51 +32,49 @@ $admin_work="";
 $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 }
 
-
-echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>";
-echo "<tr bgcolor='#FFCC00'><td>";
-echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
-	echo "<li><a href='./'>รายการหลัก</a></li>";
 	if($admin_work=="work"){
-	echo "<li><a href='?option=work' class='dir'>ตั้งค่าระบบ</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=permission'>กำหนดเจ้าหน้าที่</a></li>";
-		echo "</ul>";
-	echo "</li>";
+		?>
+	<li class='dropdown'>
+		<a href='?option=work'  class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>
+		<ul  class='dropdown-menu' role='menu'>
+			<li><a href='?option=work&task=permission'>กำหนดเจ้าหน้าที่</a></li>
+		</ul>
+	</li>
+<?
 	}
 	if(($admin_work=="work") or ($login_status<=4 and $permission==1)){
-	echo "<li><a href='?option=work' class='dir'>บันทึกข้อมูล</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=check'>บันทึกข้อมูลการปฏิบัติราชการวันนี้</a></li>";
-			echo "<li><a href='?option=work&task=check_2'>บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง</a></li>";
-
+		?>
+	<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='?option=work&task=check'>บันทึกข้อมูลการปฏิบัติราชการวันนี้</a></li>
+			<li><a href='?option=work&task=check_2'>บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง</a></li>
+<?
         //บันทึกข้อมูลผู้บริหาร
-        if($system_user_department==4){
- 			echo "<li><a href='?option=work&task=check_3'>บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร</a></li>";
-        }
+        if($system_user_department==4){ ?>
+			<li><a href='?option=work&task=check_3'>บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร</a></li>
+			<?   } ?>
 
-    echo "</ul>";
-	echo "</li>";
+    		</ul>
+	</li>
+<?
 	}
-	if(isset($login_user_id)){
-	echo "<li><a href='?option=work' class='dir'>รายงาน</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>";
-			echo "<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>";
-//	if($login_status<105){
-			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนักรายวัน</a></li>";
-			echo "<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการผู้บริหารงานวัน</a></li>";
-//    }
-		echo "</ul>";
-	echo "</li>";
-	}
-	echo "</li>";
-	echo "<li><a href='?option=work' class='dir'>คู่มือ</a>";
-		echo "<ul>";
-				echo "<li><a href='modules/work/manual/work.pdf' target='_blank'>คู่มือการปฏิบัติราชการ</a></li>";
-		echo "</ul>";
-	echo "</li>";
-echo "</ul>";
-echo "</td></tr>";
-echo "</table>";
-?>
+	if(isset($login_user_id)){ ?>
+	<li class='dropdown'>
+		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-stats' aria-hidden='true'></span>&nbsp;รายงาน</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>
+			<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>
+			<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนักรายวัน</a></li>
+			<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการผู้บริหารงานวัน</a></li>
+
+		</ul>
+	</li>
+<?	} ?>
+
+	<li class='dropdown'>
+		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li><a href='modules/work/manual/work.pdf' target='_blank'>คู่มือการปฏิบัติราชการ</a></li>
+		</ul>
+</li>
+

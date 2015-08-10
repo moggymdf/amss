@@ -1,9 +1,9 @@
 <?php
 if($_SESSION['user_os']=='mobile'){
-include("./modules/work/menu_mobile.php");
+//include("./modules/work/menu_mobile.php");
 }
 else{
-include("./modules/work/menu.php");
+//include("./modules/work/menu.php");
 }
 //ผนวกไฟล์
 if($task!=""){

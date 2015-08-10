@@ -35,46 +35,81 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 	if($admin_work=="work"){
 		?>
 	<li class='dropdown'>
-		<a href='?option=work'  class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>
-		<ul  class='dropdown-menu' role='menu'>
-			<li><a href='?option=work&task=permission'>กำหนดเจ้าหน้าที่</a></li>
+		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ</a>
+		<ul class='dropdown-menu' role='menu'>
+			<li>
+				<a href='?option=work&task=permission'>
+					<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; กำหนดเจ้าหน้าที่
+				</a>
+			</li>
 		</ul>
 	</li>
-<?
+	<?
 	}
 	if(($admin_work=="work") or ($login_status<=4 and $permission==1)){
 		?>
-	<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล</a>
-		<ul class='dropdown-menu' role='menu'>
-			<li><a href='?option=work&task=check'>บันทึกข้อมูลการปฏิบัติราชการวันนี้</a></li>
-			<li><a href='?option=work&task=check_2'>บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง</a></li>
-<?
+		<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล</a>
+			<ul class='dropdown-menu' role='menu'>
+				<li>
+					<a href='?option=work&task=check'>
+						<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการวันนี้
+					</a>
+				</li>
+				<li>
+					<a href='?option=work&task=check_2'>
+						<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง
+					</a>
+				</li>
+				<?
         //บันทึกข้อมูลผู้บริหาร
         if($system_user_department==4){ ?>
-			<li><a href='?option=work&task=check_3'>บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร</a></li>
-			<?   } ?>
+					<li>
+						<a href='?option=work&task=check_3'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร
+						</a>
+					</li>
+					<?   } ?>
 
-    		</ul>
-	</li>
-<?
+			</ul>
+		</li>
+		<?
 	}
 	if(isset($login_user_id)){ ?>
-	<li class='dropdown'>
-		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-stats' aria-hidden='true'></span>&nbsp;รายงาน</a>
-		<ul class='dropdown-menu' role='menu'>
-			<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>
-			<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>
-			<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนักรายวัน</a></li>
-			<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการผู้บริหารงานวัน</a></li>
+			<li class='dropdown'>
+				<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-stats' aria-hidden='true'></span>&nbsp;รายงาน</a>
+				<ul class='dropdown-menu' role='menu'>
+					<li>
+						<a href='?option=work&task=report_1'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการรายวัน
+						</a>
+					</li>
+					<li>
+						<a href='?option=work&task=report_2'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการรอบเดือน
+						</a>
+					</li>
+					<li>
+						<a href='?option=work&task=report_4'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการรายสำนักรายวัน
+						</a>
+					</li>
+					<li>
+						<a href='?option=work&task=report_6'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการผู้บริหารงานวัน
+						</a>
+					</li>
 
-		</ul>
-	</li>
-<?	} ?>
+				</ul>
+			</li>
+			<?	} ?>
 
-	<li class='dropdown'>
-		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>
-		<ul class='dropdown-menu' role='menu'>
-			<li><a href='modules/work/manual/work.pdf' target='_blank'>คู่มือการปฏิบัติราชการ</a></li>
-		</ul>
-</li>
-
+				<li class='dropdown'>
+					<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ</a>
+					<ul class='dropdown-menu' role='menu'>
+						<li>
+							<a href='modules/work/manual/work.pdf' target='_blank'>
+								<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; คู่มือการปฏิบัติราชการ
+							</a>
+						</li>
+					</ul>
+				</li>

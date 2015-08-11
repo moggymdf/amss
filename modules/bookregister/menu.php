@@ -86,15 +86,10 @@ $_SESSION['admin_bookregister']="";
 				<li class='dropdown'>
 					<a href='?option=bookregister&task=main/receive_de' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
 					<span class='glyphicon glyphicon-copy' aria-hidden='true'></span>
-						&nbsp;ทะเบียนหนังสือรับสำนัก <span class='caret'></span>
+						&nbsp;ทะเบียนหนังสือรับ/ส่ง สำนัก <span class='caret'></span>
 					</a>
 					<ul class='dropdown-menu' role='menu'>
 						<li><a href='?option=bookregister&task=main/receive_de'>ทะเบียนหนังสือรับสำนัก</a></li>
-					</ul>
-				</li>
-
-				<li class='dropdown'><a href='?option=bookregister&task=main/send_de' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือส่งสำนัก <span class='caret'></span></a>
-					<ul class='dropdown-menu' role='menu'>
 						<li><a href='?option=bookregister&task=main/send_de'>ทะเบียนหนังสือส่งสำนัก</a></li>
 						</ul>
 					</li>
@@ -103,16 +98,10 @@ $_SESSION['admin_bookregister']="";
 	if($_SESSION['admin_bookregister']=="bookregister" or $result_permission['saraban_status']==1){	 //กำหนดสิทธิ์ให้เห็นเมนู  admin และ สารบรรณกลาง สพฐ. ?>
 		<li class='dropdown'>
 			<a href='?option=bookregister&task=main/receive' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
-				<span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือรับ สพฐ. <span class='caret'></span>
+				<span class='glyphicon glyphicon-copy' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือรับ/ส่ง สพฐ. <span class='caret'></span>
 			</a>
 				<ul class='dropdown-menu' role='menu'>
 					<li><a href='?option=bookregister&task=main/receive'>ทะเบียนหนังสือรับ สพฐ.</a></li>
-				</ul>
-			</li>
-
-			<li class='dropdown'><a href='?option=bookregister&task=main/send' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
-				<span class='glyphicon glyphicon-paste' aria-hidden='true'></span>&nbsp;ทะเบียนหนังสือส่ง สพฐ. <span class='caret'></span></a>
-				<ul class='dropdown-menu' role='menu'>
 					<li><a href='?option=bookregister&task=main/send'>ทะเบียนหนังสือส่ง สพฐ.</a></li>
 				</ul>
 			</li>

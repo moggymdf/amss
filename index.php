@@ -52,7 +52,7 @@ if(isset($_POST['user_os'])){
 </head>
 <body>
 <!-- Navbar -->
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top" id="topnavbar">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -125,7 +125,6 @@ if(isset($_POST['user_os'])){
   </div><!-- /.container-fluid -->
 </nav>
 <!-- End Navvar -->
-<br><br><br>
 <?php
 
 if(!isset($_SESSION['AMSSPLUS'])){
@@ -176,7 +175,15 @@ else{
 mysqli_close($connect);
 ?>
 <noscript>
-!Warning! Javascript must be enabled for proper operation of the Administrator
+!คำเตือน! เพื่อให้การใช้งานระบบสมบูรณ์ถูกต้อง กรุณาเปิดการใช้งานจาวาสคริพท์
 </noscript>
+  <script>
+    $(document).ready(function(){
+        $(document.body).css('padding-top', $('#topnavbar').height() + 10);
+        $(window).resize(function(){
+            $(document.body).css('padding-top', $('#topnavbar').height() + 10);
+        });
+    });
+</script>
 </body>
 </html>

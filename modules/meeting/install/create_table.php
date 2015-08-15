@@ -15,6 +15,7 @@ $sql_create="CREATE TABLE `meeting_main` (
   `person_num` int(5) NOT NULL,
   `book_person` varchar(100) NOT NULL,
   `user_book` varchar(13) NOT NULL,
+  `department_book` tinyint(4) NOT NULL,
   `rec_date` datetime NOT NULL,
   `approve` int(11) DEFAULT NULL,
   `reason` varchar(200) DEFAULT NULL,

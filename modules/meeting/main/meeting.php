@@ -1,23 +1,44 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-<link href="modules/meeting/css/datepicker.css" rel="stylesheet" media="screen">
-
 <?php
+//กำหนดค่าสูงสุดในรายการแสดงผล
+$showmaxlist=40;
+
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
 if(!($login_group<=4)){
 exit();
 }
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
 
 require_once "modules/meeting/time_inc.php";
 ?>
 <script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
 <?php
-
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
 
 //กรณีเลือกแสดงเฉพาะห้องประชุม
 if(isset($_REQUEST['room_index'])){
@@ -38,257 +59,572 @@ $postindex=mysqli_real_escape_string($connect,$_POST['index']);
 
 if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 
-echo "<table width='100%' border='0' align='center' >";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>รายการจองห้องประชุม</strong></font><br><br></td></tr>";
-echo "</table>";
-}
 
-//ส่วนฟอร์มรับข้อมูล
-if($getindex==1){
+//เริ่มใหม่
 
-echo "<form id='frm1' name='frm1' class='form-control'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>จองห้องประชุมในสำนัก</Font>";
-echo "</Cener>";
-echo "<Br><Br>";
-echo "<Table width='70%' class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr align='left'><Td align='right'>เลือกห้องประชุม&nbsp;&nbsp;</Td><Td><Select  name='room'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from meeting_room where department=? and active='1'  order by id";
-    $dbquery = $connect->prepare($sql);
-    $dbquery->bind_param("i", $system_user_department);
-    $dbquery->execute();
-    $result_room=$dbquery->get_result();
-While ($result = mysqli_fetch_array($result_room))
+  // Search Condition
+  if(isset($_POST["searchtext"])){
+    $searchtext = $_POST["searchtext"];
+    $_SESSION["searchtext"] = $_POST["searchtext"];
+  }else{
+    $searchtext = "";
+  }
+
+
+  if(isset($_POST["status_index"])){
+    switch ($_POST["status_index"]) {
+      case '999':
+        $poststatus_index = 999;
+        unset($_SESSION["status_index"]);
+        break;
+      default:
+        $poststatus_index = $_POST["status_index"];
+        $_SESSION["status_index"] = $_POST["status_index"];
+        break;
+    }
+  }else{
+    $poststatus_index = "";
+  }
+?>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">รายการจองห้องประชุม</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-2 text-left form-group">
+          <a href="?option=meeting&task=main/meeting&index=1" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>&nbsp;จองห้องในสำนัก</a>
+        </div>
+        <div class="col-md-1 text-left form-group">
+          <a href="?option=meeting&task=main/meeting&index=11" class="btn btn-danger"><span class="glyphicon glyphicon-plus"></span>&nbsp;จองห้องต่างสำนัก</a>
+        </div>
+        <div class="col-md-8 text-right">
+          <form class="form-inline" action="#" enctype="multipart/form-data" method="POST" >
+            <div class="form-group">
+              <label for="searchtext"></label>
+              <input type="text" class="form-control" id="searchtext" name="searchtext" placeholder="พิมพ์คำค้นหา" value="<?php echo $searchtext; ?>">
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="status_index" >
+                <option value="999" <?php if($poststatus_index==""){ echo "selected"; } ?>>ทุกสถานะ</option>
+               <option value="0" <?php if($poststatus_index=="0"){ echo "selected"; } ?>>รอการอนุมัติ</option>
+               <option value="1" <?php if($poststatus_index=="1"){ echo "selected"; } ?>>อนุมัติแล้ว</option>
+               <option value="2" <?php if($poststatus_index=="2"){ echo "selected"; } ?>>ไม่อนุมัติ</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> ค้นหา</button>
+            <a href="?option=meeting&task=main/meeting" class="btn btn-default"><span class="glyphicon glyphicon-list"></span> แสดงทั้งหมด</a>
+          </form>
+        </div>
+      </div>
+      <hr>
+      <table class="table table-hover table-striped table-condensed table-responsive">
+        <thead>
+          <tr>
+          	<th>วันที่เริ่ม</th>
+            <th>วันที่สิ้นสุด</th>
+          	<th>ห้องประชุม</th>
+            <th>เวลา</th>
+            <th>ประธาน/วัตถุประสงค์</th>
+            <th>อื่นๆ/ผู้ประสานงาน</th>
+            <th>จองเมื่อ</th>
+            <th>ลบ</th>
+            <th>อนุมัติ</th>
+            <th>หมายเหตุ</th>
+       	  </tr>
+        </thead>
+        <tbody>
+
+          <?php
+            // Select Book
+            if(($poststatus_index==999) or ($poststatus_index=="")){
+              $sqlroomstatus = "";
+            }else{
+              $sqlroomstatus = " and approve=".$poststatus_index." ";
+            }
+            $sql = " SELECT
+                  meeting_main.*,
+                  meeting_room.room_name,
+                  meeting_room.department as roomdepart,
+                  system_department.department_name,
+                  system_department.department_precis,
+                  person_main.prename,
+                  person_main.name,
+                  person_main.surname
+                FROM
+                  meeting_main
+                  LEFT JOIN meeting_room ON meeting_main.room = meeting_room.room_code
+                  LEFT JOIN system_department ON meeting_main.department_book = system_department.department
+                  LEFT JOIN person_main ON meeting_main.user_book = person_main.person_id
+                WHERE user_book = '$_SESSION[login_user_id]' ".$sqlroomstatus." and
+                      objective like '%$searchtext%'
+                ORDER BY book_date_start desc,room,start_time LIMIT 0,$showmaxlist";
+
+
+            if ($result = mysqli_query($connect, $sql)) {
+              while ($row = $result->fetch_assoc()) {
+                switch ($row["approve"]) {
+                  case '1':
+                    $tr_class = "class='success'";
+                    break;
+                  case '2':
+                    $tr_class = "class='warning'";
+                    break;
+                  default:
+                    $tr_class = "";
+                    break;
+                }
+
+        if($row['roomdepart']!=$user_departid){
+    //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $row['roomdepart']);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
    {
-		$room_code = $result['room_code'];
-		$room_name = $result['room_name'];
-		if($room_index==$room_code){
-		echo  "<option value = $room_code selected>$room_name</option>";
-		}
-		else{
-		echo  "<option value = $room_code>$room_name</option>";
-		}
+    $book_department_name=$result_depart_name['department_name'];
+    $book_department_precisname=$result_depart_name['department_precis'];
 	}
-echo "</select>";
-echo "</Td></Tr>";
 
-echo "<Tr align='left'><Td align='right'>วันทีเริ่มใช้ห้อง&nbsp;&nbsp;</Td>";
+        $showdepartmybook = " <a tabindex='0' class='btn btn-warning btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='ห้องประชุมสำนัก' data-content=$book_department_name>$book_department_precisname</a>";
+        }else{$showdepartmybook="";}
 
-echo "<Td align='left'>";
-echo "<table><tr><td>";
-echo "<input class='form-control' type='text' name='book_date_start'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
-";
-echo "</Td><td>&nbsp;&nbsp;ถึงวันที่&nbsp;&nbsp;<td><td>";
+                ?>
 
-echo "<input class='form-control' type='text' name='book_date_end'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
-";
+                  <tr <?php echo $tr_class; ?>>
+                    <td><?php echo thai_date_3($row['book_date_start']); ?></td>
+                    <td><?php echo thai_date_3($row['book_date_end']); ?></td>
+                    <td><?php echo $row['room_name'].$showdepartmybook ;?></td>
+                    <td><?php echo number_format($row['start_time'],2)."-".number_format($row['finish_time'],2)."น."; ?></td>
+                    <td><?php echo $row['chairman']."/".$row['objective']; ?></td>
+                    <td><?php echo $row['other']."/".$row['coordinator']; ?></td>
+                    <td><?php echo thai_date_4($row['rec_date']); ?></td>
+                    <td class="text-center">
+                    <?php if($row['book_person']==$user_id){
+                     echo   "<a href='?option=meeting&task=main/meeting&index=2&id=$row[id]' data-toggle='confirmation' data-placement='top' data-trigger='focus'><span class='glyphicon glyphicon-remove icon-danger icon-size1'></span></a>";
+                     }else{ echo ""; } ?>
+                    </Td>
+                    <td class="text-center">
+                   <?php if($row['approve']==2){ echo "<span class='glyphicon glyphicon-ban-circle icon-danger icon-size1'></span>";}
+                            else if($row['approve']==1){ echo "<span class='glyphicon glyphicon-ok-circle icon-success icon-size2'></span>";}
+                            else { echo "<span class='glyphicon glyphicon-hourglass icon-info'></span>";}
 
-echo "</td></tr></table>";
-echo "</Td></Tr>";
+                        ?>
+                    </td>
+                    <td><?php echo $row['reason'];?></td>
+                  </tr>
+                <?php
+              }
+              // free result set
+              mysqli_free_result($result);
+            }
+          ?>
 
-echo "<Tr align='left'><Td align='right'>ตั้งแต่เวลา&nbsp;&nbsp;</Td>";
-echo "<td><table><tr><Td><Select  name='start_time'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option value = 1>01.00 น.</option>";
-echo  "<option value = 2>02.00 น.</option>";
-echo  "<option value = 3>03.00 น.</option>";
-echo  "<option value = 4>04.00 น.</option>";
-echo  "<option value = 5>05.00 น.</option>";
-echo  "<option value = 6>06.00 น.</option>";
-echo  "<option value = 7>07.00 น.</option>";
-echo  "<option value = 8 selected>08.00 น.</option>";
-echo  "<option value = 9>09.00 น.</option>";
-echo  "<option value = 10>10.00 น.</option>";
-echo  "<option value = 11>11.00 น.</option>";
-echo  "<option value = 12>12.00 น.</option>";
-echo  "<option value = 13>13.00 น.</option>";
-echo  "<option value = 14>14.00 น.</option>";
-echo  "<option value = 15>15.00 น.</option>";
-echo  "<option value = 16>16.00 น.</option>";
-echo  "<option value = 17>17.00 น.</option>";
-echo  "<option value = 18>18.00 น.</option>";
-echo  "<option value = 19>19.00 น.</option>";
-echo  "<option value = 20>20.00 น.</option>";
-echo  "<option value = 21>21.00 น.</option>";
-echo  "<option value = 22>22.00 น.</option>";
-echo  "<option value = 23>23.00 น.</option>";
-echo  "<option value = 24>24.00 น.</option>";
-echo "</select>";
-echo "</td><td>&nbsp;&nbsp;ถึงเวลา&nbsp;</td>";
+        </tbody>
+			</table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
 
-echo "<Td><Select  name='finish_time'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option value = 1>01.00 น.</option>";
-echo  "<option value = 2>02.00 น.</option>";
-echo  "<option value = 3>03.00 น.</option>";
-echo  "<option value = 4>04.00 น.</option>";
-echo  "<option value = 5>05.00 น.</option>";
-echo  "<option value = 6>06.00 น.</option>";
-echo  "<option value = 7>07.00 น.</option>";
-echo  "<option value = 8>08.00 น.</option>";
-echo  "<option value = 9>09.00 น.</option>";
-echo  "<option value = 10>10.00 น.</option>";
-echo  "<option value = 11>11.00 น.</option>";
-echo  "<option value = 12>12.00 น.</option>";
-echo  "<option value = 13>13.00 น.</option>";
-echo  "<option value = 14>14.00 น.</option>";
-echo  "<option value = 15>15.00 น.</option>";
-echo  "<option value = 16   selected>16.00 น.</option>";
-echo  "<option value = 17>17.00 น.</option>";
-echo  "<option value = 18>18.00 น.</option>";
-echo  "<option value = 19>19.00 น.</option>";
-echo  "<option value = 20>20.00 น.</option>";
-echo  "<option value = 21>21.00 น.</option>";
-echo  "<option value = 22>22.00 น.</option>";
-echo  "<option value = 23>23.00 น.</option>";
-echo  "<option value = 24>24.00 น.</option>";
-echo "</select>";
-echo "</Td></Tr></table></td></tr>";
-echo "<Tr align='left'><Td align='right'>ประธานการประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='chairman' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='objective' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num'  Size='5'onkeypress=check_number()>&nbsp;คน</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>ผู้ประสานงาน/เบอร์โทร&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='coordinator' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='other' Size='100'></Td></Tr>";
-echo "</Table>";
-echo "<Br>";
-echo "<INPUT TYPE='hidden' name='index' value=4>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>";
-
-echo "</form>";
+<?php
 }
+?>
 
+<?php
+//ส่วนฟอร์มรับข้อมูล จองห้องในสำนัก
+if($getindex==1){
+?>
+      <div class="panel-heading"><h3 class="panel-title">การจองห้องประชุมภายในสำนัก</h3></div>
+      <div class="panel-body">
+        <form id='frm1' name='frm1' class="form-horizontal" action="?option=meeting&task=main/meeting" method="POST" onSubmit="JavaScript:return goto_url(1);">
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ห้องประชุม*</label>
+          <div class="col-sm-4">
+            <label >
+                <Select name='room' id='room' class="selectpicker show-tick" data-style="btn-primary">
+                    <option  value = ''>เลือกห้องประชุม</option>
+<?php
+                    $sql = "select * from meeting_room where department=? and active='1'  order by id";
+                    $dbquery = $connect->prepare($sql);
+                    $dbquery->bind_param("i", $user_departid);
+                    $dbquery->execute();
+                    $result_room=$dbquery->get_result();
+                    While ($result = mysqli_fetch_array($result_room))
+                    {
+		              $room_code = $result['room_code'];
+		              $room_name = $result['room_name'];
+		              echo  "<option value = $room_code>$room_name</option>";
+	               }
+                    ?>
+                </select>
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">วันที่ใช้งาน*</label>
+          <div class="col-sm-2">
+            <label >
+               <input class="form-control" type="text" name="book_date_start" id="book_date_start" placeholder="วันที่เริ่มต้น" data-provide="datepicker"  data-date-language="th"  >
+             </label>
+          </div>
+           <div class="col-sm-1">
+
+            <label class="control-label text-right">ถึงวันที่*</label>
+
+            </div>
+           <div class="col-sm-2">
+            <label >
+                <input class="form-control" type="text" name="book_date_end" id="book_date_end" placeholder="วันที่สิ้นสุด" data-provide="datepicker"  data-date-language="th"  >
+            </label>
+          </div>
+       </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ตั้งแต่เวลา*</label>
+          <div class="col-sm-2">
+            <label >
+                <Select  name="start_time" id="start_time"   class="selectpicker show-tick" data-width="120px" >
+                    <option value = 1>01.00 น.</option>
+                    <option value = 2>02.00 น.</option>
+                    <option value = 3>03.00 น.</option>
+                    <option value = 4>04.00 น.</option>
+                    <option value = 5>05.00 น.</option>
+                    <option value = 6>06.00 น.</option>
+                    <option value = 7>07.00 น.</option>
+                    <option value = 8 selected>08.00 น.</option>
+                    <option value = 9>09.00 น.</option>
+                    <option value = 10>10.00 น.</option>
+                    <option value = 11>11.00 น.</option>
+                    <option value = 12>12.00 น.</option>
+                    <option value = 13>13.00 น.</option>
+                    <option value = 14>14.00 น.</option>
+                    <option value = 15>15.00 น.</option>
+                    <option value = 16>16.00 น.</option>
+                    <option value = 17>17.00 น.</option>
+                    <option value = 18>18.00 น.</option>
+                    <option value = 19>19.00 น.</option>
+                    <option value = 20>20.00 น.</option>
+                    <option value = 21>21.00 น.</option>
+                    <option value = 22>22.00 น.</option>
+                    <option value = 23>23.00 น.</option>
+                </Select>
+             </label>
+          </div>
+           <div class="col-sm-1">
+
+            <label class="control-label text-center">ถึงเวลา*</label>
+
+            </div>
+           <div class="col-sm-2">
+            <label >
+                 <Select  name="finish_time" id="finish_time"  class="selectpicker show-tick" data-width="120px">
+                    <option value = 1>01.00 น.</option>
+                    <option value = 2>02.00 น.</option>
+                    <option value = 3>03.00 น.</option>
+                    <option value = 4>04.00 น.</option>
+                    <option value = 5>05.00 น.</option>
+                    <option value = 6>06.00 น.</option>
+                    <option value = 7>07.00 น.</option>
+                    <option value = 8>08.00 น.</option>
+                    <option value = 9>09.00 น.</option>
+                    <option value = 10>10.00 น.</option>
+                    <option value = 11>11.00 น.</option>
+                    <option value = 12>12.00 น.</option>
+                    <option value = 13>13.00 น.</option>
+                    <option value = 14>14.00 น.</option>
+                    <option value = 15>15.00 น.</option>
+                    <option value = 16 selected>16.00 น.</option>
+                    <option value = 17>17.00 น.</option>
+                    <option value = 18>18.00 น.</option>
+                    <option value = 19>19.00 น.</option>
+                    <option value = 20>20.00 น.</option>
+                    <option value = 21>21.00 น.</option>
+                    <option value = 22>22.00 น.</option>
+                    <option value = 23>23.00 น.</option>
+                </Select>
+           </label>
+          </div>
+       </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ประธานการประชุม*</label>
+          <div class="col-sm-4">
+            <label >
+                <Input class="form-control" Type="Text"  Name="chairman" id="chairman" size="30px" >
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">วัตถุประสงค์*</label>
+          <div class="col-sm-4">
+            <label >
+                <Input class="form-control" Type="Text" Name="objective" id="objective"  size="60px"  >
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">จำนวนผู้เข้าประชุม*</label>
+          <div class="col-sm-4">
+            <label >
+                <Input Type="Text" class="form-control" Name="person_num" id="person_num"  size="10px" onkeypress=check_number()>
+            </label>
+            <label > คน</label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ผู้ประสานงาน/เบอร์โทรศัพท์*</label>
+          <div class="col-sm-4">
+            <label >
+               <Input class="form-control" Type="Text" Name="coordinator" id="coordinator" size="30px" >
+           </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">อื่นๆ(ถ้ามี)</label>
+          <div class="col-sm-4">
+            <label >
+               <Input class="form-control" Type="Text" Name="other" id="other" size="60px" >
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+          <div class="col-sm-4">
+            <label >
+                <INPUT TYPE="hidden" name="index" value="4">
+                <button type="submit" name="smb" class="btn btn-primary"  class="entrybutton" >
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> ตกลง
+                </button>&nbsp;
+
+                <button type="button" name="back" class="btn btn-default" onclick="location.href='?option=meeting&task=main/meeting'">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> ย้อนกลับ
+                </button>
+            </label>
+          </div>
+        </div>
+        <hr>
+      </div>
+</form>
+
+<?php
+}
+?>
+
+<?php
 //เพิ่มจองห้องต่างสำนัก
 if($getindex==11){
-
-echo "<form id='frm1' name='frm1' class='form-control'>";
-echo "<Center>";
-echo "<Font color='#006666' Size=3><B>จองห้องประชุมต่างสำนัก</Font>";
-echo "</Cener>";
-echo "<Br><Br>";
-echo "<Table width='70%' class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr align='left'><Td align='right'>เลือกห้องประชุม&nbsp;&nbsp;</Td><Td><Select  name='room'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from meeting_room where department!=? and active='1'  order by department,id";
-    $dbquery = $connect->prepare($sql);
-    $dbquery->bind_param("i", $system_user_department);
-    $dbquery->execute();
-    $result_room=$dbquery->get_result();
-While ($result = mysqli_fetch_array($result_room))
+?>
+      <div class="panel-heading"><h3 class="panel-title">การจองห้องประชุมต่างสำนัก</h3></div>
+      <div class="panel-body">
+        <form id='frm1' name='frm1' class="form-horizontal" action="?option=meeting&task=main/meeting" method="POST" onSubmit="JavaScript:return goto_url(1);">
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ห้องประชุม*</label>
+          <div class="col-sm-4">
+            <label >
+                <Select name='room' id='room' class="selectpicker show-tick" data-style="btn-danger">
+                    <option  value = ''>เลือกห้องประชุม</option>
+<?php
+                    $sql = "select * from meeting_room where department!=? and active='1'  order by department,id";
+                    $dbquery = $connect->prepare($sql);
+                    $dbquery->bind_param("i", $user_departid);
+                    $dbquery->execute();
+                    $result_room=$dbquery->get_result();
+                    While ($result = mysqli_fetch_array($result_room))
+                    {
+		              $room_code = $result['room_code'];
+		              $room_name = $result['room_name'];
+     //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $result['department']);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
    {
-
-	$room_depart = $result['department'];
-
-    //แสดงชื่อหน่วยงาน
-    $sql_depart="select * from system_department where department=? ";
-    $dbquery_depart = $connect->prepare($sql_depart);
-    $dbquery_depart->bind_param("i", $room_depart);
-    $dbquery_depart->execute();
-    $result_qdepart=$dbquery_depart->get_result();
- While ($result_depart = mysqli_fetch_array($result_qdepart))
-{
-     $department_name=$result_depart['department_name'];
- }
-
-		$room_code = $result['room_code'];
-		$room_name = $result['room_name'];
-		if($room_index==$room_code){
-		echo  "<option value = $room_code selected>$room_name($department_name)</option>";
-		}
-		else{
-		echo  "<option value = $room_code>$room_name($department_name)</option>";
-		}
+    $book_department_name=$result_depart_name['department_name'];
+    $book_department_precisname=$result_depart_name['department_precis'];
 	}
-echo "</select>";
-echo "</Td></Tr>";
 
-echo "<Tr align='left'><Td align='right'>วันทีเริ่มใช้ห้อง&nbsp;&nbsp;</Td>";
+ 		              echo  "<option value = $room_code>$room_name ($book_department_precisname)</option>";
+	               }
+                    ?>
+                </select>
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">วันที่ใช้งาน*</label>
+          <div class="col-sm-2">
+            <label >
+               <input class="form-control" type="text" name="book_date_start" id="book_date_start" placeholder="วันที่เริ่มต้น" data-provide="datepicker"  data-date-language="th"  >
+             </label>
+          </div>
+           <div class="col-sm-1">
 
-echo "<Td align='left'>";
-echo "<table><tr><td>";
-echo "<input class='form-control' type='text' name='book_date_start'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
-";
-echo "</Td><td>&nbsp;&nbsp;ถึงวันที่&nbsp;&nbsp;<td><td>";
+            <label class="control-label text-right">ถึงวันที่*</label>
 
-echo "<input class='form-control' type='text' name='book_date_end'  data-provide='datepicker' data-autoclose='true' data-date-language='th'  Size='15'>
-";
+            </div>
+           <div class="col-sm-2">
+            <label >
+                <input class="form-control" type="text" name="book_date_end" id="book_date_end" placeholder="วันที่สิ้นสุด" data-provide="datepicker"  data-date-language="th"  >
+            </label>
+          </div>
+       </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ตั้งแต่เวลา*</label>
+          <div class="col-sm-2">
+            <label >
+                <Select  name="start_time" id="start_time"   class="selectpicker show-tick" data-width="120px" >
+                    <option value = 1>01.00 น.</option>
+                    <option value = 2>02.00 น.</option>
+                    <option value = 3>03.00 น.</option>
+                    <option value = 4>04.00 น.</option>
+                    <option value = 5>05.00 น.</option>
+                    <option value = 6>06.00 น.</option>
+                    <option value = 7>07.00 น.</option>
+                    <option value = 8 selected>08.00 น.</option>
+                    <option value = 9>09.00 น.</option>
+                    <option value = 10>10.00 น.</option>
+                    <option value = 11>11.00 น.</option>
+                    <option value = 12>12.00 น.</option>
+                    <option value = 13>13.00 น.</option>
+                    <option value = 14>14.00 น.</option>
+                    <option value = 15>15.00 น.</option>
+                    <option value = 16>16.00 น.</option>
+                    <option value = 17>17.00 น.</option>
+                    <option value = 18>18.00 น.</option>
+                    <option value = 19>19.00 น.</option>
+                    <option value = 20>20.00 น.</option>
+                    <option value = 21>21.00 น.</option>
+                    <option value = 22>22.00 น.</option>
+                    <option value = 23>23.00 น.</option>
+                </Select>
+             </label>
+          </div>
+           <div class="col-sm-1">
 
-echo "</td></tr></table>";
-echo "</Td></Tr>";
+            <label class="control-label text-center">ถึงเวลา*</label>
 
-echo "<Tr align='left'><Td align='right'>ตั้งแต่เวลา&nbsp;&nbsp;</Td>";
-echo "<td><table><tr><Td><Select  name='start_time'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option value = 1>01.00 น.</option>";
-echo  "<option value = 2>02.00 น.</option>";
-echo  "<option value = 3>03.00 น.</option>";
-echo  "<option value = 4>04.00 น.</option>";
-echo  "<option value = 5>05.00 น.</option>";
-echo  "<option value = 6>06.00 น.</option>";
-echo  "<option value = 7>07.00 น.</option>";
-echo  "<option value = 8 selected>08.00 น.</option>";
-echo  "<option value = 9>09.00 น.</option>";
-echo  "<option value = 10>10.00 น.</option>";
-echo  "<option value = 11>11.00 น.</option>";
-echo  "<option value = 12>12.00 น.</option>";
-echo  "<option value = 13>13.00 น.</option>";
-echo  "<option value = 14>14.00 น.</option>";
-echo  "<option value = 15>15.00 น.</option>";
-echo  "<option value = 16>16.00 น.</option>";
-echo  "<option value = 17>17.00 น.</option>";
-echo  "<option value = 18>18.00 น.</option>";
-echo  "<option value = 19>19.00 น.</option>";
-echo  "<option value = 20>20.00 น.</option>";
-echo  "<option value = 21>21.00 น.</option>";
-echo  "<option value = 22>22.00 น.</option>";
-echo  "<option value = 23>23.00 น.</option>";
-echo  "<option value = 24>24.00 น.</option>";
-echo "</select>";
-echo "</td><td>&nbsp;&nbsp;ถึงเวลา&nbsp;</td>";
+            </div>
+           <div class="col-sm-2">
+            <label >
+                 <Select  name="finish_time" id="finish_time"  class="selectpicker show-tick" data-width="120px">
+                    <option value = 1>01.00 น.</option>
+                    <option value = 2>02.00 น.</option>
+                    <option value = 3>03.00 น.</option>
+                    <option value = 4>04.00 น.</option>
+                    <option value = 5>05.00 น.</option>
+                    <option value = 6>06.00 น.</option>
+                    <option value = 7>07.00 น.</option>
+                    <option value = 8>08.00 น.</option>
+                    <option value = 9>09.00 น.</option>
+                    <option value = 10>10.00 น.</option>
+                    <option value = 11>11.00 น.</option>
+                    <option value = 12>12.00 น.</option>
+                    <option value = 13>13.00 น.</option>
+                    <option value = 14>14.00 น.</option>
+                    <option value = 15>15.00 น.</option>
+                    <option value = 16 selected>16.00 น.</option>
+                    <option value = 17>17.00 น.</option>
+                    <option value = 18>18.00 น.</option>
+                    <option value = 19>19.00 น.</option>
+                    <option value = 20>20.00 น.</option>
+                    <option value = 21>21.00 น.</option>
+                    <option value = 22>22.00 น.</option>
+                    <option value = 23>23.00 น.</option>
+                </Select>
+           </label>
+          </div>
+       </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ประธานการประชุม*</label>
+          <div class="col-sm-4">
+            <label >
+                <Input class="form-control" Type="Text"  Name="chairman" id="chairman" size="30px" >
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">วัตถุประสงค์*</label>
+          <div class="col-sm-4">
+            <label >
+                <Input class="form-control" Type="Text" Name="objective" id="objective"  size="60px"  >
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">จำนวนผู้เข้าประชุม*</label>
+          <div class="col-sm-4">
+            <label >
+                <Input Type="Text" class="form-control" Name="person_num" id="person_num"  size="10px" onkeypress=check_number()>
+            </label>
+            <label > คน</label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">ผู้ประสานงาน/เบอร์โทรศัพท์*</label>
+          <div class="col-sm-4">
+            <label >
+               <Input class="form-control" Type="Text" Name="coordinator" id="coordinator" size="30px" >
+           </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right">อื่นๆ(ถ้ามี)</label>
+          <div class="col-sm-4">
+            <label >
+               <Input class="form-control" Type="Text" Name="other" id="other" size="60px" >
+            </label>
+          </div>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label class="col-sm-3 control-label text-right"></label>
+          <div class="col-sm-4">
+            <label >
+                <INPUT TYPE="hidden" name="index" value="4">
+                <button type="submit" name="smb" class="btn btn-primary"  class="entrybutton" >
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> ตกลง
+                </button>&nbsp;
 
-echo "<Td><Select  name='finish_time'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-echo  "<option value = 1>01.00 น.</option>";
-echo  "<option value = 2>02.00 น.</option>";
-echo  "<option value = 3>03.00 น.</option>";
-echo  "<option value = 4>04.00 น.</option>";
-echo  "<option value = 5>05.00 น.</option>";
-echo  "<option value = 6>06.00 น.</option>";
-echo  "<option value = 7>07.00 น.</option>";
-echo  "<option value = 8>08.00 น.</option>";
-echo  "<option value = 9>09.00 น.</option>";
-echo  "<option value = 10>10.00 น.</option>";
-echo  "<option value = 11>11.00 น.</option>";
-echo  "<option value = 12>12.00 น.</option>";
-echo  "<option value = 13>13.00 น.</option>";
-echo  "<option value = 14>14.00 น.</option>";
-echo  "<option value = 15>15.00 น.</option>";
-echo  "<option value = 16   selected>16.00 น.</option>";
-echo  "<option value = 17>17.00 น.</option>";
-echo  "<option value = 18>18.00 น.</option>";
-echo  "<option value = 19>19.00 น.</option>";
-echo  "<option value = 20>20.00 น.</option>";
-echo  "<option value = 21>21.00 น.</option>";
-echo  "<option value = 22>22.00 น.</option>";
-echo  "<option value = 23>23.00 น.</option>";
-echo  "<option value = 24>24.00 น.</option>";
-echo "</select>";
-echo "</Td></Tr></table></td></tr>";
-echo "<Tr align='left'><Td align='right'>ประธานการประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='chairman' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>วัตถุประสงค์&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='objective' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>จำนวนผู้เข้าประชุม&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='person_num'  Size='5'onkeypress=check_number()>&nbsp;คน</Td></Tr>";
-echo "<Tr align='left'><Td align='right'>ผู้ประสานงาน/เบอร์โทร&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='coordinator' Size='100'></Td></Tr>";
-echo "<Tr align='left'><Td align='right'>อื่น ๆ (ถ้ามี)&nbsp;&nbsp;</Td><Td><Input Type='Text' Name='other' Size='100'></Td></Tr>";
-echo "</Table>";
-echo "<Br>";
-echo "<INPUT TYPE='hidden' name='index' value=4>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>";
+                <button type="button" name="back" class="btn btn-default" onclick="location.href='?option=meeting&task=main/meeting'">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> ย้อนกลับ
+                </button>
+            </label>
+          </div>
+        </div>
+        <hr>
+      </div>
+</form>
 
-//		echo "&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
-
-echo "</form>";
+<?php
 }
-
 
 //ส่วนยืนยันการลบข้อมูล
 
@@ -299,12 +635,23 @@ $getid=mysqli_real_escape_string($connect,$_GET['id']);
 
 
 if($getindex==2) {
-echo "<table width='500' border='0' align='center'>";
-echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</font><br></td></tr>";
-echo "<tr><td align=center>";
-echo "<INPUT TYPE='button' name='smb' value='ยืนยัน' onclick='location.href=\"?option=meeting&task=main/meeting&index=3&id=$getid&page=$_REQUEST[page]\"'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/meeting&page=$_REQUEST[page]\"'";
-echo "</td></tr></table>";
+?>
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">โปรดยืนยันความต้องการลบข้อมูลอีกครั้ง</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row text-center">
+        <div class="col-xs text-center form-group">
+            <INPUT TYPE="button" class="btn btn-danger" name="smb" value="ยืนยัน" onclick="location.href='?option=meeting&task=main/meeting&index=3&id=$getid'"> &nbsp; &nbsp; &nbsp;
+             <INPUT TYPE="button" class="btn btn-info" name="back" value="ยกเลิก" onclick="location.href='?option=meeting&task=main/meeting'">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<?php
 }
 
 //ส่วนลบข้อมูล
@@ -314,7 +661,10 @@ $sql = "delete from meeting_main where id=?";
     $dbquery->bind_param("i", $getid);
     $dbquery->execute();
     $result=$dbquery->get_result();
- }
+echo "<center><h2>ลบรายการจองห้องเรียบร้อย</h2><br>";
+echo "<meta http-equiv='refresh' content='0 ;url=?option=meeting&task=main/meeting'>" ;
+
+}
 
 //ส่วนบันทึกข้อมูล
 if($postindex==4){
@@ -356,338 +706,47 @@ if(isset($_POST['other'])){
 $other=mysqli_real_escape_string($connect,$_POST['other']);
 }else {$other=""; }
 
-$sql_insert = "insert into meeting_main (id , room , book_date_start , book_date_end , start_time, finish_time , chairman , objective , person_num , book_person , user_book , rec_date , approve , reason , coordinator, other , officer , officer_date) values ('',?,?,?,?,?,?,?,?,?,?,?,'','',?,?,'','')";
+
+$sql_insert = "insert into meeting_main (id , room , book_date_start , book_date_end , start_time, finish_time , chairman , objective , person_num , book_person , user_book , department_book , rec_date , approve , reason , coordinator, other , officer , officer_date) values ('',?,?,?,?,?,?,?,?,?,?,?,?,'','',?,?,'','')";
+
 
 if ($dbquery_insert = $connect->prepare($sql_insert)) {
 
-    $dbquery_insert->bind_param("issiississsss", $room , $book_date_start , $book_date_end , $start_time , $finish_time , $chairman , $objective , $person_num , $user , $user , $date_time_now , $coordinator , $other);
+    $dbquery_insert->bind_param("issiississssss", $room , $book_date_start , $book_date_end , $start_time , $finish_time , $chairman , $objective , $person_num , $user_id , $user_id , $user_departid , $date_time_now , $coordinator , $other);
      $dbquery_insert->execute();
     $result_insert=$dbquery_insert->get_result();
 } else {
     die("Errormessage: ". $connect->error);
 }
-    //$dbquery = mysqli_query($connect,$sql_insert);
-}
+echo "<center><h2>บันทึกข้อมูลเรียบร้อย</h2><br>";
+echo "<meta http-equiv='refresh' content='0 ;url=?option=meeting&task=main/meeting'>" ;
 
-//ส่วนแสดงผล
-if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
-
-if(isset($_POST['status_index'])){
-$poststatus_index=mysqli_real_escape_string($connect,$_POST['status_index']);
-    if($poststatus_index!=""){
-    $showstatus=" and meeting_main.approve=$poststatus_index ";
-    }else{$showstatus="";}
-}else {$poststatus_index=""; $showstatus="";}
-
-//ส่วนของการแยกหน้า
-
-$sql_meeting="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.person_id=? $showstatus order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time ";
-    $dbquery_meeting = $connect->prepare($sql_meeting);
-    $dbquery_meeting->bind_param("i", $user);
-    $dbquery_meeting->execute();
-    $result_meeting=$dbquery_meeting->get_result();
-
-$num_rows = mysqli_num_rows($result_meeting);
-
-$pagelen=20;  // 1_กำหนดแถวต่อหน้า
-$url_link="option=meeting&task=main/meeting";  // 2_กำหนดลิงค์ฺ
-$totalpages=ceil($num_rows/$pagelen);
-
-if(!isset($_REQUEST['page'])){
-$_REQUEST['page']="";
-}
-
-if($_REQUEST['page']==""){
-$page=$totalpages;
-		if($page<2){
-		$page=1;
-		}
-$start=0;
-
-}
-else{
-		if($totalpages<$_REQUEST['page']){
-		$page=$totalpages;
-					if($page<1){
-					$page=1;
-					}
-		}
-		else{
-		$page=$_REQUEST['page'];
-		}
-    $start=($page-1)*$pagelen;
-}
-
-//$start=($page-1)*$pagelen;
-
-if(($totalpages>1) and ($totalpages<16)){
-echo "<div align=center>";
-echo "หน้า	";
-			for($i=1; $i<=$totalpages; $i++)	{
-                if($start==0){$page=1;}
-					if($i==$page){
-					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
-					}
-					else {
-					echo "<a href=$PHP_SELF?$url_link&page=$i>[$i]</a>";
-					}
-			}
-echo "</div>";
-}
-if($totalpages>15){
-			if($page <=8){
-			$e_page=15;
-			$s_page=1;
-			}
-			if($page>8){
-					if($totalpages-$page>=7){
-					$e_page=$page+7;
-					$s_page=$page-7;
-					}
-					else{
-					$e_page=$totalpages;
-					$s_page=$totalpages-15;
-					}
-			}
-			echo "<div align=center>";
-			if($page!=1){
-			$f_page1=$page-1;
-			echo "<<a href=$PHP_SELF?$url_link&page=1>หน้าแรก </a>";
-			echo "<<<a href=$PHP_SELF?$url_link&page=$f_page1>หน้าก่อน </a>";
-			}
-			else {
-			echo "หน้า	";
-			}
-			for($i=$s_page; $i<=$e_page; $i++){
-					if($i==$page){
-					echo "[<b><font size=+1 color=#990000>$i</font></b>]";
-					}
-					else {
-					echo "<a href=$PHP_SELF?$url_link&page=$i>[$i]</a>";
-					}
-			}
-			if($page<$totalpages)	{
-			$f_page2=$page+1;
-			echo "<a href=$PHP_SELF?$url_link&page=$f_page2> หน้าถัดไป</a>>>";
-			echo "<a href=$PHP_SELF?$url_link&page=$totalpages> หน้าสุดท้าย</a>>";
-			}
-			echo " <select onchange=\"location.href=this.options[this.selectedIndex].value;\" size=\"1\" name=\"select\">";
-			echo "<option  value=\"\">หน้า</option>";
-				for($p=1;$p<=$totalpages;$p++){
-				echo "<option  value=\"?$url_link&page=$p\">$p</option>";
-				}
-			echo "</select>";
-echo "</div>";
-}
-//จบแยกหน้า
-
-
-$sql_room = "select * from meeting_room where active='1' order by id";
-    $dbquery_room = $connect->prepare($sql_room);
-    //$dbquery_room->bind_param("i", $system_user_department);
-    $dbquery_room->execute();
-    $result_meetroom=$dbquery_room->get_result();
-While ($result_room = mysqli_fetch_array($result_meetroom))
-{
-$room_ar[$result_room['room_code']]=$result_room['room_name'];
-}
-
-$sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.person_id=? $showstatus order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
-
-    $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("i", $user);
-    $dbquery_join->execute();
-    $result_joinroom=$dbquery_join->get_result();
-
-//$dbquery = mysqli_query($connect,$sql);
-
-echo  "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
-echo "<Tr><Td colspan='13' align='left'><table width='100%'><tr><td align='left'><INPUT TYPE='button' name='smb' class='btn btn-success' value='จองห้องประชุมในสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=1\"'>";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-echo "<INPUT TYPE='button' name='smb' class='btn btn-danger' value='จองห้องประชุมต่างสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=11\"'>";
-echo "</Td><td align='right'>";
-
-//เพิ่มการเลือกสถานะ
-echo "<form  name='frm1'>";
-
-echo "&nbsp;<Select  name='status_index' size='1'>";
-echo "<option value ='' >ทุกสถานะ</option>" ;
-echo "<option value ='0' >รอการอนุมัติ</option>" ;
-echo "<option value ='1' >อนุมัติแล้ว</option>" ;
-echo "<option value ='2' >ไม่อนุมัติ</option>" ;
-echo "</select>";
-echo "&nbsp;<INPUT TYPE='button' name='smb' class='btn btn-info' value='เลือก'  onclick='goto_url2(1)'>";
-echo "</form>";
-
-
-echo "</td></tr></table>";
-
-echo "</td></Tr>";
-
-echo "<Tr class='success' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
-
-$N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
-$M=1;
-
-While ($result = mysqli_fetch_array($result_joinroom)){
- 		$id= $result['id'];
-		$room= $result['room'];
-		$start_time=$result['start_time'];
-		$start_time=number_format($start_time,2);
-		$finish_time=$result['finish_time'];
-		$finish_time=number_format($finish_time,2);
-		$book_date_start = $result['book_date_start'];
-		$book_date_end = $result['book_date_end'];
-		$rec_date = $result['rec_date'];
-		$name= $result['name'];
-		$surname = $result['surname'];
-        $coordinator = $result['coordinator'];
-		$chairman = $result['chairman'];
-		$person_num = $result['person_num'];
-		$book_person = $result['book_person'];
-		$user_book = $result['user_book'];
-		$other = $result['other'];
-		$rec_date = $result['rec_date'];
-
-            //if(($M%2) == 0)
-			$color="";
-			//else  	$color="#FFFFFF";
-echo "<Tr bgcolor='$color'>";
-echo "<Td align='left'>";
-echo thai_date_3($book_date_start);
-echo "</Td>";
-echo "<Td align='left'>";
-echo thai_date_3($book_date_end);
-echo "</Td>";
-echo "<Td align='left'>";
-if(isset($room_ar[$room])){
-echo $room_ar[$room];
-}
-echo "</Td>";
-echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time น.</Td>";
-echo "<td>$result[chairman]/$result[objective]</td>";
-
-echo "<td>$result[other]/$result[coordinator]</td>";
-echo "<Td>$name $surname (";
-echo thai_date_4($rec_date);
-//echo $rec_date;
-
-    echo ")</Td>";
-
-if($result['book_person']==$user){
-echo "<Td align='center'><a href=?option=meeting&task=main/meeting&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></Td>";
-}
-else{
-echo "<td></td>";
-}
-
-if($result['approve']==1){
-echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุมัติ'></Td>";
-}
-else if($result['approve']==2){
-echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุมัติ'></Td>";
-}
-else {
-echo "<td></td>";
-}
-
-if($result['reason']!=""){
-echo "<Td align='left'>$result[reason]</Td>";
-}
-else{
-echo "<td></td>";
-}
-
-echo "</Tr>";
-
-$M++;
-$N++;  //*เกี่ยวข้องกับการแยกหน้า
-}
-echo "</Table>";
 }
 
 if(!(($getindex==1) or ($getindex==2) or ($getindex==3) or ($getindex==11))) {
-echo "<br>";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
-}
+echo "<div align='center'>";
+echo "<div class='col-sm-3 col-md-offset-1 text-center'><span class='glyphicon glyphicon-ban-circle icon-danger icon-size1'></span> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม</div>";
+echo "<div class='col-sm-3 text-center'><span class='glyphicon glyphicon-ok-circle icon-success icon-size1'></span> หมายถึง อนุมัติให้ใช้ห้องประชุม</div>";
+echo "<div class='col-sm-3 text-center'><span class='glyphicon glyphicon-hourglass icon-info icon-size1'></span> หมายถึง รอการอนุมัติให้ใช้งาน</div>";
+echo "</div><br><br>";}
 ?>
-    <script src="//getbootstrap.com/2.3.2/assets/js/jquery.js"></script>
-    <script src="//getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
-
-    <script src="modules/meeting/js/bootstrap-datepicker.js"></script>
-       <script src="modules/meeting/js/bootstrap-datepicker.th.js"></script>
-
-    <script id="datepicker"  type="text/javascript">
-      function datepicker() {
-        $('.datepicker').datepicker({
-          format: 'yyyy-mm-dd',
-          autoclose : true
-          });
-      }
-    </script>
-
-    <script type="text/javascript">
-      $(function(){
-        $('pre[data-source]').each(function(){
-          var $this = $(this),
-            $source = $($this.data('source'));
-
-          var text = [];
-          $source.each(function(){
-            var $s = $(this);
-            if ($s.attr('type') == 'text/javascript'){
-              text.push($s.html().replace(/(\n)*/, ''));
-            } else {
-              text.push($s.clone().wrap('<div>').parent().html()
-                .replace(/(\"(?=[[{]))/g,'\'')
-                .replace(/\]\"/g,']\'').replace(/\}\"/g,'\'') // javascript not support lookbehind
-                .replace(/\&quot\;/g,'"'));
-            }
-          });
-
-          $this.text(text.join('\n\n').replace(/\t/g, '    '));
-        });
-
-        prettyPrint();
-        demo();
-      });
-    </script>
 
 
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=meeting&task=main/meeting");   // page ย้อนกลับ
+            return false;
 	}else if(val==1){
 		if(frm1.room.value == ""){
 			alert("กรุณาเลือกห้องประชุม");
-		}else if(frm1.book_date_start.value == ""){
-			alert("กรุณาระบุวันเริ่มต้น");
-		}else if(frm1.book_date_end.value == ""){
-			alert("กรุณาระบุวันที่สิ้นสุด");
-		}else if(frm1.start_time.value == ""){
-			alert("กรุณาระบุเวลาเริ่มประชุม");
-		}else if(frm1.finish_time.value == ""){
-			alert("กรุณาระบุเวลาเลิกประชุม");
-		}else if(frm1.chairman.value == ""){
-			alert("กรุณาระบุประธานการประชุม");
-		}else if(frm1.objective.value == ""){
-			alert("กรุณาระบุวัตถุประสงค์ของการใช้");
-		}else if(frm1.person_num.value == ""){
-			alert("กรุณาระบุจำนวนผู้เข้าประชุม");
-		}else if(frm1.coordinator.value == ""){
-			alert("กรุณาระบุผู้ประสานงานและเบอร์โทรศัพท์");
+            return false;
 		}else if(frm1.book_date_start.value > frm1.book_date_end.value){
 			alert("วันที่เริ่มต้นมากกว่าวันที่สิ้นสุด กรุณาเลือกวันที่ใหม่");
-		}else{
-			callfrm("?option=meeting&task=main/meeting");   //page ประมวลผล
+            return false;
 		}
 	}
 }
 
-function goto_url2(val){
-callfrm("?option=meeting&task=main/meeting");
-}
 
 </script>
 <SCRIPT language=JavaScript>

@@ -632,8 +632,6 @@ if(isset($_GET['id'])){
 $getid=mysqli_real_escape_string($connect,$_GET['id']);
 }else {$getid="";}
 
-
-
 if($getindex==2) {
 ?>
 <div class="container">
@@ -661,8 +659,7 @@ $sql = "delete from meeting_main where id=?";
     $dbquery->bind_param("i", $getid);
     $dbquery->execute();
     $result=$dbquery->get_result();
-echo "<center><h2>ลบรายการจองห้องเรียบร้อย</h2><br>";
-echo "<meta http-equiv='refresh' content='0 ;url=?option=meeting&task=main/meeting'>" ;
+    echo "<script>document.location.href='?option=meeting&task=main/meeting'; </script>\n";
 
 }
 
@@ -718,8 +715,7 @@ if ($dbquery_insert = $connect->prepare($sql_insert)) {
 } else {
     die("Errormessage: ". $connect->error);
 }
-echo "<center><h2>บันทึกข้อมูลเรียบร้อย</h2><br>";
-echo "<meta http-equiv='refresh' content='0 ;url=?option=meeting&task=main/meeting'>" ;
+    echo "<script>document.location.href='?option=meeting&task=main/meeting'; </script>\n";
 
 }
 

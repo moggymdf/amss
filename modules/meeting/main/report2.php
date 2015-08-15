@@ -1,11 +1,31 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-<link href="modules/meeting/css/datepicker.css" rel="stylesheet" media="screen">
 
 <?php
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
 
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -16,7 +36,7 @@ exit();
     //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $login_user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
@@ -29,7 +49,6 @@ exit();
 
 require_once "modules/meeting/time_inc.php";
 ?>
-<script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
 <?php
 
 
@@ -90,7 +109,7 @@ $postindex=mysqli_real_escape_string($connect,$_POST['index']);
 if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 
 echo "<table width='100%' border='0' align='center' >";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>รายการใช้งาน $room_name ของ $system_user_department_name<BR>ประจำเดือน $month_name </strong></font><br><br></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>รายการใช้งาน $room_name ของ $user_department_name<BR>ประจำเดือน $month_name </strong></font><br><br></td></tr>";
 echo "</table>";
 }
 
@@ -104,7 +123,7 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 $sql_joinroom="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showroom and ((meeting_main.book_date_start between ? and ?) or (meeting_main.book_date_end between ? and ? )) and meeting_main.approve=1 order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time ";
 
     $dbquery_joinroom = $connect->prepare($sql_joinroom);
-    $dbquery_joinroom->bind_param("issss", $system_user_department,$getdatestart,$getdateend,$getdatestart,$getdateend);
+    $dbquery_joinroom->bind_param("issss", $user_departid,$getdatestart,$getdateend,$getdatestart,$getdateend);
     $dbquery_joinroom->execute();
     $result_joinroomnum=$dbquery_joinroom->get_result();
 
@@ -205,7 +224,7 @@ echo "</div>";
 $sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showroom and ((meeting_main.book_date_start between ? and ?) or (meeting_main.book_date_end between ? and ? )) and meeting_main.approve=1 order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("issss", $system_user_department,$getdatestart,$getdateend,$getdatestart,$getdateend);
+    $dbquery_join->bind_param("issss", $user_departid,$getdatestart,$getdateend,$getdatestart,$getdateend);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
@@ -306,63 +325,3 @@ echo "</Table>";
 }
 
 ?>
-    <script src="//getbootstrap.com/2.3.2/assets/js/jquery.js"></script>
-    <script src="//getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
-
-    <script src="modules/meeting/js/bootstrap-datepicker.js"></script>
-       <script src="modules/meeting/js/bootstrap-datepicker.th.js"></script>
-
-    <script id="datepicker"  type="text/javascript">
-      function datepicker() {
-        $('.datepicker').datepicker({
-          format: 'yyyy-mm-dd',
-          autoclose : true
-          });
-      }
-    </script>
-
-    <script type="text/javascript">
-      $(function(){
-        $('pre[data-source]').each(function(){
-          var $this = $(this),
-            $source = $($this.data('source'));
-
-          var text = [];
-          $source.each(function(){
-            var $s = $(this);
-            if ($s.attr('type') == 'text/javascript'){
-              text.push($s.html().replace(/(\n)*/, ''));
-            } else {
-              text.push($s.clone().wrap('<div>').parent().html()
-                .replace(/(\"(?=[[{]))/g,'\'')
-                .replace(/\]\"/g,']\'').replace(/\}\"/g,'\'') // javascript not support lookbehind
-                .replace(/\&quot\;/g,'"'));
-            }
-          });
-
-          $this.text(text.join('\n\n').replace(/\t/g, '    '));
-        });
-
-        prettyPrint();
-        demo();
-      });
-    </script>
-
-
-<script>
-
-function goto_url2(val){
-callfrm("?option=meeting&task=main/report1");
-}
-
-</script>
-<SCRIPT language=JavaScript>
-function check_number() {
-e_k=event.keyCode
-//if (((e_k < 48) || (e_k > 57)) && e_k != 46 ) {
-if (e_k != 13 && (e_k < 48) || (e_k > 57)) {
-event.returnValue = false;
-alert("ต้องเป็นตัวเลขเท่านั้น... \nกรุณาตรวจสอบข้อมูลของท่านอีกครั้ง...");
-}
-}
-</script>

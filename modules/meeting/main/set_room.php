@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -9,10 +6,31 @@ if($admin_meeting!="meeting"){
 exit();
 }
 
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
 //หาหน่วยงาน
 $login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+}
 
     //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
@@ -33,7 +51,7 @@ echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 echo "<table width='50%' border='0' align='center' >";
 echo "<tr align='center'><td><font color='#006666' size='3'><strong>กำหนดห้องประชุม";
-echo "<BR>ของ ".$system_user_department_name." </strong></font></td></tr>";
+echo "<BR>ของ ".$user_department_name." </strong></font></td></tr>";
 echo "</table>";
 echo "<br>";
 }
@@ -55,7 +73,7 @@ $sql= "select max(room_code) as room_codemax from meeting_room order by id";
    {
         $room_codemax = $result['room_codemax']+1; }
 
-echo "<form id='frm1' name='frm1'>";
+echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/set_room&index=4' method='POST' onSubmit='JavaScript:return goto_url(1);'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มห้องประชุม</Font>";
 echo "</Cener>";
@@ -81,10 +99,9 @@ echo "</div></td></tr>";
 */
 echo   "<tr><td align='right'>อนุญาตเปิดให้ใช้งาน&nbsp;&nbsp;</td>";
 echo   "<td align='left'>&nbsp;&nbsp;ใช่&nbsp;&nbsp;<input  type=radio name='active' value='1' checked>&nbsp;&nbsp;ไม่ใช่&nbsp;&nbsp;<input  type=radio name='active' value='0' ></td></tr>";
-
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='submit' name='smb' class='btn btn-primary' value='ตกลง' >
 	&nbsp;&nbsp;&nbsp;";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' class='btn btn-warning' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "<INPUT TYPE='button' name='back' class='btn btn-default' value='ย้อนกลับ' onclick='location.href=\"?option=meeting&task=main/set_room\"' ></td></tr>";
 echo "</Table>";
 echo "</form>";
 }
@@ -100,8 +117,8 @@ echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยื�
 echo "<tr><td align=center>";
 echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/set_room&index=3' method='post'> ";
 echo "<Input id='iddel' Type='Hidden' Name='iddel' value='$getid'>";
-echo "<INPUT TYPE='submit' name='smb' value='ยืนยัน'>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back'  value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/set_room\"'";
+echo "<INPUT TYPE='submit' name='smb' value='ยืนยัน' class='btn btn-primary'>
+		&nbsp;&nbsp;<INPUT TYPE='button' name='back' class='btn btn-default'  value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/set_room\"'";
 echo "</form>";
 echo "</td></tr></table>";
 }
@@ -149,7 +166,7 @@ While ($result = mysqli_fetch_array($result_max))
 $room_codemax = $result['room_codemax']; }
 $sql = "insert into meeting_room ( id, room_code, room_name, department ,person_max,room_detail,active) values (?,?,?,?,?,?,?)";
     $dbquery = $connect->prepare($sql);
-    $dbquery->bind_param("sssiisi",$room_code,$room_code,$room_name,$system_user_department,$person_max,$room_detail,$active);
+    $dbquery->bind_param("sssiisi",$room_code,$room_code,$room_name,$user_departid,$person_max,$room_detail,$active);
     $dbquery->execute();
     $result=$dbquery->get_result();
 echo "<script>document.location.href='?option=meeting&task=main/set_room'; </script>\n";
@@ -161,7 +178,7 @@ if(isset($_GET['id'])){
 $getid=mysqli_real_escape_string($connect,$_GET['id']);
 }else {$getid=""; exit;}
 
-echo "<form id='frm1' name='frm1'>";
+echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/set_room&index=6' method='POST' onSubmit='JavaScript:return goto_url_update(1);'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข การกำหนดห้องประชุม</B></Font>";
 echo "</Cener>";
@@ -202,8 +219,9 @@ echo "<Tr><Td align='right'>รูปภาพ&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'>INPUT_IMAGES";
 echo "</div></td></tr>";
 */
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' class='btn btn-warning' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='submit' name='smb' class='btn btn-primary' value='ตกลง' >
+	&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' class='btn btn-default' value='ย้อนกลับ' onclick='location.href=\"?option=meeting&task=main/set_room\"' ></td></tr>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden id='id' Name='id' Value='$getid'>";
@@ -235,6 +253,8 @@ $sql = "update meeting_room  set  room_name=?, person_max=?, room_detail=?, acti
     $dbquery->bind_param("sisii", $room_name,$person_max,$room_detail,$active,$postid);
     $dbquery->execute();
     $result=$dbquery->get_result();
+echo "<script>document.location.href='?option=meeting&task=main/set_room'; </script>\n";
+
 }
 
 //ส่วนแสดงผล
@@ -242,7 +262,7 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==5))){
 
 $sql= "select * from meeting_room where department=? and (active='1' or active ='0') order by id ";
     $dbquery = $connect->prepare($sql);
-    $dbquery->bind_param("i", $system_user_department);
+    $dbquery->bind_param("i", $user_departid);
     $dbquery->execute();
     $result_dep=$dbquery->get_result();
 echo  "<table width=50% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
@@ -279,34 +299,37 @@ echo "</Table>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=meeting&task=main/set_room");   // page ย้อนกลับ
+            return false;    // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.room_code.value == ""){
 			alert("กรุณากรอกข้อมูลเพิ่มห้องประชุมผ่านระบบ");
-		}else if(frm1.room_name.value == ""){
+            return false;
+        }else if(frm1.room_name.value == ""){
 			alert("กรุณาระบุชื่อห้องประชุม");
-		}else if(frm1.person_max.value == ""){
+            return false;
+        }else if(frm1.person_max.value == ""){
 			alert("กรุณากรอกที่นั่งทั้งหมด");
-		}else{
-			callfrm("?option=meeting&task=main/set_room&index=4");   //page ประมวลผล
-		}
+            return false;
+        }
 	}
 }
 
 
 function goto_url_update(val){
 	if(val==0){
-		callfrm("?option=meeting&task=main/set_room");   // page ย้อนกลับ
+            return false;    // page ย้อนกลับ
 	}else if(val==1){
         if(frm1.id.value == ""){
-			alert("กรุณากรอกข้อมูลเพิ่มห้องประชุมผ่านระบบ");
-		}else if(frm1.room_name.value == ""){
+            alert("กรุณากรอกข้อมูลเพิ่มห้องประชุมผ่านระบบ");
+            return false;
+        }else if(frm1.room_name.value == ""){
 			alert("กรุณาระบุชื่อห้องประชุม");
-		}else if(frm1.person_max.value == ""){
+            return false;
+        }else if(frm1.person_max.value == ""){
 			alert("กรุณากรอกที่นั่งทั้งหมด");
-		}else{
-		callfrm("?option=meeting&task=main/set_room&index=6");    //page ประมวลผล
+            return false;
         }
+
 	}
 }
 </script>

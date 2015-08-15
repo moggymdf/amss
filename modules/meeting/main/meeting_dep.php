@@ -1,11 +1,31 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-<link href="modules/meeting/css/datepicker.css" rel="stylesheet" media="screen">
-
 <?php
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
+
 
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -16,7 +36,7 @@ exit();
     //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $login_user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
@@ -28,10 +48,6 @@ exit();
     }
 
 require_once "modules/meeting/time_inc.php";
-?>
-<script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
-<?php
-
 
 //กรณีเลือกแสดงเฉพาะห้องประชุม
 if(isset($_REQUEST['room_index'])){
@@ -53,7 +69,7 @@ $postindex=mysqli_real_escape_string($connect,$_POST['index']);
 if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
 
 echo "<table width='100%' border='0' align='center' >";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>รายการจองห้องประชุมของบุคลากรในสำนัก $system_user_department_name</strong></font><br><br></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>รายการจองห้องประชุมของบุคลากรในสำนัก $user_department_name</strong></font><br><br></td></tr>";
 echo "</table>";
 }
 
@@ -81,6 +97,7 @@ $sql = "delete from meeting_main where id=?";
     $dbquery->bind_param("i", $getid);
     $dbquery->execute();
     $result=$dbquery->get_result();
+    echo "<script>document.location.href='?option=meeting&task=main/meeting_dep'; </script>\n";
  }
 
 
@@ -100,7 +117,7 @@ $poststatus_index=mysqli_real_escape_string($connect,$_POST['status_index']);
 $sql_joinroom="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department=? $showstatus order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time ";
 
     $dbquery_joinroom = $connect->prepare($sql_joinroom);
-    $dbquery_joinroom->bind_param("i", $system_user_department);
+    $dbquery_joinroom->bind_param("i", $user_departid);
     $dbquery_joinroom->execute();
     $result_joinroomnum=$dbquery_joinroom->get_result();
 
@@ -201,30 +218,27 @@ echo "</div>";
 $sql_join="select meeting_main.*, person_main.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join person_main on meeting_main.book_person = person_main.person_id where person_main.department=? $showstatus order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("i", $system_user_department);
+    $dbquery_join->bind_param("i", $user_departid);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
-//$dbquery = mysqli_query($connect,$sql);
+
 
 echo  "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
-//echo "<Tr><Td colspan='13' align='left'><table width='100%'><tr><td align='left'><INPUT TYPE='button' name='smb' class='btn btn-success' value='จองห้องประชุมในสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=1\"'>";
-//echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-//echo "<INPUT TYPE='button' name='smb' class='btn btn-danger' value='จองห้องประชุมต่างสำนัก' onclick='location.href=\"?option=meeting&task=main/meeting&index=11\"'>";
 
 echo "<Tr><Td colspan='13' align='left'><table width='100%'><tr><td align='left'>";
 echo "</Td><td align='right'>";
 
 //เพิ่มการเลือกสถานะ
-echo "<form  name='frm1'>";
+echo "<form  name='frm1' action='?option=meeting&task=main/meeting_dep' method='POST'>";
 
-echo "&nbsp;<Select  name='status_index' size='1'>";
+echo "&nbsp;<Select  name='status_index' class='selectpicker'>";
 echo "<option value ='' >ทุกสถานะ</option>" ;
 echo "<option value ='0' >รอการอนุมัติ</option>" ;
 echo "<option value ='1' >อนุมัติแล้ว</option>" ;
 echo "<option value ='2' >ไม่อนุมัติ</option>" ;
 echo "</select>";
-echo "&nbsp;<INPUT TYPE='button' name='smb' class='btn btn-info' value='เลือก'  onclick='goto_url2(1)'>";
+echo "&nbsp;<INPUT TYPE='submit' name='smb' class='btn btn-info' value='เลือก' >";
 echo "</form>";
 
 
@@ -265,8 +279,24 @@ While ($result = mysqli_fetch_array($result_joinroom)){
     While ($result_room = mysqli_fetch_array($result_meetroom))
     {
         $room_name=$result_room['room_name'];
+
+  if($result_room['department']!=$user_departid){
+    //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $result_room['department']);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $book_department_name=$result_depart_name['department_name'];
+    $book_department_precisname=$result_depart_name['department_precis'];
+	}
+
+        $showdepartmybook = " <a tabindex='0' class='btn btn-warning btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='ห้องประชุมสำนัก' data-content=$book_department_name>$book_department_precisname</a>";
+        }else{$showdepartmybook="";}
     }
-            //if(($M%2) == 0)
+    //if(($M%2) == 0)
 			$color="";
 			//else  	$color="#FFFFFF";
 echo "<Tr bgcolor='$color'>";
@@ -277,7 +307,7 @@ echo "<Td align='left'>";
 echo thai_date_3($book_date_end);
 echo "</Td>";
 echo "<Td align='left'>";
-echo $room_name;
+echo $room_name.$showdepartmybook;
 echo "</Td>";
 echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time น.</Td>";
 echo "<td>$result[chairman]/$result[objective]</td>";
@@ -326,92 +356,3 @@ echo "<br>";
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
 }
 ?>
-    <script src="//getbootstrap.com/2.3.2/assets/js/jquery.js"></script>
-    <script src="//getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
-
-    <script src="modules/meeting/js/bootstrap-datepicker.js"></script>
-       <script src="modules/meeting/js/bootstrap-datepicker.th.js"></script>
-
-    <script id="datepicker"  type="text/javascript">
-      function datepicker() {
-        $('.datepicker').datepicker({
-          format: 'yyyy-mm-dd',
-          autoclose : true
-          });
-      }
-    </script>
-
-    <script type="text/javascript">
-      $(function(){
-        $('pre[data-source]').each(function(){
-          var $this = $(this),
-            $source = $($this.data('source'));
-
-          var text = [];
-          $source.each(function(){
-            var $s = $(this);
-            if ($s.attr('type') == 'text/javascript'){
-              text.push($s.html().replace(/(\n)*/, ''));
-            } else {
-              text.push($s.clone().wrap('<div>').parent().html()
-                .replace(/(\"(?=[[{]))/g,'\'')
-                .replace(/\]\"/g,']\'').replace(/\}\"/g,'\'') // javascript not support lookbehind
-                .replace(/\&quot\;/g,'"'));
-            }
-          });
-
-          $this.text(text.join('\n\n').replace(/\t/g, '    '));
-        });
-
-        prettyPrint();
-        demo();
-      });
-    </script>
-
-
-<script>
-function goto_url(val){
-	if(val==0){
-		callfrm("?option=meeting&task=main/meeting");   // page ย้อนกลับ
-	}else if(val==1){
-		if(frm1.room.value == ""){
-			alert("กรุณาเลือกห้องประชุม");
-		}else if(frm1.book_date_start.value == ""){
-			alert("กรุณาระบุวันเริ่มต้น");
-		}else if(frm1.book_date_end.value == ""){
-			alert("กรุณาระบุวันที่สิ้นสุด");
-		}else if(frm1.start_time.value == ""){
-			alert("กรุณาระบุเวลาเริ่มประชุม");
-		}else if(frm1.finish_time.value == ""){
-			alert("กรุณาระบุเวลาเลิกประชุม");
-		}else if(frm1.chairman.value == ""){
-			alert("กรุณาระบุประธานการประชุม");
-		}else if(frm1.objective.value == ""){
-			alert("กรุณาระบุวัตถุประสงค์ของการใช้");
-		}else if(frm1.person_num.value == ""){
-			alert("กรุณาระบุจำนวนผู้เข้าประชุม");
-		}else if(frm1.coordinator.value == ""){
-			alert("กรุณาระบุผู้ประสานงานและเบอร์โทรศัพท์");
-		}else if(frm1.book_date_start.value > frm1.book_date_end.value){
-			alert("วันที่เริ่มต้นมากกว่าวันที่สิ้นสุด กรุณาเลือกวันที่ใหม่");
-		}else{
-			callfrm("?option=meeting&task=main/meeting");   //page ประมวลผล
-		}
-	}
-}
-
-function goto_url2(val){
-callfrm("?option=meeting&task=main/meeting");
-}
-
-</script>
-<SCRIPT language=JavaScript>
-function check_number() {
-e_k=event.keyCode
-//if (((e_k < 48) || (e_k > 57)) && e_k != 46 ) {
-if (e_k != 13 && (e_k < 48) || (e_k > 57)) {
-event.returnValue = false;
-alert("ต้องเป็นตัวเลขเท่านั้น... \nกรุณาตรวจสอบข้อมูลของท่านอีกครั้ง...");
-}
-}
-</script>

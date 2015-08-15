@@ -104,11 +104,54 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมในส�
 {
     $room_code=$result_roomdepart["room_code"];
     $room_name=$result_roomdepart["room_name"];
+    $room_depart=$result_roomdepart["department"];
 
     //แสดงห้องประชุมที่มีการใช้งาน
     echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-    echo "<tr><td align='left' colspan='5'><h4><strong>ห้องประชุม $room_name</strong></h4></td></tr>";
-    echo "<tr><td><table class='table table-hover table-bordered table-striped table-condensed'>";
+    echo "<tr><td align='left' width='100'>"
+    ?>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<?php echo $result_roomdepart["room_code"]; ?>">รายละเอียด</button>
+    <?php
+    echo    "</td><td align='left'><h4><strong>ห้องประชุม $room_name</strong></h4></td>";
+
+ //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $room_depart);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+?>
+
+
+                      <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $result_roomdepart["room_code"]; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">ห้องประชุม <?php echo $room_name." (".$user_department_precisname.")"; ?></h4>
+                            </div>
+                            <div class="modal-body">
+                              <a href="#" class="btn btn-warning">จำนวนที่นั่ง&nbsp;:&nbsp;<?php echo $result_roomdepart["person_max"]; ?> คน</a>
+                            <h4>รายละเอียดอื่นๆ :</h4>
+                              <?php echo $result_roomdepart["room_detail"]; ?>
+
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ปิด</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+ <?php
+    echo "</td></tr>";
+    echo "<tr><td colspan='2'><table class='table table-hover table-bordered table-striped table-condensed'>";
 
     //แสดงรายการที่มีการจอง
     $sql_roombook="select * from meeting_main where room=?  and ((book_date_start between ? and ?) or (book_date_end between ? and ? )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
@@ -208,11 +251,53 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมต่า�
 {
     $room_code=$result_roomdepart["room_code"];
     $room_name=$result_roomdepart["room_name"];
+    $room_depart=$result_roomdepart["department"];
 
     //แสดงห้องประชุมที่มีการใช้งาน
     echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-    echo "<tr><td align='left' colspan='5'><h4><strong>ห้องประชุม $room_name</strong></h4></td></tr>";
-    echo "<tr><td><table class='table table-hover table-bordered table-striped table-condensed'>";
+    echo "<tr><td align='left' width='100'>"
+    ?>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal<?php echo $result_roomdepart["room_code"]; ?>">รายละเอียด</button>
+    <?php
+    echo    "</td><td align='left'><h4><strong>ห้องประชุม $room_name</strong></h4></td>";
+
+ //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $room_depart);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+?>
+                      <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $result_roomdepart["room_code"]; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">ห้องประชุม <?php echo $room_name." (".$user_department_precisname.")"; ?></h4>
+                            </div>
+                            <div class="modal-body">
+                              <a href="#" class="btn btn-warning">จำนวนที่นั่ง&nbsp;:&nbsp;<?php echo $result_roomdepart["person_max"]; ?> คน</a>
+                            <h4>รายละเอียดอื่นๆ :</h4>
+                              <?php echo $result_roomdepart["room_detail"]; ?>
+
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ปิด</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+<?php
+    //แสดงห้องประชุมที่มีการใช้งาน
+     echo "</td></tr>";
+     echo "<tr><td colspan='2'><table class='table table-hover table-bordered table-striped table-condensed'>";
 
     //แสดงรายการที่มีการจอง
     $sql_roombook="select * from meeting_main where room=?  and ((book_date_start between ? and ?) or (book_date_end between ? and ? )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";

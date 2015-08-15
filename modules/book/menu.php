@@ -21,9 +21,9 @@ $_SESSION['admin_book']="";
 	<li class='dropdown'><a href='?option=book' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ <span class='caret'></span></a>
 		<ul class='dropdown-menu' role='menu'>
 			<li><a href='?option=book&task=permission'>กำหนดสารบรรณ สพฐ,</a></li>
-			<li><a href='?option=book&task=permission_sch_khet'>กำหนดสารบรรณ สถานศึกษา</a></li>
-			<li><a href='?option=book&task=main/group'>กำหนดกลุ่มสถานศึกษา</a></li>
-			<li><a href='?option=book&task=main/group_member'>กำหนดสมาชิกกลุ่มสถานศึกษา</a></li>
+			<li><a href='?option=book&task=permission_sch_khet'>กำหนดสารบรรณ สพท.</a></li>
+			<li><a href='?option=book&task=main/group'>กำหนดกลุ่มผู้รับ</a></li>
+			<li><a href='?option=book&task=main/group_member'>กำหนดสมาชิกกลุ่มผู้รับ</a></li>
 			<li><a href='?option=book&task=main/group_member_report'>รายงานกลุ่มและสมาชิก</a></li>
 		</ul>
 	</li>

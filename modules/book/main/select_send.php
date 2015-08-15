@@ -115,20 +115,20 @@ if($sd_index=='some'){
 $result1=mysqli_query($connect,"SELECT * FROM  system_khet  where  khet_group='$_REQUEST[group]' and khet_code != '$_SESSION[user_khet]' order by khet_type, khet_code") ;
 }
 else{
-$result1=mysqli_query($connect,"SELECT * FROM  book_group_member left join system_khet on book_group_member.khet_id=system_khet.khet_code WHERE  book_group_member.grp_id= '$sd_index' order by system_khet.khet_type, system_khet.khet_code") ;
+$result1=mysqli_query($connect,"SELECT * FROM  book_group_member left join system_school on book_group_member.school_id=system_school.school_code WHERE  book_group_member.grp_id= '$sd_index' order by system_school.school_type, system_school.school_code") ;
 }
 $num1 = mysqli_num_rows ($result1) ;
 
 $list1=1;
 while ($r1=mysqli_fetch_array($result1)) {
 	$khet_code = $r1['khet_code'] ;
-	$khet_name = $r1['khet_name'] ;
+	$khet_precis = $r1['khet_precis'] ;
 
 $result_select=mysqli_query($connect,"SELECT * FROM book_sendto_answer WHERE send_to='$khet_code' and ref_id='$ref_id'") ;
 $num_select = mysqli_num_rows ($result_select) ;
 	if ($num_select==0) {
 	   ?>
-		  <TD  width="25%">&nbsp;&nbsp;&nbsp;<input type="checkbox" name="s_id[<?php echo $list1?>]" value="<?php echo $khet_code?>"><FONT SIZE="2" COLOR="#660099"><?php echo $khet_code." ".$khet_name?></FONT></TD>
+		  <TD  width="25%">&nbsp;&nbsp;&nbsp;<input type="checkbox" name="s_id[<?php echo $list1?>]" value="<?php echo $khet_code?>"><FONT SIZE="2" COLOR="#660099"><?php echo $khet_code." ".$khet_precis?></FONT></TD>
 
 	<?php
 	}
@@ -163,9 +163,9 @@ $num2 = mysqli_num_rows ($result2) ;
 $list2=1;
 while ($r2=mysqli_fetch_array($result2)) {
 	$sendtoname  = $r2['send_to'] ;
-	$khet_name = $r2['khet_name'] ;
+	$khet_precis = $r2['khet_precis'] ;
 
-?>&nbsp;<FONT SIZE="2" COLOR=""><A HREF="select_send.php?sendtoname=<?php echo $sendtoname?>&index=2&sd_index=<?php echo $sd_index?>"><IMG SRC="../../../images/b_drop.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="ลบออก"></A>&nbsp; <?php echo $list2?>. <?php echo $khet_name?></FONT><BR>
+?>&nbsp;<FONT SIZE="2" COLOR=""><A HREF="select_send.php?sendtoname=<?php echo $sendtoname?>&index=2&sd_index=<?php echo $sd_index?>"><IMG SRC="../../../images/b_drop.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="ลบออก"></A>&nbsp; <?php echo $list2?>. <?php echo $khet_precis?></FONT><BR>
 
 <?php
 $list2 ++ ;

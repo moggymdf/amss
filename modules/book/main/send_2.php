@@ -21,20 +21,24 @@ echo "<br />";
 //ส่วนฟอร์มรับข้อมูล
 if($index==1){
 
-echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+//echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+echo "<table width='800' border='0' align='center'><tr><td>";
+echo "<form Enctype = 'multipart/form-data' method='POST'  action='?option=book&task=main/send_2&index=4'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>ส่งหนังสือราชการ</Font>";
+echo "<Font color='#006666' Size=3><B>ส่งหนังสือราชการ</b></font>";
 echo "</Cener>";
 echo "<Br>";
-echo "<table border='1' width='700' id='table1' style='border-collapse: collapse' bordercolor='#C0C0C0'>";
+//echo "<table border='1' width='700' id='table1' style='border-collapse: collapse' bordercolor='#C0C0C0'>";
+echo " <table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-example'>";
+
 echo "<tr bgcolor='#003399'>";
-echo "<td colspan='4' height='23' align='left'><font size='2' color='#FFFFFF'>&nbsp;กรุณาระบุรายละเอียด</font></td>";
+echo "<td colspan='4' height='23' align='left'>&nbsp;กรุณาระบุรายละเอียด</td>";
 echo "</tr>";
 
 // *ผู้ส่งเป็น สพท.
 if($_SESSION['login_group']==1){
 echo "<tr>";
-echo "<td width='94' align='right'><span lang='th'><font size='2' color='#0000FF'>จาก&nbsp;</font></span></td>";
+echo "<td width='94' align='right'><span lang='th'>จาก&nbsp;</span></td>";
 echo "<td width='514' colspan='3' align='left'>";
 
 	$sql_department= "select * from system_department";
@@ -51,24 +55,25 @@ echo "</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'><font size='2' color='#0000FF'>ถึง&nbsp;</font></span></td>";
+echo "<td width='94' align='right'>ถึง&nbsp;</span></td>";
 echo "<td colspan='3' align='left'>&nbsp;&nbsp;<input type='radio' value='all' name='sendto'>&nbsp;สพท.ทุกแห่ง";
-echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' onClick=\"window.open('modules/book/main/select_send_2.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;สพท. / สถานศึกษาบางแห่ง";
+echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_2.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;สพท.บางแห่ง";
+echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_3.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;หน่วยงาน / รร.สังกัด สำนักบริหารงานการศึกษาพิเศษ";
 
 	$sql_group= "select * from book_group";
 	$dbquery_group = mysqli_query($connect,$sql_group);
 	While ($result_group = mysqli_fetch_array($dbquery_group)){
-	echo  "<br>&nbsp;&nbsp;<input type='radio'  name='sendto' value='$result_group[grp_id]' onClick=\"window.open('modules/book/main/select_send_2.php?sd_index=$result_group[grp_id]','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;$result_group[grp_name]";
+	echo  "<br>&nbsp;&nbsp;<input type='radio'  name='sendto' value='$result_group[grp_id]' onClick=\"window.open('modules/book/main/select_send_sch.php?sd_index=$result_group[grp_id]','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;$result_group[grp_name]";
 	}
 echo "</td></tr>";
 }  //end *
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ระดับความสำคัญ&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='level' value='1' checked><font size='2' color='#006600'>ปกติ</font><span lang='en-us'><font size='2'>&nbsp;
-			</font><input type='radio' name='level' value='2'></span><font size='2'><font color='#780634'>ด่วน</font>&nbsp;
-			</font><input type='radio' name='level' value='3'><font size='2'><font color='#993300'>ด่วนมาก</font>&nbsp;
-			</font><input type='radio' name='level' value='4'><font size='2' color='#FF0000'>ด่วนที่สุด</font></td>";
+echo "<td align='right'><span lang='th'>ระดับความสำคัญ&nbsp;</span></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='level' value='1' checked>ปกติ<span lang='en-us'>&nbsp;
+			<input type='radio' name='level' value='2'></span>ด่วน&nbsp;
+			<input type='radio' name='level' value='3'>ด่วนมาก&nbsp;
+			<input type='radio' name='level' value='4'>ด่วนที่สุด</td>";
 echo "</tr>";
 
 if($result_ref['secret']==1){
@@ -81,13 +86,13 @@ $check_1="";
 }
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ความลับ&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='secret' value='0' $check_0><font size='2' color='#006600'>ไม่ลับ</font><span lang='en-us'><font size='2'>&nbsp;
-			</font><input type='radio' name='secret' value='1' $check_1><font size='2' color='#FF0000'>ลับ</font></td>";
+echo "<td align='right'><span lang='th'>ความลับ&nbsp;</span></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='secret' value='0' $check_0>ไม่ลับ<span lang='en-us'>&nbsp;
+			<input type='radio' name='secret' value='1' $check_1>ลับ</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขที่หนังสือ&nbsp;</font></span></td><td>&nbsp;<FONT SIZE='2' COLOR=''></FONT><input type='text' name='bookno' size='20' value='$result_ref[book_no]'  style='background-color: #99ccff'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลงวันที่</td>";
+echo "<td align='right'><span lang='th'>เลขที่หนังสือ&nbsp;</span></td><td>&nbsp;<FONT SIZE='2' COLOR=''><input type='text' name='bookno' size='20' value='$result_ref[book_no]'  style='background-color: #99ccff'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลงวันที่</td>";
 echo "<td colspan='2' align='left'>";
 
 $f_date=explode("-", $result_ref['signdate']);
@@ -110,13 +115,13 @@ echo "</tr>";
 
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เรื่อง&nbsp;</font></span></td>";
+echo "<td align='right'><span lang='th'>เรื่อง&nbsp;</span></td>";
 echo "<td colspan='3' align='left'>&nbsp;<input type='text' name='subject' size='76'  style='background-color: #99ccff' value='$result_ref[subject]'></td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right' height='47'><span lang='th'><font size='2' color='#0000FF'>เนื้อหาโดยสรุป&nbsp;</font></span></td>";
-echo "<td height='47' width='514' colspan='3'  align='left'>&nbsp;<textarea rows='5' name='detail' cols='55'  style='background-color: #99ccff' ></textarea></td>";
+echo "<td width='94' align='right' height='47'><span lang='th'>เนื้อหาโดยสรุป&nbsp;</span></td>";
+echo "<td height='47' width='514' colspan='3'  align='left'>&nbsp;<textarea rows='5' name='detail' cols='55'  style='background-color: #99ccff'  required ></textarea></td>";
 echo "</tr>";
 
 $sql = "select * from  bookregister_send_filebook where  ref_id='$result_ref[ref_id]' order by id";
@@ -151,46 +156,48 @@ $file3=$file2[0];
 }
 
 echo "<tr>";
-echo "<td width='371' align='right' colspan='2'><p align='center'><font size='2' color='#800000'>ไฟล์แนบ</font></td>";
-echo "<td width='238' align='center' colspan='2'><p align='center'><font size='2' color='#800000'>คำอธิบายไฟล์</font></td>";
+echo "<td width='371' align='right' colspan='2'><p align='center'><font size='2' color='#800000'>ไฟล์แนบ</td>";
+echo "<td width='238' align='center' colspan='2'><p align='center'><font size='2' color='#800000'>คำอธิบายไฟล์</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'><font size='2' color='#0000FF'>ไฟล์แนบ 1&nbsp;</font></td>";
+echo "<td width='94' align='right'>ไฟล์แนบ 1&nbsp;</td>";
 echo "<td width='274' align='left' bgcolor='#E5E5FF'>&nbsp;$file_name[1]</td>";
 echo "<td width='238'  align='left' colspan='2' bgcolor='#E5E5FF'>$file_number[1]</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'><font size='2' color='#0000FF'>ไฟล์แนบ 2&nbsp;</font></td>";
+echo "<td width='94' align='right'>ไฟล์แนบ 2&nbsp;</td>";
 echo "<td width='274' align='left' bgcolor='#E5E5FF'>&nbsp;$file_name[2]</td>";
 echo "<td width='238'  align='left' colspan='2' bgcolor='#E5E5FF'>$file_number[2]</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'><font size='2' color='#0000FF'>ไฟล์แนบ 3&nbsp;</font></td>";
+echo "<td width='94' align='right'>ไฟล์แนบ 3&nbsp;</td>";
 echo "<td width='274' align='left' bgcolor='#E5E5FF'>&nbsp;$file_name[3]</td>";
 echo "<td width='238'  align='left' colspan='2' bgcolor='#E5E5FF'>$file_number[3]</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'><font size='2' color='#0000FF'>ไฟล์แนบ 4&nbsp;</font></td>";
+echo "<td width='94' align='right'>ไฟล์แนบ 4&nbsp;</td>";
 echo "<td width='274' align='left' bgcolor='#E5E5FF'>&nbsp;$file_name[4]</td>";
 echo "<td width='238'  align='left' colspan='2' bgcolor='#E5E5FF'>$file_number[4]</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'><font size='2' color='#0000FF'>ไฟล์แนบ 5&nbsp;</font></td>";
+echo "<td width='94' align='right'>ไฟล์แนบ 5&nbsp;</td>";
 echo "<td width='274' align='left' bgcolor='#E5E5FF'>&nbsp;$file_name[5]</td>";
 echo "<td width='238'  align='left' colspan='2' bgcolor='#E5E5FF'>$file_number[5]</td>";
 echo "</tr>";
 
 echo "<input name='ref_id' type='hidden' value='$result_ref[ref_id]'>";
 echo "<tr>";
-echo "<td align='center' colspan='4'><BR><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>&nbsp;&nbsp;<input type='button' value='กลับไปทะเบียนหนังสือส่ง' name='smb' onclick='goto_url(0)'></td>";
+echo "<td align='center' colspan='4'><BR><INPUT TYPE='submit' name='smb' value='ตกลง'>&nbsp;&nbsp;<input type='button' value='กลับไปทะเบียนหนังสือส่ง' name='smb' onclick='goto_url(0)'></td>";
 echo "</tr>";
 echo "</Table>";
 echo "</form>";
+echo "</td></td></table>";
+
 }
 
 
@@ -207,7 +214,7 @@ $sql_send_num = mysqli_query($connect,"SELECT * FROM book_sendto_answer WHERE re
 $send_num = mysqli_num_rows ($sql_send_num) ;
 if ($send_num==0 and $_POST['sendto']!='all') {
 echo "<div align='center'>";
-echo "<B><FONT SIZE=2 COLOR=#990000>ยังไม่ได้ระบุผู้รับหนังสือ</FONT></B><BR><BR>" ;
+echo "<B><FONT SIZE=2 COLOR=#990000>ยังไม่ได้ระบุผู้รับหนังสือ</B><BR><BR>" ;
  echo "&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"&nbsp;&nbsp;แก้ไข&nbsp;&nbsp;\" onClick=\"javascript:history.go(-1)\" ></CENTER>" ;
 echo "</div>";
 exit () ;

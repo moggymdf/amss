@@ -29,8 +29,9 @@ if(($_SESSION['admin_ioffice']=="ioffice") or ($result_permission['p1']==1)) {
     <ul class="dropdown-menu" role="menu">
         <li><a href="?option=<?php echo $_GET['option']; ?>&task=book_insert">เพิ่มบันทึกเสนอใหม่</a></li> <!-- เมนูย่อยใน Dropdown -->
         <li><a href="?option=<?php echo $_GET['option']; ?>&task=book_select">รายการบันทึกเสนอ</a></li> <!-- เมนูย่อยใน Dropdown -->
+        <li class="divider"></li> <!-- ขีดเส้นขั้นระหว่างเมนูย่อยใน Dropdown -->
+        <li><a href="?option=<?php echo $_GET['option']; ?>&task=book_search">ค้นหาบันทึกเสนอทั้งหมด</a></li> <!-- เมนูย่อยใน Dropdown -->
     </ul>
 </li>
-<li><a href="?option=<?php echo $_GET['option']; ?>&task=book_pass"><span class='glyphicon glyphicon-check' aria-hidden='true'></span>&nbsp;สั่งการ</a></li> <!-- เมนูไม่ Dropdown -->
-<li><a href="?option=<?php echo $_GET['option']; ?>&task=book_search"><span class='glyphicon glyphicon-search' aria-hidden='true'></span>&nbsp;ค้นหา</a></li> <!-- เมนูไม่ Dropdown -->
+<li><a href="?option=<?php echo $_GET['option']; ?>&task=book_pass"><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;สั่งการ</a></li> <!-- เมนูไม่ Dropdown -->
 <li><a href="/modules/<?php echo $_GET['option']; ?>/manual/manual.pdf"><span class='glyphicon glyphicon-paperclip' aria-hidden='true'></span>&nbsp;คู่มือ</a></li> <!-- เมนูไม่ Dropdown -->

@@ -196,14 +196,25 @@ else{
 		<?php
 
 // อาเรย์ชื่อหน่วยงาาน
-$office_name_ar['saraban']="สาราบรรณกลาง";
+$office_name_ar['saraban']="สารบรรณกลาง";
 $sql_work_group = mysqli_query($connect,"SELECT * FROM  system_department") ;
 while ($row_work_group= mysqli_fetch_array($sql_work_group)){
 $office_name_ar[$row_work_group['department']]=$row_work_group['department_name'];
 }
+// สพท.
 $sql_sch = mysqli_query($connect,"SELECT * FROM  system_khet") ;
 while ($row_sch= mysqli_fetch_array($sql_sch)){
 $office_name_ar[$row_sch['khet_code']]=$row_sch['khet_name'];
+}
+// สศค.
+$sql_sch = mysqli_query($connect,"SELECT * FROM  system_special_unit") ;
+while ($row_sch= mysqli_fetch_array($sql_sch)){
+$office_name_ar[$row_sch['unit_code']]=$row_sch['unit_name'];
+}
+// รร.
+$sql_sch2 = mysqli_query($connect,"SELECT * FROM  system_school") ;
+while ($row_sch2= mysqli_fetch_array($sql_sch2)){
+$office_name_ar[$row_sch2['school_code']]=$row_sch2['school_name'];
 }
 
 $sql_name = "select * from book_sendto_answer where ref_id='$ref_id' and (send_level='1' or send_level='2' or send_level='3') order by id";

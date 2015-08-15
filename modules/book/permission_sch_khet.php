@@ -7,10 +7,10 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 <script type="text/javascript">
 
 $(function(){
-	$("select#school_code").change(function(){
+	$("select#khet_code").change(function(){
 		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
 			  url: "modules/book/return_permission_sch_khet.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
-			  data:"school_code="+$(this).val(), // ส่งตัวแปร GET ชื่อ school_code ให้มีค่าเท่ากับ ค่าของ school_code
+			  data:"khet_code="+$(this).val(), // ส่งตัวแปร GET ชื่อ khet_code ให้มีค่าเท่ากับ ค่าของ khet_code
 			  async: false
 		}).responseText;
 		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2 ที่ชื่อ person_id
@@ -21,20 +21,20 @@ $(function(){
 
 <?php
 
-//อาเรย์ชื่อโรงเรียน
-$sql = "select  * from  system_school ";
+//อาเรย์ชื่อเขต
+$sql = "select  * from  system_khet ";
 $dbquery = mysqli_query($connect,$sql);
 While ($result = mysqli_fetch_array($dbquery))
    {
-		$school_code = $result['school_code'];
-		$school_ar[$school_code]= $result['school_name'];
+		$khet_code = $result['khet_code'];
+		$khet_ar[$khet_code]= $result['khet_precis'];
 	}
 
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>สารบรรณสถานศึกษา</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>สารบรรณ  สพท.</strong></font></td></tr>";
 echo "</table>";
 }
 
@@ -42,25 +42,25 @@ echo "</table>";
 if($index==1){
 echo "<form id='frm1' name='frm1'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่งานสารบรรณสถานศึกษา</Font>";
+echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่งานสารบรรณ  สพท.</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='80%' Border='0'>";
-echo "<Tr align='left'><Td align='right' width='50%'>สถานศึกษา&nbsp;</Td><Td>";
-echo "<Select  name='school_code'  id='school_code' size='1'>";
+echo "<Tr align='left'><Td align='right' width='50%'>  สพท.&nbsp;</Td><Td>";
+echo "<Select  name='khet_code'  id='khet_code' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 
-$sql = "select * from  system_school  order by school_type,school_code";
+$sql = "select * from  system_khet  order by khet_type,khet_code";
 $dbquery = mysqli_query($connect,$sql);
-While ($school_result = mysqli_fetch_array($dbquery)){
-echo  "<option  value ='$school_result[school_code]'>$school_result[school_code] $school_result[school_name]</option>" ;
+While ($khet_result = mysqli_fetch_array($dbquery)){
+echo  "<option  value ='$khet_result[khet_code]'>$khet_result[khet_code] $khet_result[khet_precis]</option>" ;
 }
 echo "</select>";
 echo "</Td></Tr>";
 
 echo "<Tr align='left'><Td align='right'>บุคลากร&nbsp;&nbsp;</Td><td align='left'>";
 echo "<Select  name='person_id'  id='person_id' size='1' >";
-echo  "<option  value = ''>เลือกสถานศึกษาก่อน</option>" ;
+echo  "<option  value = ''>เลือก  สพท.ก่อน</option>" ;
 echo "</select>";
 echo "</td></tr>";
 
@@ -91,7 +91,7 @@ $dbquery = mysqli_query($connect,$sql);
 //ส่วนบันทึกข้อมูล
 if($index==4){
 $rec_date = date("Y-m-d");
-$sql = "insert into book_permission (person_id, p3, officer,rec_date) values ('$_POST[person_id]', '$_POST[school_code]', '$_SESSION[login_user_id]','$rec_date')";
+$sql = "insert into book_permission (person_id, p3, officer,rec_date) values ('$_POST[person_id]', '$_POST[khet_code]', '$_SESSION[login_user_id]','$rec_date')";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -107,25 +107,28 @@ echo "<Table width='90%' Border= '0' >";
 $sql = "select * from book_permission where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
-echo "<Tr align='left'><Td align='right' width='50%'>สถานศึกษา&nbsp;</Td><Td>";
-echo "<Select  name='school_code'  id='school_code' size='1'>";
+echo "<Tr align='left'><Td align='right' width='50%'>  สพท.&nbsp;</Td><Td>";
+echo "<Select  name='khet_code'  id='khet_code' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select * from  system_school  order by school_type,school_code";
+$sql = "select * from  system_khet  order by khet_type,khet_code";
 $dbquery = mysqli_query($connect,$sql);
-While ($school_result = mysqli_fetch_array($dbquery)){
-			if($school_result['school_code']==$ref_result['p3']){
-			echo  "<option  value ='$school_result[school_code]' selected>$school_result[school_code] $school_result[school_name]</option>" ;
+While ($khet_result = mysqli_fetch_array($dbquery)){
+			if($khet_result['khet_code']==$ref_result['p3']){
+			echo  "<option  value ='$khet_result[khet_code]' selected>$khet_result[khet_code] $khet_result[khet_precis]</option>" ;
 			}
 			else{
-			echo  "<option  value ='$school_result[school_code]'>$school_result[school_code] $school_result[school_name]</option>" ;
+			echo  "<option  value ='$khet_result[khet_code]'>$khet_result[khet_code] $khet_result[khet_precis]</option>" ;
 			}
 }
 echo "</select>";
 echo "</Td></Tr>";
 echo "<Tr><Td align='right'  width='50%'>บุคลากร&nbsp;&nbsp;</Td>";
+//echo "$khet_result[khet_code]";
 echo "<td align='left'><Select  name='person_id'  id='person_id'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_sch_main where status='0'  and school_code='$ref_result[p3]' order by position_code,name";
+$khet_id=$khet_result[khet_code];
+//$sql = "select  * from person_khet_main where status='0'  and khet_code='$khet_id' order by name";
+$sql = "select  * from person_khet_main where status='0'  and khet_code='$ref_result[p3]' order by position_code,name";
 $dbquery = mysqli_query($connect,$sql);
 while($result = mysqli_fetch_array($dbquery)){
 		$person_id = $result['person_id'];
@@ -138,7 +141,7 @@ while($result = mysqli_fetch_array($dbquery)){
 			echo  "<option value = $person_id>$name $surname</option>";
 			}
 }
-$sql = "select * from  person_sch_other left join person_sch_main on person_sch_other.person_id=person_sch_main.person_id where person_sch_main.status='0' and person_sch_other.status='0' and person_sch_other.school_code='$ref_result[p3]' order by position_code,name";
+$sql = "select * from  person_sch_other left join person_sch_main on person_sch_other.person_id=person_sch_main.person_id where person_sch_main.status='0' and person_sch_other.status='0' and person_sch_other.khet_code='$ref_result[p3]' order by position_code,name";
 $query = mysqli_query($connect,$sql);
 while($result = mysqli_fetch_array($query)){
 	$person_id = $result['person_id'];
@@ -168,7 +171,7 @@ echo "</form>";
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
 $rec_date = date("Y-m-d");
-$sql = "update book_permission set  person_id='$_POST[person_id]', p3='$_POST[school_code]',  officer='$_SESSION[login_user_id]', rec_date='$rec_date' where id='$_POST[id]'";
+$sql = "update book_permission set  person_id='$_POST[person_id]', p3='$_POST[khet_code]',  officer='$_SESSION[login_user_id]', rec_date='$rec_date' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -267,12 +270,12 @@ echo "</div>";
 }
 //จบแยกหน้า
 
-$sql = "select book_permission.id,  book_permission.officer, person_sch_main.prename, person_sch_main.name, person_sch_main.surname, book_permission.p3 from book_permission left join person_sch_main on book_permission.person_id=person_sch_main.person_id  where book_permission.p3!='' order by book_permission.id  limit $start,$pagelen";
+$sql = "select book_permission.id,  book_permission.officer, person_khet_main.prename, person_khet_main.name, person_khet_main.surname, book_permission.p3 from book_permission left join person_khet_main on book_permission.person_id=person_khet_main.person_id  where book_permission.p3!='' order by book_permission.id  limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width=70% border=0 align=center>";
 echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=book&task=permission_sch_khet&index=1\"'</Td></Tr>";
 
-echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>โรงเรียน</Td><Td  align='center'>ชื่อเจ้าหน้าที่</Td><Td align='center' width='180'>ผู้กำหนดเจ้าหน้าที่</Td><Td align='center' width='50'>ลบ</Td><Td align='center'  width='50'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>สพท.</Td><Td  align='center'>ชื่อเจ้าหน้าที่</Td><Td align='center' width='180'>ผู้กำหนดเจ้าหน้าที่</Td><Td align='center' width='50'>ลบ</Td><Td align='center'  width='50'>แก้ไข</Td></Tr>";
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
@@ -288,20 +291,20 @@ While ($result = mysqli_fetch_array($dbquery))
 					$sql_person = "select  * from person_main  where person_id='$rec_person'";
 					$dbquery_person = mysqli_query($connect,$sql_person);
 					if($result_person = mysqli_fetch_array($dbquery_person)){
-					$person_level=1;  //สพท.
+					$person_level=1;  //สพฐ.
 					}
 					else{
-					$sql_person = "select  * from person_sch_main  where person_id='$rec_person'";
+					$sql_person = "select  * from person_khet_main  where person_id='$rec_person'";
 					$dbquery_person = mysqli_query($connect,$sql_person);
 					$result_person = mysqli_fetch_array($dbquery_person);
-					$person_level=2;   //โรงเรียน
+					$person_level=2;   //สพท.
 					}
 					////////////////////
 
 			if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
-		echo "<Tr bgcolor=$color><Td align='center' width='50'>$N</Td><Td  align='left'>$p3 $school_ar[$p3]</Td><Td  align='left'>$prename$name $surname</Td><td>$result_person[prename]$result_person[name] $result_person[surname]</td>";
+		echo "<Tr bgcolor=$color><Td align='center' width='50'>$N</Td><Td  align='left'>$p3 $khet_ar[$p3]</Td><Td  align='left'>$prename$name $surname</Td><td>$result_person[prename]$result_person[name] $result_person[surname]</td>";
 		if($person_level==1){
 		echo "<Td align='center' width='50' ><a href=?option=book&task=permission_sch_khet&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></a></Td>
 		<Td align='center' width='50'><a href=?option=book&task=permission_sch_khet&index=5&id=$id&page=$page><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>";
@@ -322,8 +325,8 @@ function goto_url(val){
 	if(val==0){
 		callfrm("?option=book&task=permission_sch_khet");   // page ย้อนกลับ
 	}else if(val==1){
-		if(frm1.school_code.value == ""){
-			alert("กรุณาเลือกสถานศึกษา");
+		if(frm1.khet_code.value == ""){
+			alert("กรุณาเลือก  สพท.");
 		}else if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");
 		}else{
@@ -336,8 +339,8 @@ function goto_url_update(val){
 	if(val==0){
 		callfrm("?option=book&task=permission_sch_khet");   // page ย้อนกลับ
 	}else if(val==1){
-		if(frm1.school_code.value == ""){
-			alert("กรุณาเลือกสถานศึกษา");
+		if(frm1.khet_code.value == ""){
+			alert("กรุณาเลือก  สพท.");
 		}else if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");
 		}else{

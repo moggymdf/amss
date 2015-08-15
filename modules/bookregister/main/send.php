@@ -25,7 +25,7 @@ $_REQUEST['department']="";
 }
 
 //ส่วนหัว
-echo "<br />";
+echo "<br /><br><br><br><br>";
 if(!(($index==1) or ($index==2) or ($index==5))){
 
 echo "<table width='100%' border='0' align='center'>";
@@ -69,6 +69,8 @@ $result_start=mysqli_fetch_array($query_start);
 		echo "<div align='center'>ทะเบียนปีเก่าปิดโดยอัตโนมัติหลังสิ้นปี  เจ้าหน้าที่กรุณาตั้งปีใหม่เพื่อลงทะเบียน</div>";
 		exit();
 		}
+//echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+echo "<form Enctype = 'multipart/form-data' method='POST'  action='?option=bookregister&task=main/send&index=4'>";
 
 echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
 echo "<Center>";
@@ -182,7 +184,7 @@ echo "<tr>";
 echo "<td align='center' colspan='4'><FONT SIZE='2' COLOR='#CC9900'>เฉพาะไฟล์ doc, docx, pdf, xls, xlsx, gif, jpg, zip, rar เท่านั้น</FONT></td>";
 echo "</tr>";
 echo "<tr>";
-echo "<td align='center' colspan='4'><BR><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>&nbsp;&nbsp;<input type='reset' value='Reset' name='reset'></td>";
+echo "<td align='center' colspan='4'><BR><INPUT TYPE='submit' name='smb' value='ตกลง'>&nbsp;&nbsp;<input type='reset' value='Reset' name='reset'></td>";
 echo "</tr>";
 echo "</Table>";
 echo "</form>";

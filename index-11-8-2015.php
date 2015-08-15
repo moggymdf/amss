@@ -1,12 +1,9 @@
 <?php
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(-1);
-
 session_start();
 /** Set flag that this is a parent file */
 define( "_VALID_", 1 );
 require_once "database_connect.php";
+
 if(isset($_POST['login_submit'])){
   require_once "include/login_chk.php";
 }
@@ -43,7 +40,7 @@ if(isset($_POST['user_os'])){
 
 <!-- <link href="css/dropdown/dropdown.css" media="all" rel="stylesheet" type="text/css" /> -->
 <!-- <link href="css/dropdown/themes/adobe.com/default.advanced.css" media="all" rel="stylesheet" type="text/css" /> -->
- <script type="text/javascript" src="main_js.js"></script>
+<!-- <script type="text/javascript" src="main_js.js"></script> -->
 
 <!-- Bootstrap Include -->
 <link rel="stylesheet" type="text/css" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
@@ -52,7 +49,6 @@ if(isset($_POST['user_os'])){
 <script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
 <script src="./ckeditor_4.5.2_full/ckeditor.js"></script>
 <link rel="stylesheet" type="text/css" href="css/style.css">
-<?php include("include/lib.php"); ?>
 </head>
 <body>
 <!-- Navbar -->
@@ -81,8 +77,7 @@ if(isset($_POST['user_os'])){
           if($_GET["option"]==""){
             ?>
             <?php
-              //$sql = "SELECT * FROM system_menugroup ORDER BY menugroup_order";
-              $sql = "SELECT * FROM system_menugroup WHERE menugroup IN(SELECT workgroup FROM system_module WHERE module_active=1 GROUP BY workgroup)ORDER BY menugroup_order";
+              $sql = "SELECT * FROM system_menugroup ORDER BY menugroup_order";
               if($result = mysqli_query($connect, $sql)){
                 while ($row = $result->fetch_assoc()) {
                   echo "<li class='dropdown'>";
@@ -104,22 +99,22 @@ if(isset($_POST['user_os'])){
         }
         ?>
       </ul>
-      <form class="navbar-form navbar-right" role="search" action="index.php" method="post">
+      <form class="navbar-form navbar-right" role="search" action="index.php" method="POST">
           <?php
           if($_SESSION['login_user_id']==""){
           ?>
             <div class="form-group">
               <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;
-              <input id="username" name="username" type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน">
-              <input id="pass" name="pass" type="password" class="form-control" placeholder="รหัสผ่าน">
+              <input id="username" name="username"type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน">
+              <input id="pass" name="pass"type="password" class="form-control" placeholder="รหัสผ่าน">
             </div>
-            <input id="login_submit" name="login_submit" type="submit" class="btn btn-primary" value="เข้าสู่ระบบ">
+            <button id="login_submit" name="login_submit" type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
           <?php
           }else{
           ?>
             <div class="form-group">
               <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;
-              <input id="usershowname" name="usershowname" type="text" class="form-control" value="ผู้ใช้ : <?php echo $_SESSION['login_name'].' '.$_SESSION['login_surname']; ?>" disabled>
+              <input id="username" name="username"type="text" class="form-control" value="ผู้ใช้ : <?php echo $_SESSION['login_name'].' '.$_SESSION['login_surname']; ?>" disabled>
             </div>
             <a href="logout.php" class="btn btn-primary">ออกจากระบบ</a>
           <?php
@@ -177,13 +172,12 @@ if($_SESSION['user_os']=='mobile'){
 else{
   require_once "index_desktop.php";
 }
-
 mysqli_close($connect);
 ?>
 <noscript>
 !คำเตือน! เพื่อให้การใช้งานระบบสมบูรณ์ถูกต้อง กรุณาเปิดการใช้งานจาวาสคริพท์
 </noscript>
-<script>
+  <script>
     $(document).ready(function(){
         $(document.body).css('padding-top', $('#topnavbar').height() + 10);
         $(window).resize(function(){

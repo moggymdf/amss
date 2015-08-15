@@ -6,7 +6,7 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 echo "<table width='50%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>กลุ่มสถานศึกษา</strong></font></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>กลุ่มผู้รับ</strong></font></td></tr>";
 echo "</table>";
 }
 
@@ -14,12 +14,12 @@ echo "</table>";
 if($index==1){
 echo "<form id='frm1' name='frm1'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>เพิ่มกลุ่มสถานศึกษา</Font>";
+echo "<Font color='#006666' Size=3><B>เพิ่มกลุ่มผู้รับ</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='40%' Border='0' Bgcolor='#Fcf9d8'>";
 
-echo   "<tr><td align='right'>ชื่อกลุ่ม&nbsp;&nbsp;</td>";
+echo   "<tr><td align='right'>ชื่อกลุ่มผู้รับ&nbsp;&nbsp;</td>";
 echo   "<td align='left'><INPUT TYPE='text' NAME='grp_name'></td></tr>";
 echo "<tr><td align='right'></td>";
 echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
@@ -54,14 +54,14 @@ $dbquery = mysqli_query($connect,$sql);
 if ($index==5){
 echo "<form id='frm1' name='frm1'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>แก้ไข กลุ่มบุคลากร</B></Font>";
+echo "<Font color='#006666' Size=3><B>แก้ไข กลุ่มผู้รับบุคลากร</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='40%' Border= '0' Bgcolor='#Fcf9d8'>";
 $sql = "select * from book_group where grp_id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
-echo   "<tr><td align='right'>ชื่อกลุ่ม&nbsp;&nbsp;</td>";
+echo   "<tr><td align='right'>ชื่อกลุ่มผู้รับ&nbsp;&nbsp;</td>";
 echo   "<td align='left'><INPUT TYPE='text' NAME='grp_name' value='$ref_result[grp_name]'></td></tr>";
 
 echo "<tr><td align='right'></td>";
@@ -86,9 +86,9 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 $sql = "select * from book_group";
 $dbquery = mysqli_query($connect,$sql);
 echo  "<table width='50%' border='0' align='center'>";
-echo "<Tr><Td colspan='4' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มกลุ่มสถานศึกษา' onclick='location.href=\"?option=book&task=main/group&index=1\"'</Td></Tr>";
+echo "<Tr><Td colspan='4' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มกลุ่มผู้รับ' onclick='location.href=\"?option=book&task=main/group&index=1\"'</Td></Tr>";
 
-echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>ชื่อกลุ่มบคลากรุ</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>ชื่อกลุ่มผู้รับ</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
 	{
@@ -114,7 +114,7 @@ function goto_url(val){
 		callfrm("?option=book&task=main/group");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.grp_name.value == ""){
-			alert("กรุณาพิมพ์ชื่อกลุ่มบุคลากร");
+			alert("กรุณาพิมพ์ชื่อกลุ่มผู้รับบุคลากร");
 		}else{
 			callfrm("?option=book&task=main/group&index=4");   //page ประมวลผล
 		}
@@ -126,7 +126,7 @@ function goto_url_update(val){
 		callfrm("?option=book&task=main/group");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.grp_name.value == ""){
-			alert("กรุณาพิมพ์ชื่อกลุ่มบุคลากร");
+			alert("กรุณาพิมพ์ชื่อกลุ่มผู้รับบุคลากร");
 		}else{
 			callfrm("?option=book&task=main/group&index=6");   //page ประมวลผล
 		}

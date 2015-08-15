@@ -1,9 +1,11 @@
 <?php
 $my = $_POST["regid"];
-$uid = $_POST['id'];
+$uid = $_POST['uid'];
 $user = $_POST['user'];
 // รับข้อมูล json
 $json = array();
+if (!isset($uid)) {$uid="7777";}
+if (!isset($user)) {$user="nipon";}
 /**
  * ผู้ใช้ลงทะเบียนอุปกรณ์เข้ากับฐานข้อมูล
  * โดยเก็บค่า reg id ลงในตาราง
@@ -24,7 +26,7 @@ if (isset($my)) {
         $message = "ยินดีต้อนรับสู่ Smart OBEC";
 
         $result = $gcm->send_notification($registatoin_ids, $message);
-
+        //echo "gcm regid".$gcm_regid;
         echo $result;
     } else {
         echo "ผู้ใช้ลงทะเบียนแล้ว";

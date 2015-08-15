@@ -23,7 +23,6 @@ if(isset($permission)){
         $permission="";
     }
 
-if(!isset($_SESSION['system_user_department'])){ $_SESSION['system_user_department']=""; }
 $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 
 

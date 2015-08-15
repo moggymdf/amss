@@ -3,6 +3,7 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
+require_once "person_chk.php";
 
 require_once "modules/book/time_inc.php";
 $user=$_SESSION['login_user_id'];
@@ -41,7 +42,7 @@ echo "</table>";
 //ส่วนแสดงผล
 
 //ส่วนของการแยกหน้า
-if($_SESSION['login_status']<=5){
+if($_SESSION['login_group']==1) {
 		if($_REQUEST['search_index']==1){
 		$saraban_index=9;
 					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and  book_main.book_type='2' and book_sendto_answer.send_level='2' and $_REQUEST[field] like '%$_REQUEST[search]%' ";

@@ -1,23 +1,21 @@
 <?php
 session_start();
 $ref_id= $_SESSION ['ref_id'] ;
-//$sd_index=$_REQUEST['sd_index'];
 
 if(isset($_REQUEST['sd_index'])){
 $sd_index=$_REQUEST['sd_index'];
 }
 
-if(!isset($_GET['index'])){
-$_GET['index']="";
+if(!isset($_SESSION['user_khet'])){
+$_SESSION['user_khet']="";;
 }
 
 date_default_timezone_set('Asia/Bangkok');
+
 require_once "../../../database_connect.php";
 require_once("../../../mainfile.php");
-
-
-
 ?>
+
 <html>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -37,29 +35,30 @@ require_once("../../../mainfile.php");
 		</tr>
 		</table>
 
+
 <?php
 if($sd_index=='some'){
-$result=mysqli_query($connect,"SELECT * FROM system_khet_group") ;
+$result=mysqli_query($connect,"SELECT * FROM system_specialunit_group") ;
 $num = mysqli_num_rows ($result) ;
 $list=1;
-echo "<FONT SIZE='3' color='#800080'><b>เลือกกลุ่ม สพท.</b></font><br>";
+echo "<FONT SIZE='3' color='#800080'><b>เลือกกลุ่ม </b></font><br>";
 while ($r=mysqli_fetch_array($result)) {
-	$group_code = $r['code'] ;
-	$group_name = $r['name'] ;
+	$code = $r['code'] ;
+	$name = $r['name'] ;
 	if ($list!=$num){$divition="||";}else{$divition="";}
 
-echo "<FONT SIZE=2 COLOR=''><A HREF=\"?group=$group_code&sd_index=$sd_index\"><span style=\"text-decoration: none\">";
+echo "<FONT SIZE=2 COLOR=''><A HREF=\"?unit_type=$code&sd_index=$sd_index\"><span style=\"text-decoration: none\">";
 
 //กำหนดตัวแปร
-if(!isset($_REQUEST['group'])){
-$_REQUEST['group']="";
+if(!isset($_REQUEST['unit_type'])){
+$_REQUEST['unit_type']="";
 }
 
-		if($_REQUEST['group']==$group_code){
-		echo "<b><font color='#FF3300'>$group_name</font></b>";
+		if($_REQUEST['unit_type']==$code){
+		echo "<b><font color='#FF3300'>$name</font></b>";
 		}
 		else{
-		echo $group_name;
+		echo $name;
 		}
 echo "</span></A> $divition </FONT>  " ;
 
@@ -71,12 +70,13 @@ $list ++ ;
 ?>
 
 <br /><br />
-  <form method="POST" action="select_send_2.php" name="form1" >
+  <form method="POST" action="select_send_3.php" name="form1" >
   <TABLE border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width=95% bordercolor="#808000" bgcolor="#FFFBEA">
      <TR >
-	 <td colspan=4>&nbsp;<input name="allbox" onClick="selectall();" type="checkbox"><FONT SIZE="2" COLOR="#990033">เลือก/ไม่เลือกทั้งหมด</FONT><HR></td>
+	 <td colspan=4>&nbsp;<input name="allbox" onClick="selectall();" type="checkbox"><FONT SIZE="2" COLOR="#990033">เลือก/ไม่เลือก ทั้งหมด</FONT><HR></td>
 	 </tr>
 	 <tr>
+
 
 <?php
 //กำหนดตัวแปร
@@ -93,9 +93,9 @@ $s_id=$_POST['s_id'];
 					if($_SESSION['login_group']==1){
 					mysqli_query($connect,"INSERT INTO book_sendto_answer (send_level, send_to,ref_id) Values('1', '$s_id[$i]','$ref_id') ") ;
 					}
-					//else if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=15)){
-					//mysqli_query($connect,"INSERT INTO book_sendto_answer (send_level, send_to,ref_id) Values('3', '$s_id[$i]','$ref_id') ") ;
-					//}
+					else if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=15)){
+					mysqli_query($connect,"INSERT INTO book_sendto_answer (send_level, send_to,ref_id) Values('3', '$s_id[$i]','$ref_id') ") ;
+					}
 				}
 			}
 		}
@@ -112,23 +112,25 @@ $_SESSION['user_khet']="";
 }
 
 if($sd_index=='some'){
-$result1=mysqli_query($connect,"SELECT * FROM  system_khet  where  khet_group='$_REQUEST[group]' and khet_code != '$_SESSION[user_khet]' order by khet_type, khet_code") ;
+$result1=mysqli_query($connect,"SELECT * FROM  system_special_unit  where  unit_type='$_REQUEST[unit_type]' and unit_code != '$_SESSION[user_khet]' order by unit_type, unit_code") ;
 }
+/*
 else{
-$result1=mysqli_query($connect,"SELECT * FROM  book_group_member left join system_khet on book_group_member.khet_id=system_khet.khet_code WHERE  book_group_member.grp_id= '$sd_index' order by system_khet.khet_type, system_khet.khet_code") ;
+$result1=mysqli_query($connect,"SELECT * FROM  book_unit_type_member left join system_special_unit on book_unit_type_member.khet_id=system_special_unit.unit_code WHERE  book_unit_type_member.grp_id= '$sd_index' order by system_special_unit.khet_type, system_special_unit.unit_code") ;
 }
+*/
 $num1 = mysqli_num_rows ($result1) ;
 
 $list1=1;
 while ($r1=mysqli_fetch_array($result1)) {
-	$khet_code = $r1['khet_code'] ;
-	$khet_precis = $r1['khet_precis'] ;
+	$unit_code = $r1['unit_code'] ;
+	$unit_name = $r1['unit_name'] ;
 
-$result_select=mysqli_query($connect,"SELECT * FROM book_sendto_answer WHERE send_to='$khet_code' and ref_id='$ref_id'") ;
+$result_select=mysqli_query($connect,"SELECT * FROM book_sendto_answer WHERE send_to='$unit_code' and ref_id='$ref_id'") ;
 $num_select = mysqli_num_rows ($result_select) ;
 	if ($num_select==0) {
 	   ?>
-		  <TD  width="25%">&nbsp;&nbsp;&nbsp;<input type="checkbox" name="s_id[<?php echo $list1?>]" value="<?php echo $khet_code?>"><FONT SIZE="2" COLOR="#660099"><?php echo $khet_code." ".$khet_precis?></FONT></TD>
+		  <TD  width="25%">&nbsp;&nbsp;&nbsp;<input type="checkbox" name="s_id[<?php echo $list1?>]" value="<?php echo $unit_code?>"><FONT SIZE="2" COLOR="#660099"><?php echo $unit_code." ".$unit_name?></FONT></TD>
 
 	<?php
 	}
@@ -139,13 +141,14 @@ $list1 ++ ;
 ?>
  </TR>
   	 </table>
-<BR><input name="boxchecked" type="hidden" id="boxchecked" value="<?php echo $list1?>"> <input name="sd_index" type="hidden"  value="<?php echo $sd_index?>"><input name="index" type="hidden"  value="1"><input name="group" type="hidden"  value="<?php echo $_GET['group']?>">
+<BR><input name="boxchecked" type="hidden" id="boxchecked" value="<?php echo $list1?>"> <input name="sd_index" type="hidden"  value="<?php echo $sd_index?>"><input name="index" type="hidden"  value="1"><input name="unit_type" type="hidden"  value="<?php echo $_REQUEST['unit_type']?>">
+
 	 <CENTER><input type="submit" value="  เลือก  " name="submit" onClick="return checkform();">
 <HR>	</form>
 <!--Userที่เลือกแล้ว -->
 <?php
 
-$result2=mysqli_query($connect,"SELECT * FROM book_sendto_answer left join system_khet on book_sendto_answer.send_to=system_khet.khet_code WHERE book_sendto_answer.ref_id='$ref_id' ") ;
+$result2=mysqli_query($connect,"SELECT * FROM book_sendto_answer left join system_special_unit on book_sendto_answer.send_to=system_special_unit.unit_code WHERE book_sendto_answer.ref_id='$ref_id' ") ;
 $num2 = mysqli_num_rows ($result2) ;
 
 ?>
@@ -153,7 +156,7 @@ $num2 = mysqli_num_rows ($result2) ;
 	<table border="0" width="400"  style="border-collapse: collapse" bgcolor="#EAFFF0">
 		<form method="POST" action="" name="form2" >
 			<tr>
-				<td>&nbsp;<b><font size="2" color="#800080">รายชื่อหน่วยงานที่เลือกไว้
+				<td>&nbsp;<b><font size="2" color="#800080">รายชื่อที่เลือกไว้
 				จำนวน <FONT SIZE="2" COLOR="#FF0066"><?php echo $num2 ?></FONT> แห่ง</font></b></td>
 			</tr>
 			<tr>
@@ -162,9 +165,9 @@ $num2 = mysqli_num_rows ($result2) ;
 $list2=1;
 while ($r2=mysqli_fetch_array($result2)) {
 	$sendtoname  = $r2['send_to'] ;
-	$khet_precis = $r2['khet_precis'] ;
+	$unit_name = $r2['unit_name'] ;
 
-?>&nbsp;<FONT SIZE="2" COLOR=""><A HREF="select_send_2.php?sendtoname=<?php echo $sendtoname?>&index=2&sd_index=<?php echo $sd_index?>"><IMG SRC="../../../images/b_drop.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="ลบออก"></A>&nbsp; <?php echo $list2?>. <?php echo $khet_precis?></FONT><BR>
+?>&nbsp;<FONT SIZE="2" COLOR=""><A HREF="select_send_3.php?sendtoname=<?php echo $sendtoname?>&index=2&sd_index=<?php echo $sd_index?>"><IMG SRC="../../../images/b_drop.png" WIDTH="16" HEIGHT="16" BORDER="0" ALT="ลบออก"></A>&nbsp; <?php echo $list2?>. <?php echo $unit_name?></FONT><BR>
 
 <?php
 $list2 ++ ;
@@ -175,7 +178,7 @@ $list2 ++ ;
 			<tr>
 				<td>
 				<p align="center">
-				<input type="submit" value="เสร็จ" name="submit1" onClick="return checkform2();">
+				<input type="submit" value="  เสร็จ  " name="submit1" onClick="return checkform2();">
 				</td>
 			</tr>
 		</form>

@@ -37,7 +37,6 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
 }
 
 //ส่วนหัว
-//echo "<br><br>";
 
 if(isset($_GET['index'])){
 $getindex=mysqli_real_escape_string($connect,$_GET['index']);

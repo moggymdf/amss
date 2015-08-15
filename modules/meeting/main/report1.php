@@ -35,7 +35,6 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
     $user_department_name=$result_depart_name['department_name'];
     $user_department_precisname=$result_depart_name['department_precis'];
 	}
-
 }
 
 //กรณีเลือกแสดงเฉพาะห้องประชุม

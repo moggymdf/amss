@@ -329,7 +329,6 @@ function goto_url_update(val){
 			alert("กรุณากรอกที่นั่งทั้งหมด");
             return false;
         }
-
 	}
 }
 </script>

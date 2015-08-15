@@ -361,9 +361,7 @@ While ($result_room = mysqli_fetch_array($result_meetroom))
 {
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
 $room_at[$result_room['room_code']]=$result_room['active'];
-
 }
-
 $sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showstatus order by  meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time,meeting_main.rec_date desc limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);

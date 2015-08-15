@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -9,14 +7,38 @@ exit();
 }
 
 require_once "modules/meeting/time_inc.php";
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
+
 
     //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $login_user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
@@ -50,7 +72,7 @@ echo "<br />";
 if(!(($getindex==1) or ($getindex==2) or ($getindex==5))){
 
 echo "<table width='100%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>การอนุญาตใช้ห้องประชุม $system_user_department_name</strong></font><br><br></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>การอนุญาตใช้ห้องประชุม $user_department_name</strong></font><br><br></td></tr>";
 echo "</table>";
 }
 
@@ -98,13 +120,13 @@ if ($getindex==5){
 
 echo "<form id='frm1' name='frm1'  >";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>ส่วนของการอนุญาต $system_user_department_name</Font>";
+echo "<Font color='#006666' Size=3><B>ส่วนของการอนุญาต $user_department_name</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 
     $sql_room = "select * from meeting_room where department=? and active='1'  order by id";
     $dbquery_room = $connect->prepare($sql_room);
-    $dbquery_room->bind_param("i", $system_user_department);
+    $dbquery_room->bind_param("i", $user_departid);
     $dbquery_room->execute();
     $result_qroom=$dbquery_room->get_result();
 While ($result_room = mysqli_fetch_array($result_qroom))
@@ -228,10 +250,10 @@ $poststatus_index=mysqli_real_escape_string($connect,$_POST['status_index']);
     }else{$showstatus="";}
 }else {$poststatus_index=""; $showstatus="";}
 
-$sql_meeting="select id from meeting_main where user_book=? ";
-
+//$sql_meeting="select id from meeting_main where user_book=? ";
+$sql_meeting="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showstatus ";
     $dbquery_meeting = $connect->prepare($sql_meeting);
-    $dbquery_meeting->bind_param("i", $user);
+    $dbquery_meeting->bind_param("i", $user_departid);
     $dbquery_meeting->execute();
     $result_meeting=$dbquery_meeting->get_result();
 
@@ -330,7 +352,7 @@ echo "</div>";
 //จบแยกหน้า
 
 
-$sql_room = "select * from meeting_room where active='1' order by id";
+$sql_room = "select * from meeting_room where (active='1' or active='0' or active='99')  order by id";
     $dbquery_room = $connect->prepare($sql_room);
     //$dbquery_room->bind_param("i", $system_user_department);
     $dbquery_room->execute();
@@ -338,12 +360,12 @@ $sql_room = "select * from meeting_room where active='1' order by id";
 While ($result_room = mysqli_fetch_array($result_meetroom))
 {
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
+$room_at[$result_room['room_code']]=$result_room['active'];
 }
-
 $sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showstatus order by  meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time,meeting_main.rec_date desc limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("i", $system_user_department);
+    $dbquery_join->bind_param("i", $user_departid);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
@@ -355,7 +377,7 @@ echo "<Tr><td colspan='15'><table width='100%'><tr><td align='left'>";
 //เพิ่มการเลือกสถานะ
 echo "<form  name='frm1'>";
 
-echo "&nbsp;<Select  name='status_index' size='1'>";
+echo "&nbsp;<Select  name='status_index' size='1' class='selectpicker'>";
 echo "<option value ='' >ทุกสถานะ</option>" ;
 echo "<option value ='0' >รอการอนุมัติ</option>" ;
 echo "<option value ='1' >อนุมัติแล้ว</option>" ;
@@ -424,6 +446,14 @@ echo "</Td>";
 echo "<Td align='left'>";
 if(isset($room_ar[$room])){
 echo $room_ar[$room];
+
+if($room_at[$room]==1){
+    echo "";
+}else if($room_at[$room]=='99'){
+    echo "<button type='button' name='showatroom' class='btn btn-danger btn-xs'  class='entrybutton' >ยกเลิกใช้ห้อง</button>";
+}else{
+    echo "<button type='button' name='showatroom' class='btn btn-warning btn-xs'  class='entrybutton' >ไม่อนุญาตให้จอง</button>";
+}
 }
 echo "</Td>";
 echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time น.</Td>";

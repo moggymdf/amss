@@ -1,7 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-<link href="modules/meeting/css/datepicker.css" rel="stylesheet" media="screen">
-
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -15,9 +11,31 @@ require_once "modules/meeting/time_inc.php";
 <script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
 <?php
 
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+}
 
 //กรณีเลือกแสดงเฉพาะห้องประชุม
 if(isset($_REQUEST['room_index'])){
@@ -45,7 +63,7 @@ $postroom_index=mysqli_real_escape_string($connect,$_POST['room_index']);
     $showroom=" and meeting_main.room=$postroom_index ";
     $sql_room="select * from meeting_room where department=? and active='1'  order by id";
     $dbquery_room = $connect->prepare($sql_room);
-    $dbquery_room->bind_param("i", $system_user_department);
+    $dbquery_room->bind_param("i", $user_departid);
     $dbquery_room->execute();
     $result_qroom=$dbquery_room->get_result();
         While ($result_room = mysqli_fetch_array($result_qroom)){
@@ -64,7 +82,7 @@ echo "</table>";
 
 $sql_meeting="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? and meeting_main.approve='1' $showroom order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time ";
     $dbquery_meeting = $connect->prepare($sql_meeting);
-    $dbquery_meeting->bind_param("i", $system_user_department);
+    $dbquery_meeting->bind_param("i", $user_departid);
     $dbquery_meeting->execute();
     $result_meeting=$dbquery_meeting->get_result();
 
@@ -167,7 +185,7 @@ echo "</div>";
 $sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? and meeting_main.approve='1' $showroom order by meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("i", $system_user_department);
+    $dbquery_join->bind_param("i", $user_departid);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
@@ -180,14 +198,14 @@ echo "<table width='100%'><tr><td align='right'>";
 $sql_room="select * from meeting_room where department=? and active='1'  order by id";
 
     $dbquery_room = $connect->prepare($sql_room);
-    $dbquery_room->bind_param("i", $system_user_department);
+    $dbquery_room->bind_param("i", $user_departid);
     $dbquery_room->execute();
     $result_qroom=$dbquery_room->get_result();
 
 //เพิ่มการเลือกสถานะ
 echo "<form  name='frm1'>";
 
-echo "&nbsp;<Select  name='room_index' size='1'>";
+echo "&nbsp;<Select  name='room_index' size='1' class='selectpicker'>";
 echo "<option value ='' >ทุกห้องประชุม</option>" ;
 While ($result_room = mysqli_fetch_array($result_qroom)){
  echo "<option value =$result_room[room_code] >$result_room[room_name]</option>" ;
@@ -260,49 +278,6 @@ echo "</Table>";
 }
 
 ?>
-    <script src="//getbootstrap.com/2.3.2/assets/js/jquery.js"></script>
-    <script src="//getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
-
-    <script src="modules/meeting/js/bootstrap-datepicker.js"></script>
-       <script src="modules/meeting/js/bootstrap-datepicker.th.js"></script>
-
-    <script id="datepicker"  type="text/javascript">
-      function datepicker() {
-        $('.datepicker').datepicker({
-          format: 'yyyy-mm-dd',
-          autoclose : true
-          });
-      }
-    </script>
-
-    <script type="text/javascript">
-      $(function(){
-        $('pre[data-source]').each(function(){
-          var $this = $(this),
-            $source = $($this.data('source'));
-
-          var text = [];
-          $source.each(function(){
-            var $s = $(this);
-            if ($s.attr('type') == 'text/javascript'){
-              text.push($s.html().replace(/(\n)*/, ''));
-            } else {
-              text.push($s.clone().wrap('<div>').parent().html()
-                .replace(/(\"(?=[[{]))/g,'\'')
-                .replace(/\]\"/g,']\'').replace(/\}\"/g,'\'') // javascript not support lookbehind
-                .replace(/\&quot\;/g,'"'));
-            }
-          });
-
-          $this.text(text.join('\n\n').replace(/\t/g, '    '));
-        });
-
-        prettyPrint();
-        demo();
-      });
-    </script>
-
-
 <script>
 function goto_url2(val){
 callfrm("?option=meeting&task=main/report1");

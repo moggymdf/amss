@@ -96,7 +96,7 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 					</li>
 					<li>
 						<a href='?option=work&task=report_6'>
-							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการผู้บริหารงานวัน
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการผู้บริหารรายวัน
 						</a>
 					</li>
 

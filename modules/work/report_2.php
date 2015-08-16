@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -34,18 +32,37 @@ printWin.print();
 /** ensure this file is being included by a parent file */
 
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-//if(!($_SESSION['login_status']<=5)){
-$login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
-//if(!($login_status<=105 or $result_permission['p1']==1)){
-//echo "<div align='center'><h2> เฉพาะระดับ ผอ.สำนักขึ้นไป </h2></div>";
-//exit();
-//}
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
 
 //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
@@ -100,9 +117,6 @@ echo "<table width='99%' border='0' align='center'>";
 echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>การปฏิบัติราชการเดือน$thai_month พ.ศ.$thai_year</strong></font></td></tr>";
 
 //ถ้าเป็นผู้บริหารให้แสดงผลรายสำนัก
-//$showmydepartment="";
-//$showmydepartmentwhere ="";
-$department_id=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 
 ?>
 	<link rel="stylesheet" type="text/css" media="all" href="./modules/work/css.css">
@@ -144,10 +158,9 @@ echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 //ถ้าเป็นผู้บริหารให้แสดงผลเฉพาะส่วนผู้บริหาร
 //แสดงชื่อหน่วยงาน
-$login_user_id = mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 $sql= "select position_code,id from person_main where person_id=? ";
     $dbquery_name = $connect->prepare($sql);
-    $dbquery_name->bind_param("i", $login_user_id);
+    $dbquery_name->bind_param("i", $user_id);
     $dbquery_name->execute();
     $result_name=$dbquery_name->get_result();
     while($result_person = $result_name->fetch_array())
@@ -164,7 +177,7 @@ $sql= "select position_code,id from person_main where person_id=? ";
 $N=1;
     $sql_sumworkperson= "select * from person_main where department = ? $showwhereposit   order by position_code ";
     $dbquery_sumwork = $connect->prepare($sql_sumworkperson);
-    $dbquery_sumwork->bind_param("i", $department_id);
+    $dbquery_sumwork->bind_param("i", $user_departid);
     $dbquery_sumwork->execute();
     $result_shownallperson = $dbquery_sumwork->get_result();
     while($result_allperson = $result_shownallperson->fetch_array())

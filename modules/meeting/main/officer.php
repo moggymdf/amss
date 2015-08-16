@@ -390,7 +390,7 @@ echo "</form>";
 echo "</td><td align='right'><INPUT TYPE='checkbox' name='allchk'  id='allckk' onclick='CheckAll()'> เลือก/ไม่เลือกทั้งหมด</Td></table></td></Tr>";
 
 
-echo "<Tr class='info' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
+echo "<Tr class='info' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='200'>ห้องประชุม</Td><Td  width='70'>ตั้งแต่เวลา</Td><Td width='70'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='150'>อื่น ๆ/ผู้ประสานงาน</Td><Td width='120'>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;

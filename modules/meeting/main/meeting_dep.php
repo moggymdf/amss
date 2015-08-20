@@ -29,7 +29,7 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
-if(!($login_group<=4)){
+if(!($login_group<=1)){
 exit();
 }
     //ตรวจสอบสิทธิ์ผู้ใช้

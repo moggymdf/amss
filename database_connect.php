@@ -1,4 +1,5 @@
 <?php
+//DB
 $hostname="localhost";
 $user="amss";
 $password="amss";

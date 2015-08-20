@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -8,32 +5,37 @@ $admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_meeting']);
 if($admin_meeting!='meeting'){
 exit();
 }
-
-?>
-<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
-<script type="text/javascript">
-$(function(){
-	$("select#department").change(function(){
-		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
-			  url: "admin/section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
-			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
-			  async: false
-		}).responseText;
-		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
-		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
-	});
-});
-
-</script>
-<?php
-
-//ส่วนหัว
-echo "<br />";
-if(!(($index==1) or ($index==2) or ($index==5))){
-echo "<table width='50%' border='0' align='center' >";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>เจ้าหน้าที่</strong></font></td></tr>";
-echo "</table>";
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
 }
+
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+}
+
 
 //ตรวจสอบ POST
 if(isset($_POST['index'])){
@@ -44,37 +46,32 @@ if(isset($_GET['index'])){
 $getindex=mysqli_real_escape_string($connect,$_GET['index']);
 }else {$getindex="";}
 
-//หาหน่วยงาน
-$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 
-$sql_depart = "select department_name from  system_department where department=? order by department";
-    $dbquery_namedepart = $connect->prepare($sql_depart);
-    $dbquery_namedepart->bind_param("i", $system_user_department);
-    $dbquery_namedepart->execute();
-    $result_namedepart=$dbquery_namedepart->get_result();
-    while($result_departname = $result_namedepart->fetch_array())
-   {
-        $department_name = $result_departname['department_name'];
-    }
+//ส่วนหัว
+echo "<br />";
+if(!(($index==1) or ($index==2) or ($index==5))){
+echo "<table width='50%' border='0' align='center' >";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>เจ้าหน้าที่</strong></font></td></tr>";
+echo "</table>";
+}
 
 //ส่วนฟอร์มรับข้อมูล
 if($postindex==1){
-echo "<form id='frm1' name='frm1'>";
+echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/permission' method='POST' onSubmit='JavaScript:return goto_url(1);'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'> $department_name";
+echo "<td><div align='left' class='form-group'> $user_department_name";
 echo "</div></td></tr>";
 echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select name='person_id'  size='1'>";
+echo "<td><div align='left' class='form-group'><Select name='person_id'   class='selectpicker show-tick'>";
 echo  "<option  value = ''>เลือกบุคลากร</option>" ;
     $sql = "select  * from person_main where department = ? and status=0 order by name";
     $dbquery_person = $connect->prepare($sql);
-    $dbquery_person->bind_param("i", $system_user_department);
+    $dbquery_person->bind_param("i", $user_departid);
     $dbquery_person->execute();
     $result_person=$dbquery_person->get_result();
     while($result_personname = $result_person->fetch_array())
@@ -99,13 +96,14 @@ echo  "<option  value = ''>เลือกบุคลากร</option>" ;
 
 echo "</select>";
 echo "</div></td></tr>";
-echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้าหน้าที่&nbsp;&nbsp;</td>";
+echo   "<tr><td align='right' >อนุญาตให้เป็นเจ้าหน้าที่&nbsp;&nbsp;</td>";
 echo   "<td align='left'>&nbsp;&nbsp;ใช่&nbsp;&nbsp;<input  type=radio name='meeting_permission1' value='1'>&nbsp;&nbsp;ไม่ใช่&nbsp;&nbsp;<input  type=radio name='meeting_permission1' value='0'  checked></td></tr>";
 
 echo "<input type='hidden' name='index' value='4'>";
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;&nbsp;</td>";
-//echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='center' colspan='2'>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='submit' name='smb' class='btn btn-primary' value='ตกลง' >
+	&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' class='btn btn-default' value='ย้อนกลับ' onclick='location.href=\"?option=meeting&task=main/permission\"' ></td></tr>";
 echo "</Table>";
 echo "</form>";
 }
@@ -118,8 +116,8 @@ echo "<tr><td align='center'><font color='#990000' size='4'>โปรดยื�
 echo "<tr><td align=center>";
 echo "<input type='hidden' name='index' value='3'>";
 echo "<input type='hidden' name='userid' value='$_GET[id]'>";
-echo "<INPUT TYPE='submit' name='smb' value='ยืนยัน'>";
-echo "&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' onclick='location.href=\"?option=meeting&task=main/permission\"'";
+echo "<INPUT TYPE='submit' name='smb' value='ยืนยัน' class='btn btn-primary'>";
+echo "&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ยกเลิก' class='btn btn-default' onclick='location.href=\"?option=meeting&task=main/permission\"'";
 echo "</td></tr></table></form>";
 }
 
@@ -156,14 +154,14 @@ if(isset($_GET['id'])){
 $getuserid=mysqli_real_escape_string($connect,$_GET['id']);
 }else {$getuserid="";}
 
-echo "<form id='frm1' name='frm1'>";
+echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/permission' method='POST' onSubmit='JavaScript:return goto_url_update(1);'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข เจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8' class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'> $department_name";
+echo "<td><div align='left' class='form-group'> $user_department_name";
 echo "</div></td></tr>";
     $sql_meetingper = "select * from meeting_permission where id=? ";
     $dbquery_meetingper = $connect->prepare($sql_meetingper);
@@ -203,8 +201,8 @@ echo   "<td align='left'>&nbsp;&nbsp;ใช่&nbsp;&nbsp;<input  type=radio nam
 echo "<Input Type=Hidden Name='index' Value='6'>";
 echo "<Input Type=Hidden Name='person_id' Value='$personuser_id'>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' class='btn btn-primary' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-//echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='submit' name='smb' class='btn btn-primary' value='ตกลง'>&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' class='btn btn-default' onclick='location.href=\"?option=meeting&task=main/permission\"'></td></tr>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='idpermis' Value='$getuserid'>";
@@ -232,7 +230,7 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql_show = "select meeting_permission.id, meeting_permission.p1, person_main.name, person_main.surname from meeting_permission left join person_main on meeting_permission.person_id=person_main.person_id where person_main.department=? order by meeting_permission.id";
     $dbquery_show = $connect->prepare($sql_show);
-    $dbquery_show->bind_param("i", $system_user_department);
+    $dbquery_show->bind_param("i", $user_departid);
     $dbquery_show->execute();
     $result_show = $dbquery_show->get_result();
 
@@ -270,24 +268,22 @@ echo "</Table></form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=meeting&task=main/permission");   // page ย้อนกลับ
+            return false;   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");
-		}else{
-			callfrm("?option=meeting&task=main/permission");   //page ประมวลผล
-		}
+            return false;
+        }
 	}
 }
 
 function goto_url_update(val){
 	if(val==0){
-		callfrm("?option=meeting&task=main/permission");   // page ย้อนกลับ
+		      return false;   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");
-		}else{
-			callfrm("?option=meeting&task=main/permission");   //page ประมวลผล
+             return false;
 		}
 	}
 }

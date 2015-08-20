@@ -7,10 +7,10 @@ $index="";
 }
 
 if($_SESSION['user_os']=='mobile'){
-include("./modules/person/menu_mobile.php");
+//include("./modules/person/menu_mobile.php");  // Comment บรรทัดนี้
 }
 else{
-include("./modules/person/menu.php");
+//include("./modules/person/menu.php");	// Comment บรรทัดนี้
 }
 //ผนวกไฟล์
 if($task!=""){

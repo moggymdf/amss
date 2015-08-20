@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -7,21 +5,47 @@ $admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_meeting']);
 if($admin_meeting!="meeting"){
 exit();
 }
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
+}
 
 require_once "modules/meeting/time_inc.php";
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
 
+}
     //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $login_user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
     {
-        $user_permis=$result_permission['p1'];
+        $user_permis=$result_permis['p1'];
     }
     if($user_permis!=1){
         exit();
@@ -50,7 +74,7 @@ echo "<br />";
 if(!(($getindex==1) or ($getindex==2) or ($getindex==5))){
 
 echo "<table width='100%' border='0' align='center'>";
-echo "<tr align='center'><td><font color='#006666' size='3'><strong>การอนุญาตใช้ห้องประชุม $system_user_department_name</strong></font><br><br></td></tr>";
+echo "<tr align='center'><td><font color='#006666' size='3'><strong>การอนุญาตใช้ห้องประชุม $user_department_name</strong></font><br><br></td></tr>";
 echo "</table>";
 }
 
@@ -86,25 +110,25 @@ $_POST['allchk']="";
 		if($key!=$_POST['allchk']){
 		$sql = "update meeting_main set approve=?, officer=?, officer_date=? where id=?";
         $dbquery = $connect->prepare($sql);
-        $dbquery->bind_param("issi", $value,$user,$date_time_now,$key);
+        $dbquery->bind_param("issi", $value,$login_user_id,$date_time_now,$key);
         $dbquery->execute();
         $result=$dbquery->get_result();
 		}
 	}
 }
 
-//ใส่เหตุผลการไม่อนุมัติ หรือแก้ไขเป็นอนุมัติ
+//ใส่เหตุผลการไม่อนุญาต หรือแก้ไขเป็นอนุญาต
 if ($getindex==5){
 
 echo "<form id='frm1' name='frm1'  >";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>ส่วนของการอนุญาต $system_user_department_name</Font>";
+echo "<Font color='#006666' Size=3><B>ส่วนของการอนุญาต $user_department_name</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
 
     $sql_room = "select * from meeting_room where department=? and active='1'  order by id";
     $dbquery_room = $connect->prepare($sql_room);
-    $dbquery_room->bind_param("i", $system_user_department);
+    $dbquery_room->bind_param("i", $user_departid);
     $dbquery_room->execute();
     $result_qroom=$dbquery_room->get_result();
 While ($result_room = mysqli_fetch_array($result_qroom))
@@ -212,7 +236,7 @@ $date_time_now = date("Y-m-d H:i:s");
 
 		$sql = "update meeting_main set approve=?, reason=? , officer=?, officer_date=? where id=?";
         $dbquery = $connect->prepare($sql);
-        $dbquery->bind_param("isssi", $postapprove,$postreason,$user,$date_time_now,$postid);
+        $dbquery->bind_param("isssi", $postapprove,$postreason,$login_user_id,$date_time_now,$postid);
         $dbquery->execute();
         $result=$dbquery->get_result();
 }
@@ -228,10 +252,10 @@ $poststatus_index=mysqli_real_escape_string($connect,$_POST['status_index']);
     }else{$showstatus="";}
 }else {$poststatus_index=""; $showstatus="";}
 
-$sql_meeting="select id from meeting_main where user_book=? ";
-
+//$sql_meeting="select id from meeting_main where user_book=? ";
+$sql_meeting="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showstatus ";
     $dbquery_meeting = $connect->prepare($sql_meeting);
-    $dbquery_meeting->bind_param("i", $user);
+    $dbquery_meeting->bind_param("i", $user_departid);
     $dbquery_meeting->execute();
     $result_meeting=$dbquery_meeting->get_result();
 
@@ -330,7 +354,7 @@ echo "</div>";
 //จบแยกหน้า
 
 
-$sql_room = "select * from meeting_room where active='1' order by id";
+$sql_room = "select * from meeting_room where (active='1' or active='0' or active='99')  order by id";
     $dbquery_room = $connect->prepare($sql_room);
     //$dbquery_room->bind_param("i", $system_user_department);
     $dbquery_room->execute();
@@ -338,12 +362,12 @@ $sql_room = "select * from meeting_room where active='1' order by id";
 While ($result_room = mysqli_fetch_array($result_meetroom))
 {
 $room_ar[$result_room['room_code']]=$result_room['room_name'];
+$room_at[$result_room['room_code']]=$result_room['active'];
 }
-
 $sql_join="select meeting_main.*, meeting_room.* ,meeting_main.id as id ,meeting_main.rec_date as rec_date from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=? $showstatus order by  meeting_main.book_date_start desc,meeting_main.room,meeting_main.start_time,meeting_main.rec_date desc limit $start,$pagelen";
 
     $dbquery_join = $connect->prepare($sql_join);
-    $dbquery_join->bind_param("i", $system_user_department);
+    $dbquery_join->bind_param("i", $user_departid);
     $dbquery_join->execute();
     $result_joinroom=$dbquery_join->get_result();
 
@@ -355,11 +379,11 @@ echo "<Tr><td colspan='15'><table width='100%'><tr><td align='left'>";
 //เพิ่มการเลือกสถานะ
 echo "<form  name='frm1'>";
 
-echo "&nbsp;<Select  name='status_index' size='1'>";
+echo "&nbsp;<Select  name='status_index' size='1' class='selectpicker'>";
 echo "<option value ='' >ทุกสถานะ</option>" ;
-echo "<option value ='0' >รอการอนุมัติ</option>" ;
-echo "<option value ='1' >อนุมัติแล้ว</option>" ;
-echo "<option value ='2' >ไม่อนุมัติ</option>" ;
+echo "<option value ='0' >รอการอนุญาต</option>" ;
+echo "<option value ='1' >อนุญาตแล้ว</option>" ;
+echo "<option value ='2' >ไม่อนุญาต</option>" ;
 echo "</select>";
 echo "&nbsp;<INPUT TYPE='button' name='smb' class='btn btn-info' value='เลือก'  onclick='goto_url2(1)'>";
 echo "</form>";
@@ -368,7 +392,7 @@ echo "</form>";
 echo "</td><td align='right'><INPUT TYPE='checkbox' name='allchk'  id='allckk' onclick='CheckAll()'> เลือก/ไม่เลือกทั้งหมด</Td></table></td></Tr>";
 
 
-echo "<Tr class='info' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='100'>ห้องประชุม</Td><Td  width='60'>ตั้งแต่เวลา</Td><Td width='60'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
+echo "<Tr class='info' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='200'>ห้องประชุม</Td><Td  width='70'>ตั้งแต่เวลา</Td><Td width='70'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='150'>อื่น ๆ/ผู้ประสานงาน</Td><Td width='120'>ผู้จอง(วันเวลา)</Td><td><INPUT TYPE='button' name='smb'  value='อนุญาต' onclick='goto_url_update2(1)'></Td><Td>ผู้อนุญาต</Td><Td width='90'>หมายเหตุ</Td><Td width='40'>เจ้าหน้าที่</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -396,6 +420,7 @@ While ($result = mysqli_fetch_array($result_joinroom)){
         $officer = $result['officer'];
         $officer_date = $result['officer_date'];
         $reason = $result['reason'];
+        $department_book = $result['department_book'];
 
 		if(isset($user_book)){
     $sql_person="select * from person_main where  status='0' and person_id=? ";
@@ -409,6 +434,23 @@ While ($result = mysqli_fetch_array($result_joinroom)){
      $name=$result_person['name'];
      $surname=$result_person['surname'];
 }
+
+
+if($department_book!=$user_departid){
+    //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $department_book);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $book_department_name=$result_depart_name['department_name'];
+    $book_department_precisname=$result_depart_name['department_precis'];
+	}
+     $showdepartmybook = " <a tabindex='0' class='btn btn-warning btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='สำนัก' data-content=$book_department_name>$book_department_precisname</a>";
+        }else{$showdepartmybook="";}
+
         }
 
             //if(($M%2) == 0)
@@ -424,6 +466,14 @@ echo "</Td>";
 echo "<Td align='left'>";
 if(isset($room_ar[$room])){
 echo $room_ar[$room];
+
+if($room_at[$room]==1){
+    echo "";
+}else if($room_at[$room]=='99'){
+    echo "<button type='button' name='showatroom' class='btn btn-danger btn-xs'  class='entrybutton' >ยกเลิกใช้ห้อง</button>";
+}else{
+    echo "<button type='button' name='showatroom' class='btn btn-warning btn-xs'  class='entrybutton' >ไม่อนุญาตให้จอง</button>";
+}
 }
 echo "</Td>";
 echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time น.</Td>";
@@ -434,13 +484,13 @@ echo "<Td>$name $surname(<font size='1px'>";
 echo thai_date_4($rec_date);
 //echo $rec_date;
 
-    echo "</font>)</Td>";
+    echo "</font>) $showdepartmybook</Td>";
 
 if($result['approve']==1){
-echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุมัติ'></Td>";
+echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุญาต'></Td>";
 }
 else if($result['approve']==2){
-echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุมัติ'></Td>";
+echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุญาต'></Td>";
 }
 else{
 echo "<Td align='center'><input type='checkbox' name='$id' id='$id' value='1'></Td>";
@@ -490,7 +540,7 @@ echo "</form></Table>";
 
 if(!(($getindex==1) or ($getindex==2) or ($getindex==3) or ($getindex==11) or ($getindex==5))) {
 echo "<br>";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุญาตให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุญาตให้ใช้ห้องประชุม";
 }
 ?>
 

@@ -18,14 +18,15 @@ class DB_Functions {
      * Storing new user
      * returns user details
      */
-    public function storeUser($gcm_regid) {
+    public function storeUser($gcm_regid,$gcm_id,$user) {
             // insert user into database
-            $result = mysql_query("INSERT INTO gcm_users (id, gcm_regid, created_at) VALUES(NULL, '$gcm_regid', NOW())");
+        echo "INSERT INTO smartpush (id, gcm_regid,gcm_id,gcm_user, created_at) VALUES(NULL, '$gcm_regid','$gcm_id','$user', NOW())";
+            $result = mysql_query("INSERT INTO smartpush (id, gcm_regid,gcm_id,gcm_user, created_at) VALUES(NULL, '$gcm_regid','$gcm_id','$user', NOW())");
             // check for successful store
             if ($result) {
                 // get user details
                 $id = mysql_insert_id(); // last inserted id
-                $result = mysql_query("SELECT * FROM gcm_users WHERE id = $id") or die(mysql_error());
+                $result = mysql_query("SELECT * FROM smartpush WHERE gcm_id = $gcm_id") or die(mysql_error());
                 // return user details
                 if (mysql_num_rows($result) > 0) {
                     return mysql_fetch_array($result);
@@ -42,18 +43,23 @@ class DB_Functions {
      * เลือกผู้ใช้ทุกคน
      */
     public function getAllUsers() {
-        $result = mysql_query("select * FROM gcm_users");
+        $result = mysql_query("select * FROM smartpush");
         return $result;
     }
 
     public function getUser($gcm_regid) {
-        $result = mysql_query("select * FROM gcm_users WHERE gcm_regid='$gcm_regid'");
+        $result = mysql_query("select * FROM smartpush WHERE gcm_regid='$gcm_regid'");
         $no_of_row = mysql_num_rows($result);
         if ($no_of_row > 0) {
             return false;
         } else {
             return true;
         }
+    }
+
+    public function getidUser($gcm_id) {
+        $result = mysql_query("select * FROM smartpush WHERE gcm_id='$gcm_id'");
+        return $result;
     }
 
 }

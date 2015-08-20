@@ -3,22 +3,44 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-//$login_admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
 
 require_once "modules/work/time_inc.php";
 
 //หน่วยงานผู้บริหาร
 $managerdepart=0;
-//หน่วนงานผู้ดูแลการลงเวลาผู้บริหาร
-$addmanagerdepart=2;
-
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+//หน่วนงานผู้ดูแลการลงเวลาผู้บริหาร : 4=สำนักอำนวยการ
+$addmanagerdepart=4;
 
 //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
@@ -37,7 +59,7 @@ $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
     }
 
 
-$officer=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+$officer=$user_id;
 
     $sql_user = "select department from person_main where person_id=? ";
     $dbquery_user = $connect->prepare($sql_user);

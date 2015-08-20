@@ -25,6 +25,11 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 			<li><a href="?file=module_admin">ผู้ดูแล(Admin)ระบบงานย่อย</a></li>
 		</ul>
 	</li>
+	<li><a href="./" class="dir">การเชื่อมระบบ(Sync)</a>
+		<ul>
+			<li><a href="?file=sync">การเชื่อมระบบ AMSS++</a></li>
+		</ul>
+	</li>
 	<li><a href="./" class="dir">ผู้ใช้ (User)</a>
 		<ul>
 		</ul>

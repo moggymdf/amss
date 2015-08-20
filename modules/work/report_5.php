@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -39,7 +37,7 @@ $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
 //exit();
 //}
 
-require_once "modules/work/time_inc.php";	
+require_once "modules/work/time_inc.php";
 
 $department=mysqli_real_escape_string($connect,$_GET['department']);
 //แปลงรูปแบบ date
@@ -108,7 +106,7 @@ echo  "<table width='98%' border='0' align='center' class='table table-hover tab
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td></Tr>";
 $N=1;
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;$work_sum_total=0;		
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;$work_sum_total=0;
 
 //ส่วนรายละเอียด
 
@@ -146,16 +144,16 @@ $sql_work = "select work_main.person_id as person_id, work_main.work as work,per
     $result_daywork = $dbquery_work->get_result();
     while($result_work = $result_daywork->fetch_array())
 	   {
-  
-if($result_work['work']!=""){   
-    
+
+if($result_work['work']!=""){
+
 $prename=$result_work['prename'];
 $name= $result_work['name'];
 $surname = $result_work['surname'];
 $position_code = $result_work['position_code'];
 $full_name="$prename$name&nbsp;&nbsp;$surname";
 
-$sql_post= "select position_name from person_position where position_code=? ";   
+$sql_post= "select position_name from person_position where position_code=? ";
     $dbquery_post = $connect->prepare($sql_post);
     $dbquery_post->bind_param("i",$position_code);
     $dbquery_post->execute();
@@ -164,12 +162,12 @@ $sql_post= "select position_name from person_position where position_code=? ";
 	   {
         $position_name=$result_post['position_name'];
     }
-		
+
 						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
 
-$work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";		
+$work_1=""; $work_2=""; $work_3="";	$work_4="";	$work_5="";	$work_6="";	$work_7="";	$work_8="";	$work_9="";
 
 if($result_work['work']==1){
 $work_1="มา";
@@ -183,32 +181,32 @@ $work_2_sum=$work_2_sum+1;
 else if($result_work['work']==3){
 $work_3="ลาป่วย";
 $work_3_sum=$work_3_sum+1;
-}			
+}
 else if($result_work['work']==4){
 $work_4="ลากิจ";
 $work_4_sum=$work_4_sum+1;
-}			
+}
 else if($result_work['work']==5){
 $work_5="ลาพักผ่อน";
 $work_5_sum=$work_5_sum+1;
-}			
+}
 else if($result_work['work']==6){
 $work_6="ลาคลอด";
 $work_6_sum=$work_6_sum+1;
-}			
+}
 else if($result_work['work']==7){
 $work_7="ลาอื่นๆ";
 $work_7_sum=$work_7_sum+1;
-}			
+}
 else if($result_work['work']==8){
 $work_8="มาสาย";
 $work_8_sum=$work_8_sum+1;
-}			
+}
 else if($result_work['work']==9){
 $work_9="ไม่มา";
 $work_9_sum=$work_9_sum+1;
-}			
-		
+}
+
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td><td>";
 	if(isset($full_name)){
@@ -232,7 +230,7 @@ $N++;
 }
 
 $work_sum_total=$work_1_sum+$work_2_sum+$work_3_sum+$work_4_sum+$work_5_sum+$work_6_sum+$work_7_sum+$work_8_sum+$work_9_sum;
-if($work_sum_total!=0){   
+if($work_sum_total!=0){
 echo "<tr bgcolor='#FFCCCC' align='center'>";
 echo "<td colspan='3'>รวม</td><td>$work_1_sum</td><td>$work_2_sum</td><td>$work_3_sum</td><td>$work_4_sum</td><td>$work_5_sum</td><td>$work_6_sum</td><td>$work_7_sum</td><td>$work_8_sum</td><td>$work_9_sum</td>";
 echo "</tr>";
@@ -263,7 +261,7 @@ echo "</tr>";
 }else{
 echo "<tr bgcolor='#FFFFFF' align='center'><td colspan='12'><B>ไม่มีรายการที่บันทึกการมาปฏิบัติราชการ</b></td></tr>";
 }
- 
+
 echo "</table>";
 ?>
 

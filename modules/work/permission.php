@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
@@ -8,7 +6,7 @@ if($admin_work!='work'){
 exit();
 }
 ?>
-<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script> 
+<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
 <script type="text/javascript">
 $(function(){
 	$("select#department").change(function(){
@@ -16,8 +14,8 @@ $(function(){
 			  url: "admin/section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
 			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
 			  async: false
-		}).responseText;		
-		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2 
+		}).responseText;
+		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
 		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
 	});
 });
@@ -43,12 +41,36 @@ $getindex=mysqli_real_escape_string($connect,$_GET['index']);
 }else {$getindex="";}
 
 //หาหน่วยงาน
-$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+}
 
 $sql_depart = "select department_name from  system_department where department=? order by department";
     $dbquery_namedepart = $connect->prepare($sql_depart);
-    $dbquery_namedepart->bind_param("i", $system_user_department);
+    $dbquery_namedepart->bind_param("i", $user_departid);
     $dbquery_namedepart->execute();
     $result_namedepart=$dbquery_namedepart->get_result();
     while($result_departname = $result_namedepart->fetch_array())
@@ -72,14 +94,14 @@ echo "<td><div align='left'><Select name='person_id'  size='1'>";
 echo  "<option  value = ''>เลือกบุคลากร</option>" ;
     $sql = "select  * from person_main where department = ? and status=0 order by name";
     $dbquery_person = $connect->prepare($sql);
-    $dbquery_person->bind_param("i", $system_user_department);
+    $dbquery_person->bind_param("i", $user_departid);
     $dbquery_person->execute();
     $result_person=$dbquery_person->get_result();
     while($result_personname = $result_person->fetch_array())
    {
      $personname = $result_personname['prename'].$result_personname['name']." ".$result_personname['surname'];
      $personid = $result_personname['person_id'];
-    
+
     $sql = "select  * from work_permission where person_id=?";
     $dbquery_permiss = $connect->prepare($sql);
     $dbquery_permiss->bind_param("i", $personid);
@@ -139,11 +161,11 @@ $sql = "delete from work_permission where id=?";
 if($postindex==4){
 $personid=mysqli_real_escape_string($connect,$_POST['person_id']);
 $work_permission1=mysqli_real_escape_string($connect,$_POST['work_permission1']);
-    
+
 $rec_date = date("Y-m-d");
 $sql = "insert into work_permission (person_id, p1, officer,rec_date) values (?,?,?,?)";
     $dbquery_addwork = $connect->prepare($sql);
-    $dbquery_addwork->bind_param("iiss", $personid,$work_permission1,$login_user_id,$rec_date);
+    $dbquery_addwork->bind_param("iiss", $personid,$work_permission1,$user_id,$rec_date);
     $dbquery_addwork->execute();
     $result_addwork=$dbquery_addwork->get_result();
     echo "<script>document.location.href='?option=work&task=permission'; </script>\n";
@@ -216,11 +238,11 @@ if ($postindex==6){
 $person_id=mysqli_real_escape_string($connect,$_POST['person_id']);
 $work_permission1=mysqli_real_escape_string($connect,$_POST['work_permission1']);
 $idpermis=mysqli_real_escape_string($connect,$_POST['idpermis']);
-    
+
 $rec_date = date("Y-m-d");
 $sql_update = "update work_permission set  person_id=?, p1=?, officer=?, rec_date=? where id=?";
                     $dbquery_update = $connect->prepare($sql_update);
-                    $dbquery_update->bind_param("iissi", $person_id,$work_permission1,$login_user_id,$rec_date,$idpermis);
+                    $dbquery_update->bind_param("iissi", $person_id,$work_permission1,$user_id,$rec_date,$idpermis);
                     $dbquery_update->execute();
                     $result_update = $dbquery_update->get_result();
 echo "<script>document.location.href='?option=work&task=permission'; </script>\n";
@@ -231,7 +253,7 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql_show = "select work_permission.id, work_permission.p1, person_main.name, person_main.surname from work_permission left join person_main on work_permission.person_id=person_main.person_id where person_main.department=? order by work_permission.id";
     $dbquery_show = $connect->prepare($sql_show);
-    $dbquery_show->bind_param("i", $system_user_department);
+    $dbquery_show->bind_param("i", $user_departid);
     $dbquery_show->execute();
     $result_show = $dbquery_show->get_result();
 
@@ -269,7 +291,7 @@ echo "</Table></form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=work&task=permission");   // page ย้อนกลับ 
+		callfrm("?option=work&task=permission");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");
@@ -281,7 +303,7 @@ function goto_url(val){
 
 function goto_url_update(val){
 	if(val==0){
-		callfrm("?option=work&task=permission");   // page ย้อนกลับ 
+		callfrm("?option=work&task=permission");   // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.person_id.value == ""){
 			alert("กรุณาเลือกบุคลากร");

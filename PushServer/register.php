@@ -1,10 +1,14 @@
 <?php
 $my = $_POST["regid"];
+$uid = $_POST['uid'];
+$user = $_POST['user'];
 // รับข้อมูล json
 $json = array();
+if (!isset($uid)) {$uid="7777";}
+if (!isset($user)) {$user="nipon";}
 /**
  * ผู้ใช้ลงทะเบียนอุปกรณ์เข้ากับฐานข้อมูล
- * โดยกับค่า reg id ลงในตาราง
+ * โดยเก็บค่า reg id ลงในตาราง
  */
 if (isset($my)) {
     $gcm_regid = $my; // GCM ID ที่ลงทะเบียน
@@ -16,13 +20,13 @@ if (isset($my)) {
     $gcm = new GCM();
 
     if ($db->getUser($gcm_regid)) {
-        $res = $db->storeUser($gcm_regid);
+        $res = $db->storeUser($gcm_regid,$uid,$user);
 
         $registatoin_ids = array($gcm_regid);
-        $message = "ยินดีต้อนรับสู่สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน";
+        $message = "ยินดีต้อนรับสู่ Smart OBEC";
 
         $result = $gcm->send_notification($registatoin_ids, $message);
-
+        //echo "gcm regid".$gcm_regid;
         echo $result;
     } else {
         echo "ผู้ใช้ลงทะเบียนแล้ว";

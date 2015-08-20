@@ -3,19 +3,37 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-//if(isset($_SESSION['admin_work'])){
-//$login_admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
-//}else{$login_admin_work="";}
-//if($login_admin_work=='work') {
-//exit();
-//}
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
 
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+}
 
 //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
-    $dbquery_permis->bind_param("i", $user);
+    $dbquery_permis->bind_param("i", $user_id);
     $dbquery_permis->execute();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
@@ -34,9 +52,9 @@ $user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
         exit();
     }
 
-require_once "modules/work/time_inc.php";	
+require_once "modules/work/time_inc.php";
 
-$officer=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+$officer=$user_id;
 
     $sql_user = "select department from person_main where person_id=? ";
     $dbquery_user = $connect->prepare($sql_user);
@@ -49,7 +67,7 @@ $officer=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
     }
 
 //แปลงรูปแบบ date
-//$send_date = $_GET['datepicker'];         
+//$send_date = $_GET['datepicker'];
 if(!isset($_POST['send_date'])){
 $postsend_date="";
 }else{
@@ -124,7 +142,7 @@ $postindex=mysqli_real_escape_string($connect,$_POST['index']);
 }else {$postindex="";}
 if($postindex==4){
 $rec_date=date("Y-m-d H:i:s");
-    
+
     $sql = "select person_id from person_main where department = ? and status='0' order by department,position_code,person_order";
     $dbquery_personid = $connect->prepare($sql);
     $dbquery_personid->bind_param("i", $department);
@@ -153,13 +171,13 @@ $postperson_id="";
 
     $delete = "delete_chk".$person_id;
     //echo $delete;
-    //$deletework = $_POST[$delete];   
+    //$deletework = $_POST[$delete];
     //echo $deletework;
 if(!isset($_POST[$delete])){
 //$_POST[$delete]="";
 $postdelete="";
 }else{$postdelete=mysqli_real_escape_string($connect,$_POST[$delete]);
-}		
+}
         //echo "555 ".$postperson_id;
 			if(($postperson_id>0) and ($postdelete!=1)){
 					if($data_num>0){
@@ -176,7 +194,7 @@ $postdelete="";
                     $dbquery_insert->execute();
                     $result_insert = $dbquery_insert->get_result();
                     }
-			}	
+			}
 			if(($postperson_id>0) and ($postdelete==1)){
 			$sql_delete = "delete from work_main where work_date=? and person_id=?";
             $dbquery_delete = $connect->prepare($sql_delete);
@@ -184,7 +202,7 @@ $postdelete="";
             $dbquery_delete->execute();
             $result_delete = $dbquery_delete->get_result();
              }
-	}	
+	}
 }
 
 //ส่วนแสดงหลัก
@@ -203,9 +221,9 @@ $sql_person = "select * from person_main where status='0'and department = ?";
             $result_personwork = $dbquery_work->get_result();
     while($result_work = $result_personwork->fetch_array())
         {
-         $work_ar[$person_id]=$result_work['work'];		
+         $work_ar[$person_id]=$result_work['work'];
          }
-        
+
         }
 
 echo "<form id='frm1' name='frm1'>";
@@ -241,17 +259,17 @@ while($result = $result_personshow->fetch_array())
         //$color="#FFFFFF";
         //$color2="#FFFFFF";
 		//	}
-			
+
 //check การลา  --->ยังไม่ได้เชื่อมกับระบบลา
 /*	$sql_la="select * from la_main where (la_start<='$today_date' and '$today_date'<=la_finish) and person_id='$person_id' ";
 	$dbquery_la = mysqli_query($connect,$sql_la);
 		if($dbquery_la){
-		$la_num=mysqli_num_rows($dbquery_la);	
+		$la_num=mysqli_num_rows($dbquery_la);
 				if($la_num>=1){
 						$result_la = mysqli_fetch_array($dbquery_la);
 						if($result_la['la_type']==1){
 						$color="#FF3366";
-						} 
+						}
 						else if($result_la['la_type']==2){
 						$color="#FFFF00";
 						}
@@ -264,20 +282,20 @@ while($result = $result_personshow->fetch_array())
 				$sql_cancel="select * from la_cancel where (cancel_la_start<='$today_date' and '$today_date'<=cancel_la_finish) and person_id='$person_id' ";
 				$dbquery_cancel = mysqli_query($connect,$sql_cancel);
 						if($dbquery_cancel){
-						$la_num_cancel=mysqli_num_rows($dbquery_cancel);	
+						$la_num_cancel=mysqli_num_rows($dbquery_cancel);
 								if($la_num_cancel>=1){
 								$color=$color2;
 								}
 						}
-						
+
 				}
 		}
-			
+
 //check การไปราชการ  -->ยังไม่ได้เชื่อมกับระบบไปราชการ
 	$sql_date="select * from permission_date where person_id='$person_id' and date='$today_date' ";
 	$dbquery_date = mysqli_query($connect,$sql_date);
 		if($dbquery_date){
-		$date_num=mysqli_num_rows($dbquery_date);	
+		$date_num=mysqli_num_rows($dbquery_date);
 				if($date_num>=1){
 				$color="#00FFFF";
 				}
@@ -285,15 +303,15 @@ while($result = $result_personshow->fetch_array())
 */
 
 //เพิ่มในส่วนของงานแสดงผลในเฟส 1
-$check_index1="";	
-$check_index2="";	
-$check_index3="";	
-$check_index4="";	
-$check_index5="";	
-$check_index6="";	
-$check_index7="";	
-$check_index8="";	
-$check_index9="";	
+$check_index1="";
+$check_index2="";
+$check_index3="";
+$check_index4="";
+$check_index5="";
+$check_index6="";
+$check_index7="";
+$check_index8="";
+$check_index9="";
 
 if(!isset($postindex)){
 $postindex="";
@@ -302,7 +320,7 @@ $postindex="";
 if($postindex==2){
 $check_index1="checked";
 }
-if(isset($work_ar[$person_id])){    
+if(isset($work_ar[$person_id])){
 if($work_ar[$person_id]==1){
 $check_index1="checked";
 }
@@ -339,7 +357,7 @@ $color="#FF0000";
 $check_index9="checked";
 }
 }
-    
+
 echo "<Tr  bgcolor=$color align=center class=style1><Td>$N</Td>";
 echo "<Td><input type='checkbox' name='delete_chk$person_id' id='delete_chk$person_id'  value='1'>";
 echo "</Td><Td align='left'>$prename&nbsp;$name&nbsp;&nbsp;$surname</Td><Td align='left'>";
@@ -358,7 +376,7 @@ echo "<Td><input type='radio' name='$person_id' id='$person_id' value='7' $check
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='8' $check_index8>มาสาย</Td>";
 echo "<Td><input type='radio' name='$person_id' id='$person_id' value='9' $check_index9>ไม่มา</Td>";
 
-if(isset($work_ar[$person_id])){       
+if(isset($work_ar[$person_id])){
 if($work_ar[$person_id]<1){
 echo "<Td align='center'><img src=images/dangerous.png border='0' alt='ไม่มีข้อมูล'></Td>";
 }
@@ -370,7 +388,7 @@ echo "";
 $M++;
 $N++;
 	}
-	
+
 /*
 $sql_check = "select * from work_main where work_date=?";
             $dbquery_check = $connect->prepare($sql_check);
@@ -400,13 +418,13 @@ echo "</form>";
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=work&task=check_2");   // page ย้อนกลับ 
+		callfrm("?option=work&task=check_2");   // page ย้อนกลับ
 	}else if(val==1){
 	   callfrm("?option=work&task=check_2");   //page ประมวลผล
 	}
 }
 </script>
-        
+
 <script>
 function CheckAll() {
 	for (var i = 0; i < document.frm1.elements.length; i++)

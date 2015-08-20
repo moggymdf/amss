@@ -1,9 +1,9 @@
-<?php	
+<?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
 $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);
-//sd page 
+//sd page
 $sql_permission = "select * from work_permission where person_id=?";
     $dbquery_permiss = $connect->prepare($sql_permission);
     $dbquery_permiss->bind_param("i", $login_user_id);
@@ -23,6 +23,7 @@ if(isset($permission)){
         $permission="";
     }
 
+if(!isset($_SESSION['system_user_department'])){ $_SESSION['system_user_department']=""; }
 $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
 
 
@@ -32,51 +33,84 @@ $admin_work="";
 $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 }
 
-
-echo "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"; 
-echo "<tr bgcolor='#FFCC00'><td>";
-echo "<ul id='nav' class='dropdown dropdown-horizontal'>";
-	echo "<li><a href='./'>รายการหลัก</a></li>";
 	if($admin_work=="work"){
-	echo "<li><a href='?option=work' class='dir'>ตั้งค่าระบบ</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=permission'>กำหนดเจ้าหน้าที่</a></li>";
-		echo "</ul>";
-	echo "</li>";
+		?>
+	<li class='dropdown'>
+		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ <span class='caret'></span></a>
+		<ul class='dropdown-menu' role='menu'>
+			<li>
+				<a href='?option=work&task=permission'>
+					<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; กำหนดเจ้าหน้าที่
+				</a>
+			</li>
+		</ul>
+	</li>
+	<?php
 	}
-	if(($admin_work=="work") or ($login_status<=4 and $permission==1)){	
-	echo "<li><a href='?option=work' class='dir'>บันทึกข้อมูล</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=check'>บันทึกข้อมูลการปฏิบัติราชการวันนี้</a></li>";
-			echo "<li><a href='?option=work&task=check_2'>บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง</a></li>";
-
+	if(($admin_work=="work") or ($login_status<=4 and $permission==1)){
+		?>
+		<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล <span class='caret'></span></a>
+			<ul class='dropdown-menu' role='menu'>
+				<li>
+					<a href='?option=work&task=check'>
+						<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการวันนี้
+					</a>
+				</li>
+				<li>
+					<a href='?option=work&task=check_2'>
+						<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการย้อนหลัง
+					</a>
+				</li>
+				<?php
         //บันทึกข้อมูลผู้บริหาร
-        if($system_user_department==2){
- 			echo "<li><a href='?option=work&task=check_3'>บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร</a></li>";
-        }
+        if($system_user_department==4){ ?>
+					<li>
+						<a href='?option=work&task=check_3'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; บันทึกข้อมูลการปฏิบัติราชการของผู้บริหาร
+						</a>
+					</li>
+					<?php   } ?>
 
-    echo "</ul>";
-	echo "</li>";
-	}	
-	if(isset($login_user_id)){
-	echo "<li><a href='?option=work' class='dir'>รายงาน</a>";
-		echo "<ul>";
-			echo "<li><a href='?option=work&task=report_1'>สรุปการปฏิบัติราชการรายวัน</a></li>";
-			echo "<li><a href='?option=work&task=report_2'>สรุปการปฏิบัติราชการรอบเดือน</a></li>";
-//	if($login_status<105){
-			echo "<li><a href='?option=work&task=report_4'>สรุปการปฏิบัติราชการรายสำนักรายวัน</a></li>";
-			echo "<li><a href='?option=work&task=report_6'>สรุปการปฏิบัติราชการผู้บริหารงานวัน</a></li>";
-//    }
-		echo "</ul>";
-	echo "</li>";
+			</ul>
+		</li>
+		<?php
 	}
-	echo "</li>";
-	echo "<li><a href='?option=work' class='dir'>คู่มือ</a>";
-		echo "<ul>";
-				echo "<li><a href='modules/work/manual/work.pdf' target='_blank'>คู่มือการปฏิบัติราชการ</a></li>";
-		echo "</ul>";
-	echo "</li>";
-echo "</ul>";
-echo "</td></tr>";
-echo "</table>";
-?>
+	if(isset($login_user_id)){ ?>
+			<li class='dropdown'>
+				<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-stats' aria-hidden='true'></span>&nbsp;รายงาน <span class='caret'></span></a>
+				<ul class='dropdown-menu' role='menu'>
+					<li>
+						<a href='?option=work&task=report_1'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการรายวัน
+						</a>
+					</li>
+					<li>
+						<a href='?option=work&task=report_2'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการรอบเดือน
+						</a>
+					</li>
+					<li>
+						<a href='?option=work&task=report_4'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการรายสำนักรายวัน
+						</a>
+					</li>
+					<li>
+						<a href='?option=work&task=report_6'>
+							<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; สรุปการปฏิบัติราชการผู้บริหารรายวัน
+						</a>
+					</li>
+
+				</ul>
+			</li>
+			<?php	} ?>
+
+				<li class='dropdown'>
+					<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-book' aria-hidden='true'></span>&nbsp;คู่มือ <span class='caret'></span></a>
+					<ul class='dropdown-menu' role='menu'>
+						<li>
+							<a href='modules/work/manual/work.pdf' target='_blank'>
+								<span class='glyphicon glyphicon-menu-right' aria-hidden='true'></span>&nbsp; คู่มือการปฏิบัติราชการ
+							</a>
+						</li>
+					</ul>
+				</li>

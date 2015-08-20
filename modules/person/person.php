@@ -304,10 +304,10 @@ while($result_sub = mysqli_fetch_array($query_sub)){
 	$sub_department = $result_sub['sub_department'];
 	$sub_department_name = $result_sub['sub_department_name'];
 		if($result['position_other_code']==$result_sub['sub_department']){
-		echo "<option value=$sub_department selected>หัวหน้า$sub_department_name</option>";
+		echo "<option value=$sub_department selected>ผอ.$sub_department_name</option>";
 		}
 		else{
-		echo "<option value=$sub_department>หัวหน้า$sub_department_name</option>";
+		echo "<option value=$sub_department>ผอ.sub_department_name</option>";
 		}
 }
 echo "</select>";
@@ -541,7 +541,7 @@ $sql = "select * from system_subdepartment where sub_department='$result[positio
 $query_sub = mysqli_query($connect,$sql);
 while($result_sub = mysqli_fetch_array($query_sub)){
 	$sub_department_name = $result_sub['sub_department_name'];
-	echo " (หัวหน้า$sub_department_name)";
+	echo " (ผอ.$sub_department_name)";
 }
 
 echo "</Td>";

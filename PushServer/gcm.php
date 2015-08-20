@@ -40,7 +40,7 @@ class GCM {
 
         // Close connection
         curl_close($ch);
-        // $result = json_decode($result);
+        //$result = json_decode($result);
         echo $result;
     }
 

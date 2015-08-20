@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script language='javascript'>
 //<!–
 function printContentDiv(content){
@@ -45,16 +43,16 @@ $thai_month_arr=array(
 	"03"=>"มีนาคม",
 	"04"=>"เมษายน",
 	"05"=>"พฤษภาคม",
-	"06"=>"มิถุนายน",	
+	"06"=>"มิถุนายน",
 	"07"=>"กรกฎาคม",
 	"08"=>"สิงหาคม",
 	"09"=>"กันยายน",
 	"10"=>"ตุลาคม",
 	"11"=>"พฤศจิกายน",
-	"12"=>"ธันวาคม"					
+	"12"=>"ธันวาคม"
 );
 
-require_once "modules/work/time_inc.php";	
+require_once "modules/work/time_inc.php";
 //แปลงรูปแบบ date
 if(isset($_GET['datepicker'])){
 $f1_date=explode("-", $_GET['datepicker']);
@@ -116,8 +114,8 @@ $N=1;
     $dbquery_department->execute();
     $result_showdepartment=$dbquery_department->get_result();
     while($result_department = $result_showdepartment->fetch_array())
-	   {     
-$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;	
+	   {
+$work_1_sum=0; $work_2_sum=0; $work_3_sum=0;	$work_4_sum=0;	$work_5_sum=0;	$work_6_sum=0;	$work_7_sum=0;	$work_8_sum=0;	$work_9_sum=0;
 
 $department = $result_department["department"];
 $department_name = $result_department['department_name'];
@@ -131,18 +129,18 @@ $sql_work = "select person_main.department as department,work_main.person_id,wor
     $dbquery_work->execute();
     $result_numwork=$dbquery_work->get_result();
     $num_rows=mysqli_num_rows($result_numwork);
- 
+
  						if(($N%2) == 0)
 						$color="#FFFFC";
 						else  	$color="#FFFFFF";
-           
-            
+
+
 echo "<tr bgcolor='$color'>";
 echo "<td align='center'>$N</td>";
 echo "<td><a href='?option=work&task=report_5&department=$department&datepicker=$f3_date' target='_blank'>$department_name</a></td>";
 echo "<td align='center'>";
 	echo $num_rows;
-echo "</td>";            
+echo "</td>";
 
 While ($result_work = $result_numwork->fetch_array()){
 
@@ -156,32 +154,32 @@ While ($result_work = $result_numwork->fetch_array()){
 			}
 			else if($result_work['work']==3){
 			$work_3_sum=$work_3_sum+1;
-			}			
+			}
 			else if($result_work['work']==4){
 			$work_4_sum=$work_4_sum+1;
-			}			
+			}
 			else if($result_work['work']==5){
 			$work_5_sum=$work_5_sum+1;
-			}			
+			}
 			else if($result_work['work']==6){
 			$work_6_sum=$work_6_sum+1;
-			}			
+			}
 			else if($result_work['work']==7){
 			$work_7_sum=$work_7_sum+1;
-			}			
+			}
 			else if($result_work['work']==8){
 			$work_8_sum=$work_8_sum+1;
-			}			
+			}
 			else if($result_work['work']==9){
 			$work_9_sum=$work_9_sum+1;
-            }			    
-    
+            }
+
 }
 
 echo "<td align='center' bgcolor='#CCFFFF'>$work_1_sum</td><td align='center'>$work_2_sum</td><td align='center' bgcolor='#CCFFFF'>$work_3_sum</td><td align='center'>$work_4_sum</td><td align='center' bgcolor='#CCFFFF'>$work_5_sum</td><td align='center'>$work_6_sum</td><td align='center' bgcolor='#CCFFFF'>$work_7_sum</td><td align='center'>$work_8_sum</td><td align='center' bgcolor='#CCFFFF'>$work_9_sum</td>";
 
-            
- $N++;           
+
+ $N++;
         }
 echo "</table>";
 ?>

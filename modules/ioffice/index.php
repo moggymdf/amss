@@ -1,9 +1,17 @@
 <!-- Bootstrap Include -->
-<link rel="stylesheet" type="text/css" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
-<script src="./bootstrap-3.3.5-dist/js/jquery-1.11.3.min.js"></script>
-<script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-<script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
-<script src="./ckeditor_4.5.2_full/ckeditor.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css"> -->
+<!-- <script src="./bootstrap-3.3.5-dist/js/jquery-1.11.3.min.js"></script> -->
+<!-- <script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script> -->
+<!-- <script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script> -->
+<!-- <script src="./ckeditor_4.5.2_full/ckeditor.js"></script> -->
+
+<?php
+	// Define Variable
+  	if(isset($_POST["searchtext"])){ }else{ $_POST["searchtext"]=""; }
+  	if(isset($_SESSION["searchtext"])){ }else{ $_SESSION["searchtext"]=""; }
+  	if(isset($_POST["searchbookstatusid"])){ }else{ $_POST["searchbookstatusid"]=""; }
+  	if(isset($_SESSION["searchbookstatusid"])){ }else{ $_SESSION["searchbookstatusid"]=""; }
+?>
 
 <?php
 if(isset($_REQUEST['index'])){
@@ -14,10 +22,11 @@ $index="";
 }
 
 if($_SESSION['user_os']=='mobile'){
-include("./modules/ioffice/menu_mobile.php");
+//include("./modules/ioffice/menu_mobile.php");
+//include("./modules/ioffice/menu.php");
 }
 else{
-include("./modules/ioffice/menu.php");
+//include("./modules/ioffice/menu.php");
 }
 //ผนวกไฟล์
 if($task!=""){
@@ -144,7 +153,7 @@ function insRow()
 		  var OldObj1=document.getElementById("UploadedFile").outerHTML;
 		  var NewObj1=OldObj1.replace("id=UploadedFile","id=UploadedFile"+idTR);
 		  Col0.innerHTML=NewObj1;
-		  Col1.innerHTML='&nbsp;<a href="javascript:delRow('+idTR+');" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+		  Col1.innerHTML='&nbsp;<a href="javascript:delRow('+idTR+');" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
  CntRow.value=idTR;//ค่าต่อไป
   }
 

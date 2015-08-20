@@ -1,7 +1,11 @@
-<?php
-if($_SESSION['user_os']=='desktop'){
-echo "<div align='center'><img src='images/login/pic_school2.jpg' /></div>";
-echo "<div align='center'>ระบบสนับสนุนการบริหารจัดการ สพฐ.</div>";
-echo "<div align='center'>OBEC Management Support System</div>";
-}
-?>
+<html>
+<body>
+
+<div class="container">
+    <div class="row" align="center">
+        <img src="images/loginpass.gif" class="img-responsive" alt="Responsive image">
+    </div>
+</div>
+
+</body>
+</html>

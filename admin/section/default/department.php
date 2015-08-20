@@ -20,6 +20,7 @@ echo "<Br><Br>";
 echo "<Table width='70%' Border='0' Bgcolor='#Fcf9d8'>";
 echo "<Tr><Td align='right' width='50%' >รหัสสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left' width='50%'><Input Type='Text' Name='department' Size='5' ></Td></Tr>";
 echo "<Tr><Td align='right'>ชื่อสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='department_name' Size='50'></Td></Tr>";
+echo "<Tr><Td align='right'>ชื่อย่อสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='department_precis' Size='30'></Td></Tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>
 	&nbsp;&nbsp;&nbsp;</td>";
@@ -46,7 +47,7 @@ $dbquery = mysqli_query($connect,$sql);
 
 //ส่วนบันทึกข้อมูล
 if($index==4){
-$sql = "insert into system_department (department, department_name) values ('$_POST[department]', '$_POST[department_name]')";
+$sql = "insert into system_department (department,department_name,department_precis) values ('$_POST[department]', '$_POST[department_name]','$_POST[department_precis]')";
 $dbquery = mysqli_query($connect,$sql);
 }
 
@@ -67,6 +68,8 @@ echo "<Tr><Td align='right' width='50%'>รหัสสำนัก&nbsp;&nbsp;&
 
 echo "<Tr><Td align='right'>ชื่อสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='department_name' Size='50' value='$ref_result[department_name]' ></Td></Tr>";
 
+echo "<Tr><Td align='right'>ชื่อย่อสำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='department_precis' Size='30' value='$ref_result[department_precis]' ></Td></Tr>";
+
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'></td></tr>";
@@ -80,7 +83,7 @@ echo "</form>";
 //ส่วนปรับปรุงข้อมูล
 if ($index==6){
 $rec_date = date("Y-m-d");
-$sql = "update system_department set department='$_POST[department]', department_name='$_POST[department_name]' where id='$_POST[id]'";
+$sql = "update system_department set department='$_POST[department]', department_name='$_POST[department_name]' , department_precis='$_POST[department_precis]' where id='$_POST[id]'";
 $dbquery = mysqli_query($connect,$sql);
 }
 if ($index==6.5){
@@ -217,7 +220,7 @@ $num_effect = mysqli_num_rows($dbquery );  // จำนวนข้อมูล�
 echo  "<table width=60% border=0 align=center>";
 echo "<Tr><Td colspan='7' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มกลุ่ม' onclick='location.href=\"?file=department&index=1\"'</Td></Tr>";
 
-echo "<Tr bgcolor='#FFCCCC'><Td  align='center' width='50'>ที่</Td><Td  align='center' width='100'>รหัสสำนัก</Td><Td  align='center'>ชื่อสำนัก</Td><Td align='center' width='50'>ลำดับ</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
+echo "<Tr bgcolor='#FFCCCC'><Td  align='center' width='50'>ที่</Td><Td align='center' width='100'>รหัสสำนัก</Td><Td  align='center'>ชื่อสำนัก</Td><Td align='center' width='100'>ชื่อย่อสำนัก</Td><Td align='center' width='50'>ลำดับ</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -227,10 +230,11 @@ While ($result = mysqli_fetch_array($dbquery))
 		$id = $result['id'];
 		$department= $result['department'];
 		$department_name = $result['department_name'];
+		$department_precis = $result['department_precis'];
 		if(($M%2) == 0)
 			$color="#FFFFC";
 			else  	$color="#FFFFFF";
-		echo "<Tr bgcolor=$color><Td align='center'>$N</Td><Td  align='center'>$department</Td><Td align='left'>$department_name</Td>";
+		echo "<Tr bgcolor=$color><Td align='center'>$N</Td><Td  align='center'>$department</Td><Td align='left'>$department_name</Td><Td align='center'>$department_precis</Td>";
 
 		echo "<Td align='center'>";
 		if(!($M==1 and $page==1)){

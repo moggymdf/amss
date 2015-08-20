@@ -1,26 +1,42 @@
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-<link href="modules/meeting/css/datepicker.css" rel="stylesheet" media="screen">
-
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
-if(!($login_group<=4)){
+if(!($login_group<=1)){
 exit();
 }
 
 require_once "modules/meeting/time_inc.php";
 ?>
-<script type="text/javascript" src="./css/js/calendarDateInput.js"></script>
 <?php
 
-$user=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
-$system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
-$system_user_department_name=mysqli_real_escape_string($connect,$_SESSION['system_user_department_name']);
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+}
 
 //ส่วนหัว
-echo "<br />";
 
 if(isset($_GET['index'])){
 $getindex=mysqli_real_escape_string($connect,$_GET['index']);
@@ -57,10 +73,7 @@ $search_date_endo=mysqli_real_escape_string($connect,$_POST['search_date_end']);
 
 //ส่วนแสดงผล
 if(!($getindex==1)){
-
-
-
-echo "<form id='frm1' name='frm1'>";
+echo "<form id='frm1' name='frm1' action='?option=meeting&task=main/search' method='POST' onSubmit='JavaScript:return goto_url(1);'>";
 
 echo "<table width=95% border=0 align=center class='table table-hover table-bordered table-striped table-condensed'>";
 echo "<Tr><Td align='center'><table ><tr><td>เลือกวันที่ที่ต้องการค้นหา &nbsp;&nbsp;</td><td>";
@@ -69,7 +82,7 @@ echo "</td><td>&nbsp;&nbsp;&nbsp; ถึงวันที่ &nbsp;&nbsp;&nbsp;
 echo "<input class='form-control' type='text' name='search_date_end'  data-provide='datepicker' data-date-language='th' value='$search_date_endo' Size='10'>";
 echo "</td>";
 echo "<Input Type=Hidden Name='index' Value='1'>";
-echo "<td> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<INPUT TYPE='button' class='btn btn-primary' name='smb' value='ค้นหา' onclick='goto_url(1)' class=entrybutton></td>";
+echo "<td> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<INPUT TYPE='submit' class='btn btn-primary' name='smb' value='ค้นหา' ></td>";
 echo "</tr></table></Td></tr>";
 
 
@@ -84,23 +97,66 @@ echo "<table width='100%' border='0' align='center' >";
 echo "<tr><td align='left'><H3><strong>ห้องประชุมในสำนัก</strong></H3></td></tr><tr><td>";
     $sql_roomdepart="select * from meeting_room where department=? and active=1 order by room_code";
     $dbquery_roomdepart = $connect->prepare($sql_roomdepart);
-    $dbquery_roomdepart->bind_param("i", $system_user_department);
+    $dbquery_roomdepart->bind_param("i", $user_departid);
     $dbquery_roomdepart->execute();
     $result_meetroomdepart=$dbquery_roomdepart->get_result();
  While ($result_roomdepart = mysqli_fetch_array($result_meetroomdepart))
 {
     $room_code=$result_roomdepart["room_code"];
     $room_name=$result_roomdepart["room_name"];
+    $room_depart=$result_roomdepart["department"];
 
     //แสดงห้องประชุมที่มีการใช้งาน
     echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-    echo "<tr><td align='left' colspan='5'><h4><strong>ห้องประชุม $room_name</strong></h4></td></tr>";
-    echo "<tr><td><table class='table table-hover table-bordered table-striped table-condensed'>";
+    echo "<tr><td align='left' width='100'>"
+    ?>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<?php echo $result_roomdepart["room_code"]; ?>">รายละเอียด</button>
+    <?php
+    echo    "</td><td align='left'><h4><strong>ห้องประชุม $room_name</strong></h4></td>";
+
+ //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $room_depart);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+?>
+
+
+                      <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $result_roomdepart["room_code"]; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">ห้องประชุม <?php echo $room_name." (".$user_department_precisname.")"; ?></h4>
+                            </div>
+                            <div class="modal-body">
+                              <a href="#" class="btn btn-warning">จำนวนที่นั่ง&nbsp;:&nbsp;<?php echo $result_roomdepart["person_max"]; ?> คน</a>
+                            <h4>รายละเอียดอื่นๆ :</h4>
+                              <?php echo $result_roomdepart["room_detail"]; ?>
+
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ปิด</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+ <?php
+    echo "</td></tr>";
+    echo "<tr><td colspan='2'><table class='table table-hover table-bordered table-striped table-condensed'>";
 
     //แสดงรายการที่มีการจอง
-    $sql_roombook="select * from meeting_main where room=?  and ((? between book_date_start and book_date_end) or (? between book_date_start and book_date_end )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
+    $sql_roombook="select * from meeting_main where room=?  and ((book_date_start between ? and ?) or (book_date_end between ? and ? )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
     $dbquery_roombook = $connect->prepare($sql_roombook);
-    $dbquery_roombook->bind_param("iss", $room_code,$search_date_start,$search_date_end);
+    $dbquery_roombook->bind_param("issss", $room_code,$search_date_start,$search_date_end,$search_date_start,$search_date_end);
     $dbquery_roombook->execute();
     $result_qroombook=$dbquery_roombook->get_result();
     $numroombook = mysqli_num_rows($result_qroombook);
@@ -151,19 +207,20 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมในส�
  While ($result_depart = mysqli_fetch_array($result_qdepart))
 {
      $department_name=$result_depart['department_name'];
+     $department_precis=$result_depart['department_precis'];
  }
 
      if($approve==1){
-         $showstatus="อนุมัติแล้ว";
+         $showstatus="อนุญาตแล้ว";
      }else if($approve==2){
-        $showstatus="<font color='red'>ไม่อนุมัติ</font>";
+        $showstatus="<font color='red'>ไม่อนุญาต</font>";
      }else{
-        $showstatus="<font color='blue'>รอการอนุมัติ</font>";
+        $showstatus="<font color='blue'>รอการอนุญาต</font>";
      }
 
     echo "<tr><td>วันที่ ".thai_date_3($book_date_start)." ถึง ".thai_date_3($book_date_end)."</td>";
     echo "<td>เวลา : $start_time น. - $finish_time น.</td>";
-    echo "<td>ผู้จอง : $name $surname($department_name)</td>";
+    echo "<td>ผู้จอง : $name $surname($department_precis)</td>";
     echo "<td>สถานะ : $showstatus</td>";
    echo "<td>ผู้เข้าประชุม : $person_num คน</td>";
     echo "</tr>";
@@ -187,23 +244,65 @@ echo "<table width='100%' border='0' align='center' >";
 echo "<tr><td align='left'><H3><strong>ห้องประชุมต่างสำนัก</strong></H3></td></tr><tr><td>";
     $sql_roomdepart="select * from meeting_room where department!=? and active=1 order by room_code";
     $dbquery_roomdepart = $connect->prepare($sql_roomdepart);
-    $dbquery_roomdepart->bind_param("i", $system_user_department);
+    $dbquery_roomdepart->bind_param("i", $user_departid);
     $dbquery_roomdepart->execute();
     $result_meetroomdepart=$dbquery_roomdepart->get_result();
  While ($result_roomdepart = mysqli_fetch_array($result_meetroomdepart))
 {
     $room_code=$result_roomdepart["room_code"];
     $room_name=$result_roomdepart["room_name"];
+    $room_depart=$result_roomdepart["department"];
 
     //แสดงห้องประชุมที่มีการใช้งาน
     echo "<table class='table table-hover table-bordered table-striped table-condensed'>";
-    echo "<tr><td align='left' colspan='5'><h4><strong>ห้องประชุม $room_name</strong></h4></td></tr>";
-    echo "<tr><td><table class='table table-hover table-bordered table-striped table-condensed'>";
+    echo "<tr><td align='left' width='100'>"
+    ?>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal<?php echo $result_roomdepart["room_code"]; ?>">รายละเอียด</button>
+    <?php
+    echo    "</td><td align='left'><h4><strong>ห้องประชุม $room_name</strong></h4></td>";
+
+ //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $room_depart);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+
+?>
+                      <div class="modal fade bs-example-modal-lg" id="myModal<?php echo $result_roomdepart["room_code"]; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel">ห้องประชุม <?php echo $room_name." (".$user_department_precisname.")"; ?></h4>
+                            </div>
+                            <div class="modal-body">
+                              <a href="#" class="btn btn-warning">จำนวนที่นั่ง&nbsp;:&nbsp;<?php echo $result_roomdepart["person_max"]; ?> คน</a>
+                            <h4>รายละเอียดอื่นๆ :</h4>
+                              <?php echo $result_roomdepart["room_detail"]; ?>
+
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ปิด</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+<?php
+    //แสดงห้องประชุมที่มีการใช้งาน
+     echo "</td></tr>";
+     echo "<tr><td colspan='2'><table class='table table-hover table-bordered table-striped table-condensed'>";
 
     //แสดงรายการที่มีการจอง
-    $sql_roombook="select * from meeting_main where room=?  and ((? between book_date_start and book_date_end) or (? between book_date_start and book_date_end )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
+    $sql_roombook="select * from meeting_main where room=?  and ((book_date_start between ? and ?) or (book_date_end between ? and ? )) and (approve=1 or approve=0) order by room,book_date_start,start_time,rec_date";
     $dbquery_roombook = $connect->prepare($sql_roombook);
-    $dbquery_roombook->bind_param("iss", $room_code,$search_date_start,$search_date_end);
+    $dbquery_roombook->bind_param("issss", $room_code,$search_date_start,$search_date_end,$search_date_start,$search_date_end);
     $dbquery_roombook->execute();
     $result_qroombook=$dbquery_roombook->get_result();
     $numroombook = mysqli_num_rows($result_qroombook);
@@ -254,19 +353,20 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมต่า�
  While ($result_depart = mysqli_fetch_array($result_qdepart))
 {
      $department_name=$result_depart['department_name'];
- }
+      $department_precis=$result_depart['department_precis'];
+}
 
      if($approve==1){
-         $showstatus="อนุมัติแล้ว";
+         $showstatus="อนุญาตแล้ว";
      }else if($approve==2){
-        $showstatus="<font color='red'>ไม่อนุมัติ</font>";
+        $showstatus="<font color='red'>ไม่อนุญาต</font>";
      }else{
-        $showstatus="<font color='blue'>รอการอนุมัติ</font>";
+        $showstatus="<font color='blue'>รอการอนุญาต</font>";
      }
 
     echo "<tr><td>วันที่ ".thai_date_3($book_date_start)." ถึง ".thai_date_3($book_date_end)."</td>";
     echo "<td>เวลา : $start_time น. - $finish_time น.</td>";
-    echo "<td>ผู้จอง : $name $surname($department_name)</td>";
+    echo "<td>ผู้จอง : $name $surname($department_precis)</td>";
     echo "<td>สถานะ : $showstatus</td>";
     echo "<td>ผู้เข้าประชุม : $person_num คน</td>";
     echo "</tr>";
@@ -289,78 +389,23 @@ echo "<tr><td align='left'><H3><strong>ห้องประชุมต่า�
 
 
 ?>
-    <script src="//getbootstrap.com/2.3.2/assets/js/jquery.js"></script>
-    <script src="//getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
-
-    <script src="modules/meeting/js/bootstrap-datepicker.js"></script>
-       <script src="modules/meeting/js/bootstrap-datepicker.th.js"></script>
-
-    <script id="datepicker"  type="text/javascript">
-      function datepicker() {
-        $('.datepicker').datepicker({
-          format: 'yyyy-mm-dd',
-          autoclose : true
-          });
-      }
-    </script>
-
-    <script type="text/javascript">
-      $(function(){
-        $('pre[data-source]').each(function(){
-          var $this = $(this),
-            $source = $($this.data('source'));
-
-          var text = [];
-          $source.each(function(){
-            var $s = $(this);
-            if ($s.attr('type') == 'text/javascript'){
-              text.push($s.html().replace(/(\n)*/, ''));
-            } else {
-              text.push($s.clone().wrap('<div>').parent().html()
-                .replace(/(\"(?=[[{]))/g,'\'')
-                .replace(/\]\"/g,']\'').replace(/\}\"/g,'\'') // javascript not support lookbehind
-                .replace(/\&quot\;/g,'"'));
-            }
-          });
-
-          $this.text(text.join('\n\n').replace(/\t/g, '    '));
-        });
-
-        prettyPrint();
-        demo();
-      });
-    </script>
-
-
 <script>
 function goto_url(val){
 	if(val==0){
-		callfrm("?option=meeting&task=main/search");   // page ย้อนกลับ
+            return false;    // page ย้อนกลับ
 	}else if(val==1){
 		if(frm1.search_date_start.value == ""){
 			alert("กรุณาเลือกวันที่เริ่ม");
-		}else if(frm1.search_date_end.value == ""){
+            return false;
+        }else if(frm1.search_date_end.value == ""){
 			alert("กรุณาระบุวันที่สิ้นสุด");
-		}else if(frm1.search_date_end.value < frm1.search_date_start.value){
+            return false;
+        }else if(frm1.search_date_end.value < frm1.search_date_start.value){
 			alert("วันที่สิ้นสุดมากกว่าวันที่เริ่มต้น กรุณาเลือกวันที่ใหม่");
-		}else{
-			callfrm("?option=meeting&task=main/search");   //page ประมวลผล
-		}
+            return false;
+        }
 	}
 }
 
-function goto_url2(val){
-callfrm("?option=meeting&task=main/meeting");
-}
+</script>
 
-</script>
-<SCRIPT language=JavaScript>
-function check_number() {
-e_k=event.keyCode
-//if (((e_k < 48) || (e_k > 57)) && e_k != 46 ) {
-if (e_k != 13 && (e_k < 48) || (e_k > 57)) {
-event.returnValue = false;
-alert("ต้องเป็นตัวเลขเท่านั้น... \nกรุณาตรวจสอบข้อมูลของท่านอีกครั้ง...");
-}
-}
-</script>

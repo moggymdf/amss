@@ -1,16 +1,27 @@
+<script>
+function check_radio(){
+			var sch=document.getElementsByName("system_school");
+			var sch_select_num=0;
+			for(i=0;i<sch.length;i++){
+					if(sch[i].checked==true){
+					sch_select_num=1;
+					}
+			}
+		    if (sch_select_num==0){
+				  alert("กรุณาเลือกสถานศึกษา");
+		    }
+			else{
+			frm1.target = "_self";
+			frm1.action = "index.php";
+			frm1.method = "POST";
+			frm1.submit();
+			}
+}
+</script>
+
 <?php
 /** ensure this file is being included by a parent file */
-defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-
-		$_SESSION['system_user_department']="";
-		$_SESSION['system_user_subdepartment']="";
-		$_SESSION['system_user_department_name']="";
-		$_SESSION['system_user_khet']="";
-		$_SESSION['system_user_khet_name']="";
-		$_SESSION['system_user_school']="";
-		$_SESSION['system_user_school_name']="";
-		$_SESSION['system_user_specialunit']="";
-		$_SESSION['system_user_specialunit_name']="";
+//defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 
 		if(trim($_POST['username'])==""){
 		echo "<script>document.location.href='index.php';</script>\n";
@@ -21,6 +32,7 @@ $pass = trim($_POST['pass']);
 $pass = md5($pass);
 
 $sql = "select * from system_user where username='$username' and status='1' ";
+//echo $sql;
 $dbquery = mysqli_query($connect,$sql);
 $result1 = mysqli_fetch_array($dbquery);
 if($result1){
@@ -34,8 +46,8 @@ if($result1){
 
 		//ตรวจสอบว่าเป็น admin
 		if($Myusername=='admin'){
-		$_SESSION['login_status'] =999;
-		$_SESSION['login_group']=999;
+		$_SESSION['login_status'] =99;
+		$_SESSION['login_group']=99;
 		}
 		else{
 		//ตรวจสอบเป็นบุคลากรปัจจุบันของสพฐหรือไม่
@@ -76,16 +88,6 @@ if($result1){
 						//หัวหน้ากลุ่ม
 						$_SESSION['login_status']=107;
 						}
-						//*หาสำนัก
-						$sql_system_name="select * from system_department where department='$result_user[department]'";
-						$query_system_name=mysqli_query($connect,$sql_system_name);
-						$result_system_name = mysqli_fetch_array($query_system_name);
-						$_SESSION['system_user_department_name']=$result_system_name['department_name'];
-						$_SESSION['system_user_department']=$result_user['department'];
-						if($result_user['department']>0){
-						$_SESSION['system_user_subdepartment']=$result_user['sub_department'];
-						}
-						//*
 				}
 				else{
 				//ตรวจสอบบุคลากรสพท
@@ -103,14 +105,6 @@ if($result1){
 								else{
 								$_SESSION['login_status']=204;
 								}
-
-								//หาสพท
-								$sql_system_name = "select * from system_khet where khet_code='$result_user[khet_code]'";
-								$query_system_name=mysqli_query($connect,$sql_system_name);
-								$result_system_name = mysqli_fetch_array($query_system_name);
-								$_SESSION['system_user_khet_name']=$result_system_name['khet_name'];
-								$_SESSION['system_user_khet']=$result_user['khet_code'];
-								//
 						}
 						else{
 						//ตรวจสอบบุคลากรโรงเรียน
@@ -128,13 +122,6 @@ if($result1){
 											else{
 											$_SESSION['login_status']=304;
 											}
-											//หาโรงเรียน
-											$sql_system_name = "select * from system_school where school_code='$result_user[school_code]'";
-											$query_system_name=mysqli_query($connect,$sql_system_name);
-											$result_system_name = mysqli_fetch_array($query_system_name);
-											$_SESSION['system_user_school_name']=$result_system_name['school_name'];
-											$_SESSION['system_user_school']=$result_user['school_code'];
-											//
 									}
 									else{
 									$sql_user = "select * from person_special_main left join person_special_position on person_special_main.position_code=person_special_position.position_code where person_special_main.person_id='$result1[person_id]' and person_special_main.status ='0' ";
@@ -151,13 +138,6 @@ if($result1){
 													else{
 													$_SESSION['login_status']=404;
 													}
-													//หาหน่วยพิเศษ
-													$sql_system_name = "select * from system_special_unit where unit_code='$result_user[unit_code]'";
-													$query_system_name=mysqli_query($connect,$sql_system_name);
-													$result_system_name = mysqli_fetch_array($query_system_name);
-													$_SESSION['system_user_specialunit_name']=$result_system_name['unit_name'];
-													$_SESSION['system_user_specialunit']=$result_user['unit_code'];
-													//
 											}
 											else{
 											echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
@@ -203,10 +183,13 @@ else if(!$result1){
 				if($result2){
 				$system_warning_1=1;
 				$_SESSION['login_user_id'] = $result2['person_id'];
-				$_SESSION['login_status'] =1000;
+				$_SESSION['login_status'] =100;
 				$_SESSION['login_prename'] = $result2['prename'];
 				$_SESSION['login_name'] = $result2['name'];
 				$_SESSION['login_surname'] = $result2['surname'];
+				// Insert by Boyoty
+				$_SESSION['login_department'] = $result2['department'];
+				$_SESSION['login_subdepartment'] = $result2['sub_department'];
 				}
 				else{
 				//สพท
@@ -216,10 +199,12 @@ else if(!$result1){
 						if($result2_1){
 						$system_warning_1=1;
 						$_SESSION['login_user_id'] = $result2_1['person_id'];
-						$_SESSION['login_status'] =1000;
+						$_SESSION['login_status'] =100;
 						$_SESSION['login_prename'] = $result2_1['prename'];
 						$_SESSION['login_name'] = $result2_1['name'];
 						$_SESSION['login_surname'] = $result2_1['surname'];
+						// Insert by Boyoty
+						$_SESSION['login_departmentid'] = $result2['department'];
 						}
 						else{
 						//สถานศึกษา
@@ -228,10 +213,12 @@ else if(!$result1){
 						$result4 = mysqli_fetch_array($dbquery4);
 								if($result4){
 								$_SESSION['login_user_id'] = $result4['person_id'];
-								$_SESSION['login_status'] =1000;
+								$_SESSION['login_status'] =100;
 								$_SESSION['login_prename'] = $result4['prename'];
 								$_SESSION['login_name'] = $result4['name'];
 								$_SESSION['login_surname'] = $result4['surname'];
+								// Insert by Boyoty
+								$_SESSION['login_departmentid'] = $result2['department'];
 								//$sql_system_school = "select school_name from system_school where school_code='$_SESSION[user_school]'";
 								//$query_system_school = mysqli_query($connect,$sql_system_school);
 								//$result_system_school = mysqli_fetch_array($query_system_school);
@@ -245,10 +232,12 @@ else if(!$result1){
 										if($result5){
 										$system_warning_1=1;
 										$_SESSION['login_user_id'] = $result5['person_id'];
-										$_SESSION['login_status'] =1000;
+										$_SESSION['login_status'] =100;
 										$_SESSION['login_prename'] = $result5['prename'];
 										$_SESSION['login_name'] = $result5['name'];
 										$_SESSION['login_surname'] = $result5['surname'];
+										// Insert by Boyoty
+										$_SESSION['login_departmentid'] = $result2['department'];
 										}
 										else{
 										echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
@@ -267,6 +256,8 @@ $result_office_name = mysqli_fetch_array($dbquery_office_name);
 $_SESSION['office_name'] =$result_office_name['office_name'];
 
 //os
+if(!isset($_SESSION['user_os'])){ $_SESSION['user_os']=""; }
+if(!isset($_POST['user_os'])){ $_POST['user_os']=""; }
 $_SESSION['user_os'] = $_POST['user_os'];
 
 //ส่วนของ version และปรับปรุงระบบ

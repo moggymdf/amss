@@ -116,9 +116,9 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
             <div class="form-group">
               <select class="form-control" name="status_index" >
                 <option value="999" <?php if($poststatus_index==""){ echo "selected"; } ?>>ทุกสถานะ</option>
-               <option value="0" <?php if($poststatus_index=="0"){ echo "selected"; } ?>>รอการอนุมัติ</option>
-               <option value="1" <?php if($poststatus_index=="1"){ echo "selected"; } ?>>อนุมัติแล้ว</option>
-               <option value="2" <?php if($poststatus_index=="2"){ echo "selected"; } ?>>ไม่อนุมัติ</option>
+               <option value="0" <?php if($poststatus_index=="0"){ echo "selected"; } ?>>รอการอนุญาต</option>
+               <option value="1" <?php if($poststatus_index=="1"){ echo "selected"; } ?>>อนุญาตแล้ว</option>
+               <option value="2" <?php if($poststatus_index=="2"){ echo "selected"; } ?>>ไม่อนุญาต</option>
               </select>
             </div>
             <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> ค้นหา</button>
@@ -138,7 +138,7 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
             <th>อื่นๆ/ผู้ประสานงาน</th>
             <th>จองเมื่อ</th>
             <th>ลบ</th>
-            <th>อนุมัติ</th>
+            <th>อนุญาต</th>
             <th>หมายเหตุ</th>
        	  </tr>
         </thead>
@@ -721,9 +721,9 @@ if ($dbquery_insert = $connect->prepare($sql_insert)) {
 
 if(!(($getindex==1) or ($getindex==2) or ($getindex==3) or ($getindex==11))) {
 echo "<div align='center'>";
-echo "<div class='col-sm-3 col-md-offset-1 text-center'><span class='glyphicon glyphicon-ban-circle icon-danger icon-size1'></span> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม</div>";
-echo "<div class='col-sm-3 text-center'><span class='glyphicon glyphicon-ok-circle icon-success icon-size1'></span> หมายถึง อนุมัติให้ใช้ห้องประชุม</div>";
-echo "<div class='col-sm-3 text-center'><span class='glyphicon glyphicon-hourglass icon-info icon-size1'></span> หมายถึง รอการอนุมัติให้ใช้งาน</div>";
+echo "<div class='col-sm-3 col-md-offset-1 text-center'><span class='glyphicon glyphicon-ban-circle icon-danger icon-size1'></span> หมายถึง ไม่อนุญาตให้ใช้ห้องประชุม</div>";
+echo "<div class='col-sm-3 text-center'><span class='glyphicon glyphicon-ok-circle icon-success icon-size1'></span> หมายถึง อนุญาตให้ใช้ห้องประชุม</div>";
+echo "<div class='col-sm-3 text-center'><span class='glyphicon glyphicon-hourglass icon-info icon-size1'></span> หมายถึง รอการอนุญาตให้ใช้งาน</div>";
 echo "</div><br><br>";}
 ?>
 

@@ -40,7 +40,7 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
     {
-        $user_permis=$result_permission['p1'];
+        $user_permis=$result_permis['p1'];
     }
     if($user_permis!=1){
         exit();

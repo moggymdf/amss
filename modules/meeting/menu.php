@@ -6,7 +6,7 @@ defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //$dbquery_permission = mysqli_query($connect,$sql_permission);
 //$result_permission = mysqli_fetch_array($dbquery_permission);
 $login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
-if(!($login_group<=4)){
+if(!($login_group<=1)){
 exit();
 }
 
@@ -54,7 +54,7 @@ $user_permismeeting="";
 		</ul>
 	</li>
 	<?php }
-	if($login_group<=4){ ?>
+	if($login_group<=1){ ?>
 	<li class='dropdown'>
 		<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
 			<span class='glyphicon glyphicon-edit' aria-hidden='true'></span>
@@ -70,7 +70,7 @@ $user_permismeeting="";
 		</ul>
 	</li>
 	<?php }
-	if($login_group<=4){ ?>
+	if($login_group<=1){ ?>
 	<li class='dropdown'>
 		<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
 			<span class='glyphicon glyphicon-stats' aria-hidden='true'></span>

@@ -5,6 +5,11 @@ $admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_meeting']);
 if($admin_meeting!='meeting'){
 exit();
 }
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
+}
+
 if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
 }else{
 //หาหน่วยงาน

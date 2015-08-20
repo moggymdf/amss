@@ -40,7 +40,7 @@ exit();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
     {
-        $user_permis=$result_permission['p1'];
+        $user_permis=$result_permis['p1'];
     }
     if($user_permis!=1){
         exit();
@@ -233,9 +233,9 @@ echo "<form  name='frm1' action='?option=meeting&task=main/meeting_dep' method='
 
 echo "&nbsp;<Select  name='status_index' class='selectpicker'>";
 echo "<option value ='' >ทุกสถานะ</option>" ;
-echo "<option value ='0' >รอการอนุมัติ</option>" ;
-echo "<option value ='1' >อนุมัติแล้ว</option>" ;
-echo "<option value ='2' >ไม่อนุมัติ</option>" ;
+echo "<option value ='0' >รอการอนุญาต</option>" ;
+echo "<option value ='1' >อนุญาตแล้ว</option>" ;
+echo "<option value ='2' >ไม่อนุญาต</option>" ;
 echo "</select>";
 echo "&nbsp;<INPUT TYPE='submit' name='smb' class='btn btn-info' value='เลือก' >";
 echo "</form>";
@@ -245,7 +245,7 @@ echo "</td></tr></table>";
 
 echo "</td></Tr>";
 
-echo "<Tr class='success' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='200'>ห้องประชุม</Td><Td  width='70'>ตั้งแต่เวลา</Td><Td width='70'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><Td width='40'>ลบ</Td><Td width='40'>อนุมัติ</Td><Td>หมายเหตุ</Td></Tr>";
+echo "<Tr class='success' align='center'><Td width='80'>วันที่เริ่ม</Td><Td width='80'>วันที่สิ้นสุด</Td><Td width='200'>ห้องประชุม</Td><Td  width='70'>ตั้งแต่เวลา</Td><Td width='70'>ถึงเวลา</Td><Td>ประธานการประชุม/วัตถุประสงค์</Td><Td width='200'>อื่น ๆ/ผู้ประสานงาน</Td><Td>ผู้จอง(วันเวลา)</Td><Td width='40'>ลบ</Td><Td width='40'>อนุญาต</Td><Td>หมายเหตุ</Td></Tr>";
 
 $N=(($page-1)*$pagelen)+1; //*เกี่ยวข้องกับการแยกหน้า
 $M=1;
@@ -326,10 +326,10 @@ echo "<td></td>";
 }
 
 if($result['approve']==1){
-echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุมัติ'></Td>";
+echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุญาต'></Td>";
 }
 else if($result['approve']==2){
-echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุมัติ'></Td>";
+echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุญาต'></Td>";
 }
 else {
 echo "<td></td>";
@@ -352,6 +352,6 @@ echo "</Table>";
 
 if(!(($getindex==1) or ($getindex==2) or ($getindex==3) or ($getindex==11))) {
 echo "<br>";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุญาตให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุญาตให้ใช้ห้องประชุม";
 }
 ?>

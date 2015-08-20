@@ -33,8 +33,6 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
 	}
 
 }
-
-
     //ตรวจสอบสิทธิ์ผู้ใช้
     $sql_permis = "select * from  meeting_permission where person_id=? ";
     $dbquery_permis = $connect->prepare($sql_permis);
@@ -43,7 +41,7 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
     {
-        $user_permis=$result_permission['p1'];
+        $user_permis=$result_permis['p1'];
     }
     if($user_permis!=1){
         exit();
@@ -108,14 +106,14 @@ $_POST['allchk']="";
 		if($key!=$_POST['allchk']){
 		$sql = "update meeting_main set approve=?, officer=?, officer_date=? where id=?";
         $dbquery = $connect->prepare($sql);
-        $dbquery->bind_param("issi", $value,$user,$date_time_now,$key);
+        $dbquery->bind_param("issi", $value,$login_user_id,$date_time_now,$key);
         $dbquery->execute();
         $result=$dbquery->get_result();
 		}
 	}
 }
 
-//ใส่เหตุผลการไม่อนุมัติ หรือแก้ไขเป็นอนุมัติ
+//ใส่เหตุผลการไม่อนุญาต หรือแก้ไขเป็นอนุญาต
 if ($getindex==5){
 
 echo "<form id='frm1' name='frm1'  >";
@@ -234,7 +232,7 @@ $date_time_now = date("Y-m-d H:i:s");
 
 		$sql = "update meeting_main set approve=?, reason=? , officer=?, officer_date=? where id=?";
         $dbquery = $connect->prepare($sql);
-        $dbquery->bind_param("isssi", $postapprove,$postreason,$user,$date_time_now,$postid);
+        $dbquery->bind_param("isssi", $postapprove,$postreason,$login_user_id,$date_time_now,$postid);
         $dbquery->execute();
         $result=$dbquery->get_result();
 }
@@ -379,9 +377,9 @@ echo "<form  name='frm1'>";
 
 echo "&nbsp;<Select  name='status_index' size='1' class='selectpicker'>";
 echo "<option value ='' >ทุกสถานะ</option>" ;
-echo "<option value ='0' >รอการอนุมัติ</option>" ;
-echo "<option value ='1' >อนุมัติแล้ว</option>" ;
-echo "<option value ='2' >ไม่อนุมัติ</option>" ;
+echo "<option value ='0' >รอการอนุญาต</option>" ;
+echo "<option value ='1' >อนุญาตแล้ว</option>" ;
+echo "<option value ='2' >ไม่อนุญาต</option>" ;
 echo "</select>";
 echo "&nbsp;<INPUT TYPE='button' name='smb' class='btn btn-info' value='เลือก'  onclick='goto_url2(1)'>";
 echo "</form>";
@@ -418,6 +416,7 @@ While ($result = mysqli_fetch_array($result_joinroom)){
         $officer = $result['officer'];
         $officer_date = $result['officer_date'];
         $reason = $result['reason'];
+        $department_book = $result['department_book'];
 
 		if(isset($user_book)){
     $sql_person="select * from person_main where  status='0' and person_id=? ";
@@ -431,6 +430,23 @@ While ($result = mysqli_fetch_array($result_joinroom)){
      $name=$result_person['name'];
      $surname=$result_person['surname'];
 }
+
+
+if($department_book!=$user_departid){
+    //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $department_book);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $book_department_name=$result_depart_name['department_name'];
+    $book_department_precisname=$result_depart_name['department_precis'];
+	}
+     $showdepartmybook = " <a tabindex='0' class='btn btn-warning btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='สำนัก' data-content=$book_department_name>$book_department_precisname</a>";
+        }else{$showdepartmybook="";}
+
         }
 
             //if(($M%2) == 0)
@@ -464,13 +480,13 @@ echo "<Td>$name $surname(<font size='1px'>";
 echo thai_date_4($rec_date);
 //echo $rec_date;
 
-    echo "</font>)</Td>";
+    echo "</font>) $showdepartmybook</Td>";
 
 if($result['approve']==1){
-echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุมัติ'></Td>";
+echo "<Td align='center'><img src=images/yes.png border='0' alt='อนุญาต'></Td>";
 }
 else if($result['approve']==2){
-echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุมัติ'></Td>";
+echo "<Td align='center'><img src=images/no.png border='0' alt='ไม่อนุญาต'></Td>";
 }
 else{
 echo "<Td align='center'><input type='checkbox' name='$id' id='$id' value='1'></Td>";
@@ -520,7 +536,7 @@ echo "</form></Table>";
 
 if(!(($getindex==1) or ($getindex==2) or ($getindex==3) or ($getindex==11) or ($getindex==5))) {
 echo "<br>";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุมัติให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุมัติให้ใช้ห้องประชุม";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=images/yes.png border='0'> หมายถึง อนุญาตให้ใช้ห้องประชุม&nbsp;&nbsp;<img src=images/no.png border='0'> หมายถึง ไม่อนุญาตให้ใช้ห้องประชุม";
 }
 ?>
 

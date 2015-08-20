@@ -40,11 +40,14 @@ exit();
     $result_qpermis=$dbquery_permis->get_result();
     While ($result_permis = mysqli_fetch_array($result_qpermis))
     {
-        $user_permis=$result_permission['p1'];
+        $user_permis=$result_permis['p1'];
     }
-    if($user_permis!=1){
-        exit();
-    }
+  if(!isset($user_permis)){
+$user_permis="";
+}
+  // if($user_permis!=1){
+    //    exit();
+    //}
 
 require_once "modules/meeting/time_inc.php";
 ?>
@@ -283,6 +286,22 @@ While ($result = mysqli_fetch_array($result_joinroom)){
      $department=$result_person['department'];
 }
 
+if($department!=$user_departid){
+    //หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $department);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $book_department_name=$result_depart_name['department_name'];
+    $book_department_precisname=$result_depart_name['department_precis'];
+	}
+     $showdepartmybook = " <a tabindex='0' class='btn btn-warning btn-xs' role='button' data-toggle='popover' data-placement='top' data-trigger='focus' title='สำนัก' data-content=$book_department_name>$book_department_precisname</a>";
+        }else{$showdepartmybook="";}
+
+
 
     //if(($M%2) == 0)
 			$color="";
@@ -301,11 +320,11 @@ echo "<Td align='center'>$start_time น.</Td><Td align='center' >$finish_time �
 echo "<td>$result[chairman]/$result[objective]</td>";
 
 echo "<td>$result[other]/$result[coordinator]</td>";
-echo "<Td>$name $surname (";
+echo "<Td>$name $surname(<font size='1px'>";
 echo thai_date_4($rec_date);
 //echo $rec_date;
 
-    echo ")</Td>";
+    echo "</font>) $showdepartmybook</Td>";
 
 
 if($result['reason']!=""){

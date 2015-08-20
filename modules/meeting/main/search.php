@@ -211,11 +211,11 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
  }
 
      if($approve==1){
-         $showstatus="อนุมัติแล้ว";
+         $showstatus="อนุญาตแล้ว";
      }else if($approve==2){
-        $showstatus="<font color='red'>ไม่อนุมัติ</font>";
+        $showstatus="<font color='red'>ไม่อนุญาต</font>";
      }else{
-        $showstatus="<font color='blue'>รอการอนุมัติ</font>";
+        $showstatus="<font color='blue'>รอการอนุญาต</font>";
      }
 
     echo "<tr><td>วันที่ ".thai_date_3($book_date_start)." ถึง ".thai_date_3($book_date_end)."</td>";
@@ -357,11 +357,11 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
 }
 
      if($approve==1){
-         $showstatus="อนุมัติแล้ว";
+         $showstatus="อนุญาตแล้ว";
      }else if($approve==2){
-        $showstatus="<font color='red'>ไม่อนุมัติ</font>";
+        $showstatus="<font color='red'>ไม่อนุญาต</font>";
      }else{
-        $showstatus="<font color='blue'>รอการอนุมัติ</font>";
+        $showstatus="<font color='blue'>รอการอนุญาต</font>";
      }
 
     echo "<tr><td>วันที่ ".thai_date_3($book_date_start)." ถึง ".thai_date_3($book_date_end)."</td>";

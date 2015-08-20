@@ -1,5 +1,8 @@
 <?php
-/** ensure this file is being included by a parent file */
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
+}/** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 if($admin_work!='work'){

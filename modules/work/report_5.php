@@ -29,7 +29,10 @@ printWin.print();
 <div id="lblPrint">
 
 <?php
-/** ensure this file is being included by a parent file */
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
+}/** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
 $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);

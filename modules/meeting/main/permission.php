@@ -252,9 +252,8 @@ While ($result = mysqli_fetch_array($result_show))
 			else{
 			$p1_pic="<img src=images/no.png border='0' alt='ไม่มีสิทธิ์'>";
 			}
-			if(($M%2) == 0)
-			$color="#FFFFC";
-			else  	$color="#FFFFFF";
+$color="";
+
 		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$name $surname</Td><Td align='center'>$p1_pic</Td>
 		<Td align='center' width='50' ><a href=?option=meeting&task=main/permission&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></Td>
 		<Td align='center' width='50'><a href=?option=meeting&task=main/permission&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>

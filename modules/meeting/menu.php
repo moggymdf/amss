@@ -42,7 +42,7 @@ $user_permismeeting="";
 }
 }
 
-	if($user_adminmodule=="meeting"){ ?>
+	if($user_adminmodule=="meeting" or $user_permismeeting==1){ ?>
 	<li class='dropdown'>
 		<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
 			<span class='glyphicon glyphicon-cog' aria-hidden='true'></span>
@@ -63,7 +63,7 @@ $user_permismeeting="";
 		<ul class='dropdown-menu' role='menu'>
 			<li><a href='?option=meeting&task=main/meeting'>จองห้องประชุม</a></li>
 			<li><a href='?option=meeting&task=main/search'>ค้นหาห้องประชุมว่าง</a></li>
-		<?php if(($user_permismeeting==1) or ($user_adminmodule=="meeting")){ ?>
+		<?php if(($user_permismeeting==1)){ ?>
 			<li><a href='?option=meeting&task=main/officer'>อนุญาตให้ใช้ห้องประชุม</a></li>
 			<li><a href='?option=meeting&task=main/meeting_dep'>รายการจองของคนในสำนัก</a></li>
 		<?php } ?>

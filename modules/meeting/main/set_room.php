@@ -286,10 +286,7 @@ While ($result = mysqli_fetch_array($result_dep))
 			else{
 			$active_text="<font color='#FF0033'>ปิดใช้งาน</font>";
 			}
-
-			if(($M%2) == 0)
-			$color="#FFFFC";
-			else $color="#FFFFFF";
+$color="";
 		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$room_name </Td><Td align='center'>$person_max คน</Td><Td align='center'>$active_text</Td>
 
 		<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>";

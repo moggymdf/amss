@@ -95,7 +95,7 @@ echo "</div></td></tr>";
 echo "<Input id='room_code' Type='Hidden' Name='room_code' value='$room_codemax'>";
 /* เฟส2 ค่อยทำ
 echo "<Tr><Td align='right'>ผู้ควบคุมห้อง&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Input id='room_controller' Type='Text' Name='room_controller' Size='30'>";
+echo "<td><div align='left'><Input id='room_controller' Type='Text' Name='room_controller' Size='50'>";
 echo "</div></td></tr>";
 echo "<Tr><Td align='right'>รูปภาพ&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'>INPUT_IMAGES";

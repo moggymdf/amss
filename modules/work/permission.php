@@ -8,24 +8,6 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 if($admin_work!='work'){
 exit();
 }
-?>
-<script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
-<script type="text/javascript">
-$(function(){
-	$("select#department").change(function(){
-		var datalist2 = $.ajax({	// รับค่าจาก ajax เก็บไว้ที่ตัวแปร datalist2
-			  url: "admin/section/default/return_ajax_person.php", // ไฟล์สำหรับการกำหนดเงื่อนไข
-			  data:"department="+$(this).val(), // ส่งตัวแปร GET ชื่อ department ให้มีค่าเท่ากับ ค่าของ department
-			  async: false
-		}).responseText;
-		$("select#person_id").html(datalist2); // นำค่า datalist2 มาแสดงใน listbox ที่ 2
-		// ชื่อตัวแปร และ element ต่างๆ สามารถเปลี่ยนไปตามการกำหนด
-	});
-});
-
-</script>
-<?php
-
 //ส่วนหัว
 echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
@@ -93,8 +75,8 @@ echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'> $department_name";
 echo "</div></td></tr>";
 echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select name='person_id'  size='1'>";
-echo  "<option  value = ''>เลือกบุคลากร</option>" ;
+echo "<td><div align='left' class='form-group'><Select name='person_id' class='selectpicker show-tick' title='เลือกบุคลากร' data-live-search='true'>";
+//echo  "<option  value = ''>เลือกบุคลากร</option>" ;
     $sql = "select  * from person_main where department = ? and status=0 order by name";
     $dbquery_person = $connect->prepare($sql);
     $dbquery_person->bind_param("i", $user_departid);
@@ -105,7 +87,7 @@ echo  "<option  value = ''>เลือกบุคลากร</option>" ;
      $personname = $result_personname['prename'].$result_personname['name']." ".$result_personname['surname'];
      $personid = $result_personname['person_id'];
 
-    $sql = "select  * from work_permission where person_id=?";
+    $sql = "select  * from meeting_permission where person_id=?";
     $dbquery_permiss = $connect->prepare($sql);
     $dbquery_permiss->bind_param("i", $personid);
     $dbquery_permiss->execute();

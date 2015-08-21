@@ -73,7 +73,7 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
         $user_permis=$result_permis['p1'];
     }
     if(isset($user_permis)){
-    if($user_permis!=1 or $login_status<105 ){
+    if($user_permis!=1 or $_SESSION['login_status']<105 ){
         echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
         exit();
     }
@@ -124,7 +124,7 @@ echo "<tr align='center'><td colspan=2><font color='#006666' size='3'><strong>�
 ?>
 	<link rel="stylesheet" type="text/css" media="all" href="./modules/work/css.css">
 	<link rel="stylesheet" href="./jquery/themes/ui-lightness/jquery.ui.all.css">
-<!--	<script src="./jquery/jquery-1.5.1.js"></script>-->
+	<script src="./jquery/jquery-1.5.1.js"></script>
 	<script src="./jquery/ui/jquery.ui.core.js"></script>
 	<script src="./jquery/ui/jquery.ui.widget.js"></script>
 	<script src="./jquery/ui/jquery.ui.datepicker.js"></script>

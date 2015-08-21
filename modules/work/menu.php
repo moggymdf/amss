@@ -16,15 +16,9 @@ $sql_permission = "select * from work_permission where person_id=?";
     {
          $permission = $result_permission["p1"];
      }
-
-if(isset($permission)){
-    if($permission!=1 or $login_status<105 ){
-        echo "<div align='center'><h2> เฉพาะผู้ดูแลการลงเวลาปฏิบัติราชการเท่านั้น </h2></div>";
-        exit();
-    }
-    }else{
-        $permission="";
-    }
+ if(!isset($permission)){
+$permission="";
+}
 
 if(!isset($_SESSION['system_user_department'])){ $_SESSION['system_user_department']=""; }
 $system_user_department=mysqli_real_escape_string($connect,$_SESSION['system_user_department']);
@@ -36,7 +30,7 @@ $admin_work="";
 $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 }
 
-	if($admin_work=="work"){
+	if($admin_work=="work" or $permission==1){
 		?>
 	<li class='dropdown'>
 		<a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>&nbsp;ตั้งค่าระบบ <span class='caret'></span></a>
@@ -50,7 +44,7 @@ $admin_work=mysqli_real_escape_string($connect,$_SESSION['admin_work']);
 	</li>
 	<?php
 	}
-	if(($admin_work=="work") or ($login_status<=4 and $permission==1)){
+	if(($permission==1)){
 		?>
 		<li class='dropdown'><a href='?option=work' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-file' aria-hidden='true'></span>&nbsp;บันทึกข้อมูล <span class='caret'></span></a>
 			<ul class='dropdown-menu' role='menu'>

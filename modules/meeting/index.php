@@ -32,17 +32,8 @@
 	})
 </script>
 
-<!-- Bootstrap Confirmation -->
-<script>
-	$('[data-toggle="confirmation"]').confirmation()
-</script>
 
-<!-- Bootstrap Select Picker -->
-<script>
- 	$(function () {
-    $('.selectpicker').selectpicker()
-     	})
-</script>
+
 
 <!--Bootstrap datepicker -->
     <script src="./modules/meeting/js/bootstrap-datepicker.js"></script>
@@ -145,3 +136,22 @@ else {
 include("default.php");
 }
 ?>
+
+<!-- Bootstrap Confirmation -->
+<script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
+<script>
+	$('[data-toggle="confirmation"]').confirmation({
+    title: "<B>กรุณายืนยัน</B>",
+    btnOkLabel: "<i class='icon-ok-sign icon-white'></i> ยืนยัน",
+    btnCancelLabel: "<i class='icon-remove-sign'></i> ยกเลิก",
+    singleton: "true",
+    popout: "true"
+    })
+</script>
+
+<!-- Bootstrap Select Picker -->
+<script>
+ 	$(function () {
+    $('.selectpicker').selectpicker()
+     	})
+</script>

@@ -129,13 +129,13 @@ echo "</td></tr></table>";
 
 //ส่วนลบข้อมูล
 if($getindex==3){
-if(isset($_POST['iddel'])){
-$postiddel=mysqli_real_escape_string($connect,$_POST['iddel']);
-}else {$postiddel=""; exit;}
+if(isset($_GET['rid'])){
+$getrid=mysqli_real_escape_string($connect,$_GET['rid']);
+}else {$getrid=""; exit;}
 
 $sql = "update meeting_room  set active='99' where id=?";
     $dbquery = $connect->prepare($sql);
-    $dbquery->bind_param("i", $postiddel);
+    $dbquery->bind_param("i", $getrid);
     $dbquery->execute();
     $result=$dbquery->get_result();
 echo "<script>document.location.href='?option=meeting&task=main/set_room'; </script>\n";
@@ -290,8 +290,9 @@ $color="";
 		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$room_name </Td><Td align='center'>$person_max คน</Td><Td align='center'>$active_text</Td>
 
 		<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>";
-        echo "<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></Td>
-	</Tr>";
+        echo "<Td align='center' width='50' ><a href='?option=meeting&task=main/set_room&index=3&rid=$id' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a></Td>";
+//    echo "<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=2&id=$id></a></Td>
+	echo "</Tr>";
 $M++;
 	}
 echo "</Table>";

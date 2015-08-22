@@ -90,12 +90,6 @@ if(isset($_POST['user_os'])){
                     $allalertmessage = "";
                     while ($rowmodule = $resultmodule->fetch_assoc()) {
                       echo "<li><a href='index.php?option=".$rowmodule["module"]."'>".$rowmodule["module_desc"]."</a></li>";
-                      // ตรวจสอบรายการแจ้งเตือนในแต่ละโมดูล
-                      if(file_exists("modules/".$rowmodule["module"]."/alert.php")){
-                        require_once("modules/".$rowmodule["module"]."/alert.php");
-                        $allcount = $allcount + $count;
-                        $allalertmessage = $allalertmessage.$alertmessage;
-                      }
                     }
                   }
                   echo    "</ul>";

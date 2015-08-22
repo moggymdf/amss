@@ -28,11 +28,13 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
 	}
 
 }
+//แสดงวันนี้
+$today_date = date("Y-m-d");
+
 // ส่วนในการตรวจสอบงานค้ง
 $sql_alert = "  SELECT
             		count(*) as count
-          		from meeting_main left join meeting_room on meeting_main.room = meeting_room.room_code where meeting_room.department=$user_departid and meeting_main.approve=0
-                    ";
+          		from person_main left join work_main on person_main.person_id = work_main.person_id where work_main.work_date=$today_date ";
 //echo $sql_alert;
 $result_alert = mysqli_query($connect, $sql_alert);
 $row_alert = $result_alert->fetch_assoc();
@@ -41,10 +43,10 @@ $row_alert = $result_alert->fetch_assoc();
 $message = "";
 $count = "";
 $alertmessage = "";
-if($row_alert["count"]>0){
-	$message = "รายการจองห้องประชุม ";
-	$count = $row_alert["count"];
-	$alertmessage = "<li><a href='?option=meeting&task=main/officer'>".$message." <span class='badge progress-bar-danger'>".$count."</span></a></li>";
+if($row_alert["count"]==0){
+	$message = "บันทึกการมาปฏิบัติราชการวันนี้";
+	$count = 1;
+	$alertmessage = "<li><a href='?option=work&task=check'>".$message." <span class='badge progress-bar-danger'>".$count."</span></a></li>";
 }
 
 ?>

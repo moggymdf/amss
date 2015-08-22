@@ -24,7 +24,7 @@ $timestamp = mktime(date("H"), date("i"),date("s"), date("m") ,date("d"), date("
 $rand_number=rand();
 $ref_id = $timestamp."x".$rand_number;
 $_SESSION ['ref_id'] = $ref_id ;
-echo "<table width='800' border='0' align='center'><tr><td>";
+echo "<table width='900' border='0' align='center'><tr><td>";
 echo "<form Enctype = 'multipart/form-data' method='POST'  action='?option=book&task=main/send&index=4'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>ส่งหนังสือราชการ</b></font>";
@@ -41,8 +41,8 @@ echo "</tr>";
 // *ผู้ส่งเป็น สพฐ.
 if($_SESSION['login_group']==1){
 echo "<tr>";
-echo "<td width='120' align='right'><span lang='th'>จาก&nbsp;</span></td>";
-echo "<td width='680' colspan='3' align='left'>";
+echo "<td width='200' align='right'><span lang='th'>จาก&nbsp;</span></td>";
+echo "<td width='700' colspan='3' align='left'>";
 
 	$sql_department= "select * from system_department";
 	$dbquery_department = mysqli_query($connect,$sql_department);
@@ -53,10 +53,11 @@ echo "</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ถึง&nbsp;</span></td>";
+echo "<td align='right'>ถึง&nbsp;</span></td>";
 echo "<td colspan='3' align='left'>&nbsp;&nbsp;<input type='radio' value='all' name='sendto' required>&nbsp;สพท.ทุกแห่ง";
 echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;สพท.บางแห่ง";
 echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_3.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;หน่วยงาน/รร.สังกัด สำนักบริหารงานการศึกษาพิเศษ";
+echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_5.php?sd_index=2','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;สำนักใน สพฐ.";
 
 	$sql_group= "select * from book_group";
 	$dbquery_group = mysqli_query($connect,$sql_group);
@@ -69,8 +70,8 @@ echo "</td></tr>";
 // **ผู้ส่งเป็นสพท
 if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=14)){
 echo "<tr>";
-echo "<td width='94' align='right'><span lang='th'>จาก&nbsp;</span></td>";
-echo "<td width='514' colspan='3' align='left'>";
+echo "<td  align='right'><span lang='th'>จาก&nbsp;</span></td>";
+echo "<td  colspan='3' align='left'>";
 
 	$sql_school= "select * from system_khet where khet_code='$_SESSION[user_khet]' ";
 	$dbquery_school = mysqli_query($connect,$sql_school);
@@ -81,7 +82,7 @@ echo "</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ถึง&nbsp;</td>";
+echo "<td  align='right'>ถึง&nbsp;</td>";
 echo "<td colspan='3' align='left'>&nbsp;&nbsp;<input type='radio' value='saraban' name='sendto'>&nbsp;สารบรรณกลาง$_SESSION[office_name]";
 
 	$sql_department= "select * from system_department";
@@ -127,43 +128,43 @@ echo "<td colspan='3' align='left'>&nbsp;<input type='text' name='subject' size=
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right' height='47'><span lang='th'>เนื้อหาโดยสรุป&nbsp;</span></td>";
+echo "<td  align='right' height='47'><span lang='th'>เนื้อหาโดยสรุป&nbsp;</span></td>";
 echo "<td height='47' width='514' colspan='3'  align='left'>&nbsp;<textarea rows='5' name='detail' cols='55'  style='background-color: #99ccff' required ></textarea></td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='371' align='right' colspan='2'><p align='center'>แนบไฟล์(ถ้ามี)</td>";
-echo "<td width='238' align='center' colspan='2'><p align='center'>คำอธิบายไฟล์</td>";
+echo "<td  align='right' colspan='2'><p align='center'>แนบไฟล์(ถ้ามี)</td>";
+echo "<td  align='center' colspan='2'><p align='center'>คำอธิบายไฟล์</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ไฟล์แนบ 1&nbsp;</td>";
-echo "<td width='274'>&nbsp;<input type='file' name='myfile1' size='26' style='background-color: #99ccff'></td>";
-echo "<td width='238' align='center' colspan='2'><input type='text' name='dfile1' size='31' style='background-color: #E5E5FF'></td>";
+echo "<td align='right'>ไฟล์แนบ 1&nbsp;</td>";
+echo "<td >&nbsp;<input type='file' name='myfile1' size='26' style='background-color: #99ccff'></td>";
+echo "<td  align='center' colspan='2'><input type='text' name='dfile1' size='31' style='background-color: #E5E5FF'></td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ไฟล์แนบ 2&nbsp;</td>";
-echo "<td width='274'>&nbsp;<input type='file' name='myfile2' size='26' style='background-color: #99ccff'> </td>";
-echo "<td width='238' align='center' colspan='2'><input type='text' name='dfile2' size='31' style='background-color: #E5E5FF'></td>";
+echo "<td align='right'>ไฟล์แนบ 2&nbsp;</td>";
+echo "<td>&nbsp;<input type='file' name='myfile2' size='26' style='background-color: #99ccff'> </td>";
+echo "<td  align='center' colspan='2'><input type='text' name='dfile2' size='31' style='background-color: #E5E5FF'></td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ไฟล์แนบ 3&nbsp;</td>";
-echo "<td width='274'>&nbsp;<input type='file' name='myfile3' size='26' style='background-color: #99ccff'> </td>";
-echo "<td width='238' align='center' colspan='2'><input type='text' name='dfile3' size='31' style='background-color: #E5E5FF'></td>";
+echo "<td align='right'>ไฟล์แนบ 3&nbsp;</td>";
+echo "<td>&nbsp;<input type='file' name='myfile3' size='26' style='background-color: #99ccff'> </td>";
+echo "<td align='center' colspan='2'><input type='text' name='dfile3' size='31' style='background-color: #E5E5FF'></td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ไฟล์แนบ 4&nbsp;</td>";
-echo "<td width='274'>&nbsp;<input type='file' name='myfile4' size='26' style='background-color: #99ccff'> </td>";
-echo "<td width='238' align='center' colspan='2'><input type='text' name='dfile4' size='31' style='background-color: #E5E5FF'></td>";
+echo "<td align='right'>ไฟล์แนบ 4&nbsp;</td>";
+echo "<td>&nbsp;<input type='file' name='myfile4' size='26' style='background-color: #99ccff'> </td>";
+echo "<td align='center' colspan='2'><input type='text' name='dfile4' size='31' style='background-color: #E5E5FF'></td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td width='94' align='right'>ไฟล์แนบ 5&nbsp;</td>";
-echo "<td width='274'>&nbsp;<input type='file' name='myfile5' size='26' style='background-color: #99ccff'> </td>";
-echo "<td width='238' align='center' colspan='2'><input type='text' name='dfile5' size='31' style='background-color: #E5E5FF'></td>";
+echo "<td align='right'>ไฟล์แนบ 5&nbsp;</td>";
+echo "<td>&nbsp;<input type='file' name='myfile5' size='26' style='background-color: #99ccff'> </td>";
+echo "<td  align='center' colspan='2'><input type='text' name='dfile5' size='31' style='background-color: #E5E5FF'></td>";
 echo "</tr>";
 
 echo "<tr>";
@@ -481,7 +482,8 @@ if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=14)){
 
 
 //ส่วนแสดงผล
-if(!(($index==1) or ($index==2))){
+//if(!(($index==1) or ($index==2))){
+if(!(($index==1) or ($index==2) or ($index==5))){
 
 // อาเรย์ชื่อหน่วยงาาน
 $office_name_ar['saraban']="สารบรรณกลาง";
@@ -489,10 +491,44 @@ $sql_work_group = mysqli_query($connect,"SELECT * FROM  system_department") ;
 while ($row_work_group= mysqli_fetch_array($sql_work_group)){
 $office_name_ar[$row_work_group['department']]=$row_work_group['department_name'];
 }
+
+$sql_work_group = mysqli_query($connect,"SELECT * FROM  system_department") ;
+while ($row_work_group= mysqli_fetch_array($sql_work_group)){
+$office_name_ar[$row_work_group['department']]=$row_work_group['department_name'];
+}
+
+
 $sql_sch = mysqli_query($connect,"SELECT * FROM  system_khet") ;
 while ($row_sch= mysqli_fetch_array($sql_sch)){
 $office_name_ar[$row_sch['khet_code']]=$row_sch['khet_name'];
 }
+
+//อาเรย์กลุ่ม
+$sql_subdepartment = "select  * from system_subdepartment ";
+$dbquery_subdepartment = mysqli_query($connect,$sql_subdepartment);
+While ($result_subdepartment = mysqli_fetch_array($dbquery_subdepartment))
+   {
+		$sub_department = $result_subdepartment['sub_department'];
+		$sub_department_name = $result_subdepartment['sub_department_name'];
+		$sub_department_ar[$sub_department]=$sub_department_name;
+	}
+
+//อาเรย์บุคลากรกลุ่ม
+$sql_person= "select  * from person_main";
+$dbquery_person= mysqli_query($connect,$sql_person);
+While ($result_person = mysqli_fetch_array($dbquery_person))
+   {
+		$person_id = $result_person['person_id'];
+		$person_prename = $result_person['prename'];
+		$person_name = $result_person['name'];
+		$person_surname = $result_person['surname'];
+		$pname = "$person_prename$person_name  $person_surname";
+		$personname_ar[$person_id]=$pname;
+
+	}
+
+
+
 
 
 if(!isset($_REQUEST['search_index'])){
@@ -685,7 +721,8 @@ echo "</td>";
 </table>
 
 
-  <table class="table table-bordered" width="100%" style="background-color:rgba(255,255,255,0.9)">
+<div align='center'><table width='98%'><tr><td>
+<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>
 				<tr bgcolor="#003399">
 					<td align="center">
 					<font  color="#FFFFFF">ที่</td>
@@ -824,6 +861,8 @@ $delete=2;    //no
 	}  // end while
 echo "<tr><td colspan='8'>&nbsp;&nbsp;<FONT COLOR='#009933'><IMG SRC='modules/book/images/file1.gif' WIDTH='16' HEIGHT='16' BORDER='0'>มีไฟล์เอกสาร</td></tr>";
 echo "</table>";
+echo "</td></tr></table></div>";
+
 }  //end index
 
 ?>

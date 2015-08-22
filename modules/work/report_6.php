@@ -310,3 +310,5 @@ echo "</table>";
 ?>
 
 </div>
+
+<a href="javascript:printContentDiv('lblPrint');"><img src="images/b_print.png" border=0> พิมพ์หน้านี้</a>

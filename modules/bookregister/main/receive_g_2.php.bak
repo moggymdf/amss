@@ -576,13 +576,13 @@ else{
 $register_number_g=$result_number_g['number_max']+1;
 }
 
-echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขทะเบียน&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;$result_ref[register_number_de]<input type='hidden' name='register_number' size='5' value='$result_ref[register_number]' ><input type='hidden' name='register_number_g' size='5' value='$register_number_g' ></td>";  //เลขรับสำนัก  , กลุ่ม
-echo "</tr>";
+//echo "<tr>";
+//echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขทะเบียน&nbsp;</font></span></td>";
+//echo "<td colspan='3' align='left'>&nbsp;$result_ref[register_number_de]<input type='hidden' name='register_number' size='5' value='$result_ref[register_number]' ><input type='hidden' name='register_number_g' size='5' value='$register_number_g' ></td>";  //เลขรับสำนัก  , กลุ่ม
+//echo "</tr>";
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขที่หนังสือ&nbsp;</font></span></td><td align='left'>&nbsp;<FONT SIZE='2' COLOR=''></FONT><input type='text' name='book_no' size='35' value='$result_ref[book_no]'  style='background-color: #E7D8EB'>&nbsp;&nbsp;ลงวันที่</td>";
+echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขที่หนังสือ&nbsp;</font></span></td><td align='left'>&nbsp;<FONT SIZE='2' COLOR=''></FONT><input type='text' name='book_no' size='25' value='$result_ref[book_no]'  style='background-color: #E7D8EB'>&nbsp;&nbsp;ลงวันที่</td>";
 echo "<td colspan='2' align='left'>";
 
 $f_date=explode("-", $result_ref['signdate']);
@@ -620,8 +620,8 @@ echo "</tr>";
 echo "<tr>";
 echo "<Td align='right'><span id='group'><font size='2' color='#0000FF'>กลุ่มปฏิบัติ&nbsp;&nbsp;</font></span></Td>";
 echo "<td colspan='3' align='left'><div id='sub_department'>&nbsp;<Select  name='group'  id='group'  size='1' style='background-color: #FFDDFF'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql_subdepartment = "select  * from system_subdepartment  where department ='$department_id' order by sub_department";
+//echo  "<option  value = ''>เลือก</option>" ;
+$sql_subdepartment = "select  * from system_subdepartment  where sub_department ='$sub_department_id' order by sub_department";
 $dbquery_subdepartment = mysqli_query($connect,$sql_subdepartment);
 While ($result_subdepartment = mysqli_fetch_array($dbquery_subdepartment))
    {
@@ -644,7 +644,7 @@ echo "<tr>";
 echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>บุคคลปฏิบัติ&nbsp;</font></span></td>";
 echo "<td colspan='3' align='left'>&nbsp;<Select  name='operation'  id='operation'  size='1' style='background-color: #FFDDFF'>";
 echo  "&nbsp;&nbsp;<option  value = ''>เลือก</option>" ;
-$sql_person= "select  * from person_main  where department=$department_id order by id";
+$sql_person= "select  * from person_main  where sub_department ='$sub_department_id' order by id";
 $dbquery_person= mysqli_query($connect,$sql_person);
 While ($result_person = mysqli_fetch_array($dbquery_person))
    {

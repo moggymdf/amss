@@ -84,15 +84,15 @@ if($_SESSION['login_group']==1) {
 if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=15)){
 		if($_REQUEST['search_index']==1){
 		$saraban_index=19;
-		$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and book_sendto_answer.send_to='$_SESSION[user_school]' and  book_sendto_answer.school is null and $_REQUEST[field] like '%$_REQUEST[search]%' ";
+		$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and book_sendto_answer.send_to='$_SESSION[user_khet]' and  book_sendto_answer.school is null and $_REQUEST[field] like '%$_REQUEST[search]%' ";
 		}
 		else if($saraban_index==''){
-					if($result_permission['p3']==$_SESSION['user_school']){
+					if($result_permission['p3']==$_SESSION['user_khet']){
 					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$result_permission[p3]' and  (book_sendto_answer.status is null or book_sendto_answer.status=6) ";
 					$saraban_index=11;
 					}
 					else{
-					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and  book_sendto_answer.send_to='$user' and book_sendto_answer.school='$_SESSION[user_school]' ";
+					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and  book_sendto_answer.send_to='$user' and book_sendto_answer.school='$_SESSION[user_khet]' ";
 					$saraban_index=12;
 					}
 		}
@@ -103,11 +103,11 @@ if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=15)){
 					$saraban_index=11;
 					}
 					else if($saraban_index==12){
-					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and  book_sendto_answer.send_to='$user' and book_sendto_answer.school='$_SESSION[user_school]' ";
+					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and  book_sendto_answer.send_to='$user' and book_sendto_answer.school='$_SESSION[user_khet]' ";
 					$saraban_index=12;
 					}
 					else if($saraban_index==19){
-					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and book_sendto_answer.send_to='$_SESSION[user_school]' and  book_sendto_answer.school is null ";
+					$sql="select book_main.ms_id from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id  and book_sendto_answer.send_to='$_SESSION[user_khet]' and  book_sendto_answer.school is null ";
 					$saraban_index=19;
 					}
 		}
@@ -211,7 +211,6 @@ echo "</div>";
 //จบแยกหน้า
 
 ?>
-
 <table border="0" width="98%" id="table1" style="border-collapse: collapse" cellspacing="2" cellpadding="2" align="center">
 <tr><td><FONT SIZE="2" COLOR="">ระดับความสำคัญ <IMG SRC="modules/book/images/level1.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ปกติ">ปกติ&nbsp;<IMG SRC="modules/book/images/level2.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วน">ด่วน&nbsp;<IMG SRC="modules/book/images/level3.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนมาก">ด่วนมาก&nbsp;<IMG SRC="modules/book/images/level4.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนที่สุด">ด่วนที่สุด</FONT></td>
 <?php
@@ -264,7 +263,7 @@ $a0_1="";  $a0_2=""; $a1_1=""; $a1_2="";  $a2_1="";  $a2_2="";  $a3_1="";  $a3_2
 				}
 
 				echo "$a0_1<b><a href=?option=book&task=main/receive&saraban_index=19>[ทั้งหมด]</a></b>$a0_2";
-				if(isset($_SESSION['user_school'])){
+				if(isset($_SESSION['user_khet'])){
 						if($result_permission){
 						echo "&nbsp;$a1_1<b><a href=?option=book&task=main/receive&saraban_index=11>[สารบรรณสถานศึกษา]</a></b>$a1_2";
 						}
@@ -303,8 +302,9 @@ echo "</td>";
 			</td></form>
 		</tr>
 </table>
+<div align='center'><table width='98%'><tr><td>
+<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>
 
-<table border="1" width="98%" id="table2" style="border-collapse: collapse" align="center">
 				<tr bgcolor=#99ccff>
 					<td width="70" align="center">
 					<font size="2" face="Tahoma" color=#FFFFFF>ที่</font></td>
@@ -342,16 +342,16 @@ if($_SESSION['login_status']<=5){
 
 if(($_SESSION['login_status']>10) and ($_SESSION['login_status']<=15)){
 					if($_REQUEST['search_index']==1){
-					$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$_SESSION[user_school]' and book_sendto_answer.school is null and $_REQUEST[field] like '%$_REQUEST[search]%' order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
+					$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$_SESSION[user_khet]' and book_sendto_answer.school is null and $_REQUEST[field] like '%$_REQUEST[search]%' order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
 					}
 					else if($saraban_index==11){
 				$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$result_permission[p3]' and (book_sendto_answer.status is null or book_sendto_answer.status=6) order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
 					}
 					else if($saraban_index==12){
-					$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$user' and  book_sendto_answer.school='$_SESSION[user_school]' order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
+					$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$user' and  book_sendto_answer.school='$_SESSION[user_khet]' order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
 					}
 					else if($saraban_index==19){
-					$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$_SESSION[user_school]' and book_sendto_answer.school is null order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
+					$sql="select book_main.ms_id, book_main.ref_id, book_main.bookno, book_main.level, book_main.subject, book_main.signdate, book_main.office, book_main.send_date, book_sendto_answer.answer, book_sendto_answer.status, book_sendto_answer.forward_from, book_sendto_answer.rec_forward_date, book_sendto_answer.school, book_main.secret,book_main.bookregis_link,book_main.book_type from book_main, book_sendto_answer where book_main.ref_id=book_sendto_answer.ref_id and  book_sendto_answer.send_to='$_SESSION[user_khet]' and book_sendto_answer.school is null order by book_main.ms_id, book_sendto_answer.id limit $start,$pagelen";
 					}
 
 }
@@ -463,7 +463,7 @@ $result_select_forward=mysqli_query($connect,"SELECT id FROM book_sendto_answer 
 $num_select_forward = mysqli_num_rows ($result_select_forward) ;
 }
 else if($saraban_index==11){
-$result_select_forward=mysqli_query($connect,"SELECT id FROM book_sendto_answer WHERE  school='$_SESSION[user_school]' and ref_id='$ref_id' and status='5'") ;
+$result_select_forward=mysqli_query($connect,"SELECT id FROM book_sendto_answer WHERE  school='$_SESSION[user_khet]' and ref_id='$ref_id' and status='5'") ;
 $num_select_forward = mysqli_num_rows ($result_select_forward) ;
 }
 else{
@@ -522,5 +522,6 @@ onclick="window.open('modules/book/main/<?php echo $saraban_text?>?b_id=<?php ec
 	}  // end while
 echo "<tr><td colspan='7'>&nbsp;<FONT COLOR='#009933'><IMG SRC='modules/book/images/b_usrcheck.png' WIDTH='16' HEIGHT='16' BORDER='0'>ลงทะเบียนรับแล้ว&nbsp;&nbsp;&nbsp;<IMG SRC='modules/book/images/b_usrdrop.png' WIDTH='16' HEIGHT='16' BORDER='0' >ยังไม่ได้ลงทะเบียนรับ&nbsp;&nbsp;&nbsp;<IMG SRC='modules/book/images/next.gif' WIDTH='16' HEIGHT='16' BORDER='0' >ยังไม่ได้ส่งต่อ</FONT>&nbsp;&nbsp;&nbsp;<FONT COLOR='#009933'><IMG SRC='modules/book/images/file1.gif' WIDTH='16' HEIGHT='16' BORDER='0'>มีไฟล์เอกสาร</FONT></td></tr>";
 echo "</table>";
+echo "</td></tr></table></div>";
 
 ?>

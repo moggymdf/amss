@@ -73,10 +73,10 @@
           	<th>เลขที่</th>
             <th>ประเภท</th>
           	<th>เรื่อง</th>
+            <th>เรียน</th>
             <th>เมื่อ</th>
-            <th>โดย</th>
-            <th>สถานะ</th>
             <th>รายละเอียด</th>
+            <th>สถานะ</th>
             <th>จัดการ</th>
        	  </tr>
         </thead>
@@ -93,17 +93,20 @@
                   ioffice_book.*,
                   ioffice_booktype.booktypename,
                   ioffice_bookstatus.bookstatusname,
-                  person_main.prename,
-                  person_main.name,
-                  person_main.surname
+                  pm1.prename as post_prename,
+                  pm1.name as post_name,
+                  pm1.surname as post_surname,
+                  ioffice_booklevel.booklevelname
                 FROM
                   ioffice_book
                   LEFT JOIN ioffice_bookstatus ON ioffice_book.bookstatusid = ioffice_bookstatus.bookstatusid
                   LEFT JOIN ioffice_booktype ON ioffice_book.booktypeid = ioffice_booktype.booktypeid
-                  LEFT JOIN person_main ON ioffice_book.post_personid = person_main.person_id
+                  LEFT JOIN person_main pm1 ON ioffice_book.post_personid = pm1.person_id
+                  LEFT JOIN ioffice_booklevel ON ioffice_book.receive_booklevelid = ioffice_booklevel.booklevelid
                 WHERE post_personid = '$_SESSION[login_user_id]' ".$sqlbookstatus." and
                       bookheader like '%$searchtext%'
                 ORDER BY bookid DESC";
+                //echo "<div class='well'>$sql</div>";
             if ($result = mysqli_query($connect, $sql)) {
               while ($row = $result->fetch_assoc()) {
                 switch ($row["bookstatusid"]) {
@@ -117,7 +120,7 @@
                     $tr_class = "class = 'danger'";
                     break;
                   case '4':
-                    $tr_class = "class = 'info'";
+                    $tr_class = "class = 'warning'";
                     break;
                   case '20':
                     $tr_class = "class = 'success'";
@@ -155,16 +158,8 @@
                     <td><?php echo $row['bookid']; ?></td>
                     <td><?php echo $booktype_show; ?></td>
                     <td><?php echo $row['bookheader']; ?></td>
+                    <td><?php echo $row['booklevelname']; ?></td>
                     <td><?php echo ThaiTimeConvert(strtotime($row['postdate']),"","2"); ?></td>
-                    <td><?php echo $row['prename'].$row['name']." ".$row['surname']; ?></td>
-                    <?php
-                      $sqllastcomment = " SELECT * FROM ioffice_bookcomment b
-                                          LEFT JOIN person_main pm ON(b.comment_personid=pm.person_id)
-                                          WHERE bookid = ".$row["bookid"]." ORDER BY commentid DESC LIMIT 0,1";
-                      $resultlastcomment = mysqli_query($connect, $sqllastcomment);
-                      $rowlastcomment = mysqli_fetch_assoc($resultlastcomment);
-                    ?>
-                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
                     <td>
                       <!-- Modal for Read -->
                       <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน</button>
@@ -173,12 +168,13 @@
                           <div class="modal-content">
                             <div class="modal-header">
                               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                              <h4 class="modal-title" id="myModalLabel">เรื่อง <?php echo $row["bookheader"]; ?></h4>
-                            </div>
-                            <div class="modal-body">
                               <a href="#" class="btn btn-default">ประเภท&nbsp;:&nbsp;<?php echo $booktype_show; ?></a>
                               <a href="#" class="btn btn-default">สถานะ&nbsp;:&nbsp;<?php echo $row["bookstatusname"]; ?></a>
                               <hr>
+                              <h4 class="modal-title" id="myModalLabel">เรื่อง <?php echo $row["bookheader"]; ?></h4>
+                              <h4 class="modal-title" id="myModalLabel">เรียน <?php echo $row['booklevelname']; ?></h4>
+                            </div>
+                            <div class="modal-body">
                               <?php echo $row["bookdetail"]; ?>
                               <hr>
                               <h4>เอกสารแนบ</h4>
@@ -192,7 +188,7 @@
                               ?>
                               <hr>
                               <div class="well well-sm">
-                              <h5>โดย&nbsp;<?php echo $row['prename'].$row['name']." ".$row['surname']; ?></h5>
+                              <h5>โดย&nbsp;<?php echo $row['post_prename'].$row['post_name']." ".$row['post_surname']; ?></h5>
                               <h5>เมื่อ&nbsp;<?php echo ThaiTimeConvert(strtotime($row['postdate']),"","2"); ?></h5>
                               </h5>
                               </div>
@@ -232,7 +228,6 @@
                                   ?>
                                 </tbody>
                               </table>
-                              <hr>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal"><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ปิด</button>
@@ -241,6 +236,46 @@
                         </div>
                       </div>
                     </td>
+                    <?php
+                      $sqllastcomment = " SELECT * FROM ioffice_bookcomment b
+                                          LEFT JOIN person_main pm ON(b.comment_personid=pm.person_id)
+                                          WHERE bookid = ".$row["bookid"]." ORDER BY commentid DESC LIMIT 0,1";
+                      $resultlastcomment = mysqli_query($connect, $sqllastcomment);
+                      $rowlastcomment = mysqli_fetch_assoc($resultlastcomment);
+                      switch ($row["bookstatusid"]) {
+                          case '1':
+                            $bookstatusclass = "default";
+                            break;
+                          case '2':
+                            $bookstatusclass = "warning";
+                            break;
+                          case '3':
+                            $bookstatusclass = "danger";
+                            break;
+                          case '4':
+                            $bookstatusclass = "warning";
+                            break;
+                          case '20':
+                            $bookstatusclass = "success";
+                            break;
+                          case '21':
+                            $bookstatusclass = "success";
+                            break;
+                          case '22':
+                            $bookstatusclass = "success";
+                            break;
+                          case '30':
+                            $bookstatusclass = "danger";
+                            break;
+                          case '40':
+                            $bookstatusclass = "info";
+                            break;
+                        default:
+                          # code...
+                          break;
+                      }
+                    ?>
+                    <td><a tabindex="0" class="btn btn-<?php echo $bookstatusclass; ?>" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
                     <td>
                       <?php
                         switch ($row["bookstatusid"]) {
@@ -256,13 +291,13 @@
                           case '4':
                             echo "<a href='?option=ioffice&task=book_manage&action=update_status3&bookid=".$row['bookid']."' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>&nbsp;ยกเลิก</a>";
                             break;
-                            case '20':
+                          case '20':
                             echo "<a href='#' class='btn btn-success' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
                             break;
-                            case '21':
+                          case '21':
                             echo "<a href='#' class='btn btn-success' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
                             break;
-                            case '22':
+                          case '22':
                             echo "<a href='#' class='btn btn-success' data-toggle='confirmation'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span>&nbsp;ส่งออก</a>";
                             break;
                           case '30':

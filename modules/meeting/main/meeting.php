@@ -126,11 +126,8 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
           </form>
         </div>
       </div>
-      </div>
-    </div>
-  <div class="panel panel-default">
-    <div class="panel-body">
-     <table class="table table-hover table-striped table-condensed table-responsive">
+      <hr>
+      <table class="table table-hover table-striped table-condensed table-responsive">
         <thead>
           <tr>
           	<th>วันที่เริ่ม</th>
@@ -171,6 +168,7 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
                 WHERE user_book = '$_SESSION[login_user_id]' ".$sqlroomstatus." and
                       objective like '%$searchtext%'
                 ORDER BY book_date_start desc,room,start_time LIMIT 0,$showmaxlist";
+
 
             if ($result = mysqli_query($connect, $sql)) {
               while ($row = $result->fetch_assoc()) {

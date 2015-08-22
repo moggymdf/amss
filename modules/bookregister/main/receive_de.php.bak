@@ -85,7 +85,10 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>ลงทะเบียนหนังสือรับ  ($department_name)</Font>";
 echo "</Cener>";
 echo "<Br>";
-echo "<table border='1' width='700' id='table1' style='border-collapse: collapse' bordercolor='#C0C0C0'>";
+//echo "<table border='1' width='700' id='table1' style='border-collapse: collapse' bordercolor='#C0C0C0'>";
+echo "<div align='center'><table width='60%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
 echo "<tr bgcolor='#9900CC'>";
 echo "<td colspan='4' height='23' align='left'><font size='2' color='#FFFFFF'>&nbsp;กรุณาระบุรายละเอียด</font></td>";
 echo "</tr>";
@@ -106,7 +109,13 @@ echo "</tr>";
 
 echo "<tr>";
 echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ถึง&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;<input type='text' name='book_to' size='80'  style='background-color: #E7D8EB' value='สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน'></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='text' name='book_to' size='80'  style='background-color: #E7D8EB' value='เลขาธิการคณะกรรมการศึกษาขั้นพื้นฐาน'></td>";
+echo "</tr>";
+
+echo "<tr>";
+echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ชั้นความเร็ว&nbsp;</font></span></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='level' value='0' checked><font size='2' color='#006600'>ปกติ</font><span lang='en-us'><font size='2'>&nbsp;
+			</font><input type='radio' name='level' value='1'><font size='2' color='#FF0000'>ด่วน</font>&nbsp;&nbsp;<input type='radio' name='level' value='2'><font size='2' color='#FF0000'>ด่วนมาก</font>&nbsp;&nbsp;<input type='radio' name='level' value='3'><font size='2' color='#FF0000'>ด่วนที่สุด</font></td>";
 echo "</tr>";
 
 echo "<tr>";
@@ -184,6 +193,8 @@ echo "<tr>";
 echo "<td align='center' colspan='4'><BR><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>&nbsp;&nbsp;<input type='reset' value='Reset' name='reset'></td>";
 echo "</tr>";
 echo "</Table>";
+echo "</td></tr></table></div>";
+
 echo "</form>";
 }
 
@@ -430,7 +441,7 @@ $register_number_de=$result_number_de['number_max']+1;
 }
 
 //$sub_department_id2 = $_POST[sub_department_id2];  //รหัสกลุ่ม
-$sql = "insert into bookregister_receive(year, register_number, register_number_de, register_number_g, book_no, signdate, book_from, book_to, subject, department, sub_department, record_type, operation, comment, register_date, ref_id, officer) values ('$result_start[year]', '$register_number', '$register_number_de', '$register_number_g', '$_POST[book_no]', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[sub_department]', '1','$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user')";
+$sql = "insert into bookregister_receive(year, register_number, register_number_de, register_number_g, book_no, signdate, book_from, book_to, subject, department, sub_department, record_type, operation, comment, register_date, ref_id, officer, level) values ('$result_start[year]', '$register_number', '$register_number_de', '$register_number_g', '$_POST[book_no]', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[sub_department]', '1','$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user', '$_POST[level]')";
 $dbquery = mysqli_query($connect,$sql);
 //echo $sql ;
 if ($myfile1<>"" ) {
@@ -526,7 +537,7 @@ echo "</tr>";
 
 echo "<tr>";
 echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขทะเบียน&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;$result_ref[register_number_de]<input type='hidden' name='register_number' size='5' value='$result_ref[register_number]' ><input type='hidden' name='register_number_g' size='5' value='$result_ref[register_number_g]' ></td>";  //เลขรับสำนัก
+echo "<td colspan='3' align='left'>&nbsp;$result_ref[register_number_de]<input type='hidden' name='register_number' size='5' value='$result_ref[register_number]' ><input type='hidden' name='register_number_de' size='5' value='$result_ref[register_number_de]' ><input type='hidden' name='register_number_g' size='5' value='$result_ref[register_number_g]' ></td>";  //เลขรับสำนัก
 echo "</tr>";
 
 echo "<tr>";
@@ -558,6 +569,25 @@ echo "</tr>";
 echo "<tr>";
 echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ถึง&nbsp;</font></span></td>";
 echo "<td colspan='3' align='left'>&nbsp;<input type='text' name='book_to' size='80'  style='background-color: #E7D8EB' value='$result_ref[book_to]'></td>";
+echo "</tr>";
+
+$level = $result_ref[level];
+if ($level=="0") {
+	$check1 = "checked" ;
+} else if ($level=="1") {
+	$check2 = "checked" ;
+} else if ($level=="2") {
+	$check3= "checked" ;
+} else if ($level=="3") {
+	$check4= "checked" ;
+}
+
+echo "<tr>";
+echo "<td align='right'><span lang='th'>ระดับความสำคัญ&nbsp;</span></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='level' value='0' $check1>ปกติ&nbsp;
+			<input type='radio'  name='level' value='1' $check2><font size='2' color='#FF0000'>ด่วน</font>&nbsp;
+			<input type='radio'  name='level' value='2' $check3><font size='2' color='#FF0000'>ด่วนมาก</font>&nbsp;
+			<input type='radio'  name='level' value='3' $check4><font size='2' color='#FF0000'>ด่วนที่สุด</font></td>";
 echo "</tr>";
 
 echo "<tr>";
@@ -686,8 +716,28 @@ $dfile5 = "";
 $upfile1=""; $upfile2=""; $upfile3=""; $upfile4=""; $upfile5=""; 
 $sizelimit1=""; $sizelimit2=""; $sizelimit3=""; $sizelimit4=""; $sizelimit5=""; 
 
-$sql = "update bookregister_receive set register_number_de=$register_number_de, book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]' where ms_id='$_POST[id]' ";
+//เลขทะเบียน  สำนัก หาเลขสุดท้าย
+$sql_start_de="select * from bookregister_year where year_active='1' and department = '$department_id' ";
+//$sql_start="select * from bookregister_year where year_active='1' and school_code is null";
+$query_start_de=mysqli_query($connect,$sql_start_de);
+$result_start_de=mysqli_fetch_array($query_start_de);
+
+$sql_number_de="select  max(register_number_de) as number_max from bookregister_receive where year='$result_start_de[year]' and department = '$department_id' ";
+$query_number_de=mysqli_query($connect,$sql_number_de);
+$result_number_de=mysqli_fetch_array($query_number_de);
+
+$register_number_de=$_POST['register_number_de'];
+
+if($register_number_de > '0'){				//ถ้าเลขมากกว่า 0 ให้ใช้เลขเดิม
+$register_number_de=$register_number_de;
+}
+else{
+$register_number_de=$result_number_de['number_max']+1;  //ถ้าเลขเท่ากับ 0 ให้บวก 1 จากเลขเดิม
+}
+
+$sql = "update bookregister_receive set register_number_de=$register_number_de, book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]', level='$_POST[level]'  where ms_id='$_POST[id]' ";
 $dbquery = mysqli_query($connect,$sql);
+//echo $sql;
 
 $sizelimit = 20000*1024 ;  //ขนาดไฟล์
 
@@ -1201,7 +1251,9 @@ echo "</td>";
 </table>
 
 
-<table border="1" width="99%" id="table2" style="border-collapse: collapse" align="center">
+<div align='center'><table width='98%'><tr><td>
+&nbsp;<FONT SIZE="2" COLOR="">ระดับความสำคัญ <IMG SRC="modules/book/images/level1.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ปกติ">ปกติ&nbsp;<IMG SRC="modules/book/images/level2.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วน">ด่วน&nbsp;<IMG SRC="modules/book/images/level3.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนมาก">ด่วนมาก&nbsp;<IMG SRC="modules/book/images/level4.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนที่สุด">ด่วนที่สุด
+<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>
 				<tr bgcolor="#FFCCCC">
 					<td align="center" width="50">
 					<font size="2" face="Tahoma">เลขทะเบียนรับสำนัก</font></td>
@@ -1270,6 +1322,7 @@ While ($result = mysqli_fetch_array($dbquery)){
 		$book_to = $result['book_to'];
 		$subject = $result['subject'];
 		$group = $result['department'];
+		$level = $result['level'];
 		$group_sub = $result['sub_department'];
 		$operation = $result['operation'];
 		$comment = $result['comment'];
@@ -1298,16 +1351,20 @@ $file = mysqli_query($connect,"SELECT * FROM  bookregister_send_filebook_sch WHE
 				$file_img = "<IMG SRC=\"modules/bookregister/images/file1.gif\" WIDTH=\"13\" HEIGHT=\"10\" BORDER=\"0\" ALT=\"มีไฟล์แนบ\">" ;
 			}
 			
-if($result['secret']==1){
-$secret_txt="<font color='#FF0000'>[ลับ]</font>";
-}
-else{
-$secret_txt="";
+// ระดับความสำคัญ
+if ($level==0) {
+	$img_level = "<IMG SRC=\"modules/book/images/level1.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ปกติ\">" ;
+}else if ($level==1) {
+	$img_level = "<IMG SRC=\"modules/book/images/level2.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วน\">" ;
+}else if ($level==2) {
+	$img_level = "<IMG SRC=\"modules/book/images/level3.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วนมาก\">" ;
+}else if ($level==3) {
+	$img_level = "<IMG SRC=\"modules/book/images/level4.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วนที่สุด\">" ;
 }
 
 //ตรวจสอบว่าลงรับหนังสือหรือยังไม่ลงรับ
 if($register_number_de==0){
-	$register_number_de="<font color='#FF0000'><a href=?option=bookregister&task=main/receive_de_2&index=5&id=$id&page=$_REQUEST[page]&department=$department_id><img src=images/add.png border='0' alt='ยังไม่ลงรับหนังสือ'></a><br>ลงรับ</font>";
+	$register_number_de="<font color='#FF0000'><a href=?option=bookregister&task=main/receive_de&index=5&id=$id&page=$_REQUEST[page]&department=$department_id><img src=images/add.png border='0' alt='ยังไม่ลงรับหนังสือ'><br>ลงรับ</a></font>";
 }
 else{
 	$register_number_de=$register_number_de;
@@ -1317,11 +1374,11 @@ else{
 			<tr bgcolor="<?php echo $color;?>">
 					<td align="center"><?php echo $register_number_de;?></td>
 					<td align="center"><?php echo $year;?></td>
-					<td align="left">&nbsp;<?php echo $book_no;?></td>
+					<td align="left">&nbsp;<?php echo $book_no;?>&nbsp;<?php echo $img_level;?></td>
 					<td align="center">&nbsp;<?php echo $signdate;?></td>
 					<td align="left"><?php echo $book_from;?></td>
 					<td align="left"><?php echo $book_to;?></td>
-					<td align="left"><?php echo $subject;?>&nbsp;<?php echo $file_img;?>&nbsp;<?php echo $secret_txt;?><?php if($register_number_de==0){ ?><font color='#FF0000'>(ยังไม่ลงรับหนังสือ)</font><?php } ?></td>
+					<td align="left"><?php echo $subject;?>&nbsp;<?php echo $file_img;?>&nbsp;<?php if($register_number_de==0){ ?><font color='#FF0000'>(ยังไม่ลงรับหนังสือ)</font><?php } ?></td>
 					<td align="left"><?php 
 					if(isset($sub_department_ar[$group_sub])){
 					echo $sub_department_ar[$group_sub];
@@ -1371,6 +1428,8 @@ echo "ส่งออก[Excel]เฉพาะที่ลงทะเบีย�
 }
 echo "</td></tr>";
 echo "</table>";
+echo "</td></tr></table></div>";
+
 }  //end index
 
 ?>

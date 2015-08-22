@@ -267,9 +267,6 @@ $sql_show = "select * from person_main where status='0' and department = ? $show
             $result_personshow = $dbquery_show->get_result();
 
 echo  "<table width='98%' border='0' align='center' class='table table-hover table-bordered  table-condensed'>";
-echo "<Tr>";
-echo "<Td colspan='14' align='center'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือก มาปฏิบัติราชการทั้งหมด</Td>";
-echo "</Tr>";
 echo "<Tr bgcolor='#FFCCCC' align='center'><Td width='50'>ที่</Td>";
 echo "<Td>ลบ</Td>";
 echo "<Td>ชื่อ</Td><Td>ตำแหน่ง</Td><Td>มา</Td><Td>ไปราชการ</Td><Td>ลาป่วย</Td><Td>ลากิจ</Td><Td>ลาพักผ่อน</Td><Td>ลาคลอด</Td><Td>ลาอื่นๆ</Td><Td>มาสาย</Td><Td>ไม่มา</Td><Td></Td></Tr>";
@@ -435,6 +432,10 @@ $sql_check = "select * from work_main where work_date=?";
 $record_num=mysqli_num_rows($result_checkperson);
 if(($record_num<=0) and ($index!=2)){
 */
+echo "<Tr bgcolor='#FFCCCC'>";
+echo "<Td colspan='14' align='center'><input type='checkbox' name='allchk' id='allchk' onclick='CheckAll()'>เลือก/ไม่เลือก มาปฏิบัติราชการทั้งหมด</Td>";
+//}
+echo "</Tr>";
 echo "</Table>";
 
 if(isset($getdatepicker)){
@@ -445,7 +446,7 @@ $today=date("Y-m-d");
 echo "<INPUT TYPE='hidden' name='send_date' value='$today'>";
 }
 echo "<br><input type='hidden' name='index' value='4'>";
-echo "<div align='center'><INPUT TYPE='button' name='smb' class='btn btn-primary'  value='บันทึกข้อมูล' onclick='goto_url(1)' class=entrybutton></div>";
+echo "<div align='center'><INPUT TYPE='button' name='smb' value='บันทึก' onclick='goto_url(1)' class=entrybutton></div>";
 echo "</form>";
 ?>
 

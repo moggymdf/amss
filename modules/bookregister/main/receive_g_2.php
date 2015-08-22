@@ -467,7 +467,7 @@ $register_number_g=$result_number_g['number_max']+1;
 //$sub_department_id2 = $_POST[sub_department_id2];  //รหัสกลุ่ม
 $sql = "insert into bookregister_receive(year, register_number, register_number_de, register_number_g, book_no, signdate, book_from, book_to, subject, department, sub_department, record_type, operation, comment, register_date, ref_id, officer) values ('$result_start[year]', '$register_number', '$register_number_de', '$register_number_g', '$_POST[book_no]', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[sub_department]', '1','$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user')";
 $dbquery = mysqli_query($connect,$sql);
-//echo $sql ;
+echo $sql ;
 if ($myfile1<>"" ) {
 $myfile1name=$ref_id."_1.".$lastname1 ;
 copy ($myfile1, "modules/bookregister/upload_files1/".$myfile1name)  ;
@@ -515,7 +515,8 @@ unlink ($myfile5) ;
 // ส่วนแก้ไขข้อมูล
 
 if($index==5){
-echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+//echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+echo "<form Enctype = multipart/form-data id='frm1' name='frm1' action=receive_g_3.php?ms_id='$_GET[id]'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไขข้อมูล</B></Font>";
 echo "</Cener>";
@@ -576,13 +577,13 @@ else{
 $register_number_g=$result_number_g['number_max']+1;
 }
 
-echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขทะเบียน&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;$result_ref[register_number_de]<input type='hidden' name='register_number' size='5' value='$result_ref[register_number]' ><input type='hidden' name='register_number_g' size='5' value='$register_number_g' ></td>";  //เลขรับสำนัก  , กลุ่ม
-echo "</tr>";
+//echo "<tr>";
+//echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขทะเบียน&nbsp;</font></span></td>";
+//echo "<td colspan='3' align='left'>&nbsp;$result_ref[register_number_de]<input type='hidden' name='register_number' size='5' value='$result_ref[register_number]' ><input type='hidden' name='register_number_g' size='5' value='$register_number_g' ></td>";  //เลขรับสำนัก  , กลุ่ม
+//echo "</tr>";
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขที่หนังสือ&nbsp;</font></span></td><td align='left'>&nbsp;<FONT SIZE='2' COLOR=''></FONT><input type='text' name='book_no' size='35' value='$result_ref[book_no]'  style='background-color: #E7D8EB'>&nbsp;&nbsp;ลงวันที่</td>";
+echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เลขที่หนังสือ&nbsp;</font></span></td><td align='left'>&nbsp;<FONT SIZE='2' COLOR=''></FONT><input type='text' name='book_no' size='25' value='$result_ref[book_no]'  style='background-color: #E7D8EB'>&nbsp;&nbsp;ลงวันที่</td>";
 echo "<td colspan='2' align='left'>";
 
 $f_date=explode("-", $result_ref['signdate']);
@@ -620,8 +621,8 @@ echo "</tr>";
 echo "<tr>";
 echo "<Td align='right'><span id='group'><font size='2' color='#0000FF'>กลุ่มปฏิบัติ&nbsp;&nbsp;</font></span></Td>";
 echo "<td colspan='3' align='left'><div id='sub_department'>&nbsp;<Select  name='group'  id='group'  size='1' style='background-color: #FFDDFF'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql_subdepartment = "select  * from system_subdepartment  where department ='$department_id' order by sub_department";
+//echo  "<option  value = ''>เลือก</option>" ;
+$sql_subdepartment = "select  * from system_subdepartment  where sub_department ='$sub_department_id' order by sub_department";
 $dbquery_subdepartment = mysqli_query($connect,$sql_subdepartment);
 While ($result_subdepartment = mysqli_fetch_array($dbquery_subdepartment))
    {
@@ -644,7 +645,7 @@ echo "<tr>";
 echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>บุคคลปฏิบัติ&nbsp;</font></span></td>";
 echo "<td colspan='3' align='left'>&nbsp;<Select  name='operation'  id='operation'  size='1' style='background-color: #FFDDFF'>";
 echo  "&nbsp;&nbsp;<option  value = ''>เลือก</option>" ;
-$sql_person= "select  * from person_main  where department=$department_id order by id";
+$sql_person= "select  * from person_main  where sub_department ='$sub_department_id' order by id";
 $dbquery_person= mysqli_query($connect,$sql_person);
 While ($result_person = mysqli_fetch_array($dbquery_person))
    {
@@ -724,6 +725,8 @@ echo "<td align='center' colspan='4'><BR><INPUT TYPE='button' name='smb' value='
 echo "</tr>";
 echo "</Table>";
 echo "</form>";
+echo $register_number_g;
+echo $_GET[id];
 }
 
 if($index==6){
@@ -738,8 +741,9 @@ $dfile5 = "";
 $upfile1=""; $upfile2=""; $upfile3=""; $upfile4=""; $upfile5="";
 $sizelimit1=""; $sizelimit2=""; $sizelimit3=""; $sizelimit4=""; $sizelimit5="";
 
-$sql = "update bookregister_receive set register_number_g=$register_number_g, book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]' where ms_id='$_POST[id]' ";
+$sql = "update bookregister_receive set register_number_g=$register_number_g, book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]' where ms_id='$_GET[id]' ";
 $dbquery = mysqli_query($connect,$sql);
+//echo $sql;
 
 $sizelimit = 20000*1024 ;  //ขนาดไฟล์
 

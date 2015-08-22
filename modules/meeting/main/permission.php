@@ -122,13 +122,13 @@ echo "</td></tr></table></form>";
 }
 
 //ส่วนลบข้อมูล
-if($postindex==3){
-if(isset($_POST['userid'])){
-$postuserid=mysqli_real_escape_string($connect,$_POST['userid']);
-}else {$postuserid="";}
+if($getindex==3){
+if(isset($_GET['aid'])){
+$getid=mysqli_real_escape_string($connect,$_GET['aid']);
+}else {$getid="";}
 $sql = "delete from meeting_permission where id=?";
     $dbquery_permiss = $connect->prepare($sql);
-    $dbquery_permiss->bind_param("i", $postuserid);
+    $dbquery_permiss->bind_param("i", $getid);
     $dbquery_permiss->execute();
     $result_permiss=$dbquery_permiss->get_result();
     echo "<script>document.location.href='?option=meeting&task=main/permission'; </script>\n";
@@ -254,9 +254,9 @@ While ($result = mysqli_fetch_array($result_show))
 			}
 $color="";
 
-		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$name $surname</Td><Td align='center'>$p1_pic</Td>
-		<Td align='center' width='50' ><a href=?option=meeting&task=main/permission&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></Td>
-		<Td align='center' width='50'><a href=?option=meeting&task=main/permission&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>
+		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$name $surname</Td><Td align='center'>$p1_pic</Td>";
+        echo "<Td align='center' width='50' ><a href='?option=meeting&task=main/permission&index=3&aid=$id' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a></Td>";
+        echo "<Td align='center' width='50'><a href=?option=meeting&task=main/permission&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>
 	</Tr>";
 $M++;
 	}

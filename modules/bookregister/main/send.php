@@ -25,7 +25,7 @@ $_REQUEST['department']="";
 }
 
 //ส่วนหัว
-echo "<br /><br><br><br><br>";
+echo "<br />";
 if(!(($index==1) or ($index==2) or ($index==5))){
 
 echo "<table width='100%' border='0' align='center'>";
@@ -119,9 +119,9 @@ echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>เรื
 echo "<td colspan='3' align='left'>&nbsp;<input type='text' name='subject' size='80'  style='background-color: #E7D8EB'></td>";
 echo "</tr>";
 
-echo "<Tr><Td align='right'><span id='group'><font size='2' color='#0000FF'>กลุ่มปฏิบัติ&nbsp;</font></div>&nbsp;&nbsp;</Td>";
+echo "<Tr><Td align='right'><span id='group'><font size='2' color='#0000FF'>สำนัก&nbsp;</font></div>&nbsp;&nbsp;</Td>";
 echo "<td align='left'>";
-echo "<div id='department' align='left'><Select  name='department'  id='department'  size='1' style='background-color: #FFDDFF'>";
+echo "<div id='department' align='left' width='371' ><Select  name='department'  id='department'  size='1' style='background-color: #FFDDFF'>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql_department = "select  * from system_department  order by department_order";
 $dbquery_department = mysqli_query($connect,$sql_department);
@@ -147,7 +147,7 @@ echo "</tr>";
 
 echo "<tr>";
 echo "<td width='371' align='right' colspan='2'><p align='center'><font size='2' color='#800000'>แนบไฟล์(ถ้ามี)</font></td>";
-echo "<td width='238' align='center' colspan='1'><p align='center'><font size='2' color='#800000'>คำอธิบายไฟล์</font></td>";
+echo "<td width='450' align='center' colspan='1'><p align='center'><font size='2' color='#800000'>คำอธิบายไฟล์</font></td>";
 echo "</tr>";
 
 echo "<tr>";
@@ -426,7 +426,7 @@ else{
 $book_number=$ref_result['office_no'].$register_number;
 }
 
-$sql = "insert into bookregister_send(year, register_number, book_no, signdate, book_from, book_to, subject, department, operation, comment, register_date, ref_id, officer, secret) values ('$result_start[year]', '$register_number', '$book_number', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user', '$_POST[secret]')";
+$sql = "insert into bookregister_send(year, register_number, book_no, signdate, book_from, book_to, subject, department, operation, comment, register_date, ref_id, officer, secret, level) values ('$result_start[year]', '$register_number', '$book_number', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user', '$_POST[secret]', '$_POST[level]')";
 $dbquery = mysqli_query($connect,$sql);
 
 if ($myfile1<>"" ) {
@@ -1092,7 +1092,7 @@ echo "</div>";
 echo "<table border='0' width='99%' id='table1' style='border-collapse: collapse' cellspacing='2' cellpadding='2' align='center'>
 ";
 echo "<tr><td align='left'>";
-echo "<INPUT TYPE='button' name='smb' value='ลงทะเบียนหนังสือ' onclick='location.href=\"?option=bookregister&task=main/send&index=1\"'>";
+//echo "<INPUT TYPE='button' name='smb' value='ลงทะเบียนหนังสือ' onclick='location.href=\"?option=bookregister&task=main/send&index=1\"'>";
 echo "</td>";
 
 ?>
@@ -1124,7 +1124,7 @@ echo "</td>";
 /////////////////////
 echo "<td align='right'>";
 	echo "<Select  name='department' size='1'>";
-	echo  '<option value ="" >ทุกกลุ่ม(งาน)</option>' ;
+	echo  '<option value ="" >ทุกสำนัก</option>' ;
 						$sql = "SELECT *  FROM  system_department";
 						$dbquery =mysqli_query($connect,$sql);
 						While ($result = mysqli_fetch_array($dbquery))
@@ -1147,7 +1147,7 @@ echo "</td>";
 		</tr>
 </table>
 
-
+&nbsp;&nbsp;<FONT SIZE="2" COLOR="">ระดับความสำคัญ <IMG SRC="modules/book/images/level1.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ปกติ">ปกติ&nbsp;<IMG SRC="modules/book/images/level2.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วน">ด่วน&nbsp;<IMG SRC="modules/book/images/level3.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนมาก">ด่วนมาก&nbsp;<IMG SRC="modules/book/images/level4.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนที่สุด">ด่วนที่สุด
 <table border="1" width="99%" id="table2" style="border-collapse: collapse" align="center">
 				<tr bgcolor="#99FFFF">
 					<td align="center" width="50">
@@ -1174,12 +1174,8 @@ echo "</td>";
 					<font face="Tahoma" size="2">วันลงทะเบียน</font></td>
 					<td align="center" width="50">
 					<font face="Tahoma" size="2">ราย<br />ละเอียด</font></td>
-					<td align="center" width="50">
-					<font face="Tahoma" size="2">ลบ</font></td>
-					<td align="center" width="50">
-					<font face="Tahoma" size="2">แก้ไข</font></td>
-					<td align="center" width="50">
-					<font face="Tahoma" size="2">ส่ง ร.ร.</font></td>
+
+
 				</tr>
 <?php
 if($_REQUEST['search_index']==1){
@@ -1227,18 +1223,22 @@ if ($file_num==0) {
 	$file_img = "<IMG SRC=\"modules/bookregister/images/file1.gif\" WIDTH=\"13\" HEIGHT=\"10\" BORDER=\"0\" ALT=\"มีไฟล์แนบ\">" ;
 }
 
-if($result['secret']==1){
-$secret_txt="<font color='#FF0000'>[ลับ]</font>";
-}
-else{
-$secret_txt="";
+// ระดับความสำคัญ
+if ($level==0) {
+	$img_level = "<IMG SRC=\"modules/book/images/level1.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ปกติ\">" ;
+}else if ($level==1) {
+	$img_level = "<IMG SRC=\"modules/book/images/level2.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วน\">" ;
+}else if ($level==2) {
+	$img_level = "<IMG SRC=\"modules/book/images/level3.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วนมาก\">" ;
+}else if ($level==3) {
+	$img_level = "<IMG SRC=\"modules/book/images/level4.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วนที่สุด\">" ;
 }
 
 ?>
 			<tr bgcolor="<?php echo $color;?>">
 					<td align="center"><?php echo $register_number;?></td>
 					<td align="center"><?php echo $year;?></td>
-					<td align="left">&nbsp;<?php echo $book_no;?></td>
+					<td align="left">&nbsp;<?php echo $book_no;?>&nbsp;<?php echo $img_level;?></td>
 					<td align="center">&nbsp;<?php echo $signdate;?></td>
 					<td align="left"><?php echo $book_from;?></td>
 					<td align="left"><?php echo $book_to;?></td>
@@ -1270,28 +1270,28 @@ $delete=2;    //no
 }
 
 if(($result['officer'])==$user and ($delete==1)){
-echo "<Td align='center'><a href=?option=bookregister&task=main/send&index=2&id=$id&page=$_REQUEST[page]><img src=images/drop.png border='0' alt='ลบ'></a></Td>";
+//echo "<Td align='center'><a href=?option=bookregister&task=main/send&index=2&id=$id&page=$_REQUEST[page]><img src=images/drop.png border='0' alt='ลบ'></a></Td>";
 }
 else{
-echo "<td></td>";
+//echo "<td></td>";
 }
 if(($result['officer'])==$user and ($delete==1)){
-echo "<Td align='center'><a href=?option=bookregister&task=main/send&index=5&id=$id&page=$_REQUEST[page]><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>";
+//echo "<Td align='center'><a href=?option=bookregister&task=main/send&index=5&id=$id&page=$_REQUEST[page]><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>";
 }
 else{
-echo "<td></td>";
+//echo "<td></td>";
 }
 
 $sql_check_book = mysqli_query($connect,"SELECT * FROM  book_main WHERE  ref_id='$ref_id' ") ;
 $check_book_num=mysqli_num_rows($sql_check_book);
 
 if(($check_book_num==0) and ($result['officer']==$_SESSION['login_user_id'])){
-echo "<td align='center'><a href=?option=book&task=main/send_2&id=$id&index=1><img src=images/next.gif border='0' alt='ส่งโรงเรียน'></td>";
+//echo "<td align='center'><a href=?option=book&task=main/send_2&id=$id&index=1><img src=images/next.gif border='0' alt='ส่งโรงเรียน'></td>";
 }
 else{
-echo "<td></td>";
+//echo "<td></td>";
 }
-echo "</tr>";
+//echo "</tr>";
 
 	$M++;
 	$N++;  //*เกี่ยวข้องกับการแยกหน้า

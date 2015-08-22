@@ -17,8 +17,8 @@ echo "<Br>";
 echo "</Table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='index' Value='4'>";
-echo "<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-		&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
+echo "<INPUT class='btn btn-primary' TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+		&nbsp;&nbsp;<INPUT class='btn btn-default' TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'>";
 echo "</form>";
 }
 

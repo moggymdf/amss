@@ -1,6 +1,50 @@
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
+$admin_meeting=mysqli_real_escape_string($connect,$_SESSION['admin_mail']);
+if($admin_meeting!='mail'){
+exit();
+}
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
+}
+
+if(!isset($_SESSION['login_user_id'])){ $_SESSION['login_user_id']=""; exit();
+}else{
+//หาหน่วยงาน
+$login_user_id=mysqli_real_escape_string($connect,$_SESSION['login_user_id']);
+    $sql_user_depart="select * from person_main where person_id=? ";
+    $query_user_depart = $connect->prepare($sql_user_depart);
+    $query_user_depart->bind_param("i", $login_user_id);
+    $query_user_depart->execute();
+    $result_quser_depart=$query_user_depart->get_result();
+While ($result_user_depart = mysqli_fetch_array($result_quser_depart))
+   {
+    $user_departid=$result_user_depart['department'];
+    }
+//หาชื่อหน่วยงาน
+    $sql_depart_name="select * from system_department where department=? ";
+    $query_depart_name = $connect->prepare($sql_depart_name);
+    $query_depart_name->bind_param("i", $user_departid);
+    $query_depart_name->execute();
+    $result_qdepart_name=$query_depart_name->get_result();
+While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
+   {
+    $user_department_name=$result_depart_name['department_name'];
+    $user_department_precisname=$result_depart_name['department_precis'];
+	}
+}
+
+
+//ตรวจสอบ POST
+if(isset($_POST['index'])){
+$postindex=mysqli_real_escape_string($connect,$_POST['index']);
+}else {$postindex="";}
+
+if(isset($_GET['index'])){
+$index=mysqli_real_escape_string($connect,$_GET['index']);
+}else {$index="";}
 
 //ส่วนหัว
 echo "<br />";
@@ -17,29 +61,47 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
+echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8' class='table table-hover table-bordered table-striped table-condensed'>";
+echo "<Tr><Td align='right'>สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left' class='form-group'> $user_department_name";
+echo "</div></td></tr>";
 echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Select  name='person_id'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
-$sql = "select  * from person_main where status='0' order by name";
-$dbquery = mysqli_query($connect,$sql);
-While ($result = mysqli_fetch_array($dbquery))
+echo "<td><div align='left' class='form-group'><Select name='person_id' class='selectpicker show-tick' title='เลือกบุคลากร' data-live-search='true'>";
+//echo  "<option  value = ''>เลือกบุคลากร</option>" ;
+    $sql = "select  * from person_main where department = ? and status=0 order by name";
+    $dbquery_person = $connect->prepare($sql);
+    $dbquery_person->bind_param("i", $user_departid);
+    $dbquery_person->execute();
+    $result_person=$dbquery_person->get_result();
+    while($result_personname = $result_person->fetch_array())
    {
-		$person_id = $result['person_id'];
-		$name = $result['name'];
-		$surname = $result['surname'];
-		echo  "<option value = $person_id>$name $surname</option>" ;
-	}
+     $personname = $result_personname['prename'].$result_personname['name']." ".$result_personname['surname'];
+     $personid = $result_personname['person_id'];
+
+    $sql = "select  * from mail_permission where person_id=?";
+    $dbquery_permiss = $connect->prepare($sql);
+    $dbquery_permiss->bind_param("i", $personid);
+    $dbquery_permiss->execute();
+    $result_permiss=$dbquery_permiss->get_result();
+     while($result_permissuser = $result_permiss->fetch_array())
+    {
+         $permissid = $result_permissuser["person_id"];
+     }
+
+        if($permissid!=$personid){
+        echo "<option  value ='$personid'> $personname</option>" ;
+        }
+    }
+
 echo "</select>";
 echo "</div></td></tr>";
-
 echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้าหน้าที่&nbsp;&nbsp;</td>";
 echo   "<td align='left'>ใช่<input  type=radio name='mail_permission1' value='1' checked>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='mail_permission1' value='0'></td></tr>";
 
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+echo "<tr><td align='right'><INPUT TYPE='button' name='smb'  class='btn btn-primary' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
 	&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+echo "<td align='left'><INPUT TYPE='button' name='back' class='btn btn-default' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
 echo "</form>";
 }

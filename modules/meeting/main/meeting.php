@@ -214,7 +214,7 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
                     <td><?php echo thai_date_4($row['rec_date']); ?></td>
                     <td class="text-center">
                     <?php if($row['book_person']==$user_id){
-                     echo   "<a href='?option=meeting&task=main/meeting&index=2&id=$row[id]' data-toggle='confirmation' data-placement='top' data-trigger='focus'><span class='glyphicon glyphicon-remove icon-danger icon-size1'></span></a>";
+                     echo   "<a href='?option=meeting&task=main/meeting&index=3&id=$row[id]' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>";
                      }else{ echo ""; } ?>
                     </Td>
                     <td class="text-center">

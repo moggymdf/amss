@@ -138,7 +138,6 @@ include("default.php");
 ?>
 
 <!-- Bootstrap Confirmation -->
-<script src="./bootstrap-3.3.5-dist/js/bootstrap-confirmation.min.js"></script>
 <script>
 	$('[data-toggle="confirmation"]').confirmation({
     title: "<B>กรุณายืนยัน</B>",

@@ -1,8 +1,8 @@
 <?php
 
 function smartpush($uid,$message) {
-    include "db_functions.php";
-    include "gcm.php";
+    include "PushServer/db_functions2.php";
+    include "PushServer/gcm2.php";
     $gcm = new GCM();
     $db = new DB_Functions();
     $users = $db->getAllUsers();

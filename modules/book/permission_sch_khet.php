@@ -45,8 +45,11 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่งานสารบรรณ  สพท.</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='80%' Border='0'>";
-echo "<Tr align='left'><Td align='right' width='50%'>  สพท.&nbsp;</Td><Td>";
+//echo "<Table width='80%' Border='0'>";
+echo "<div align='center'><table width='40%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+echo "<Tr align='left'><Td align='right'>  สพท.&nbsp;</Td><Td>";
 echo "<Select  name='khet_code'  id='khet_code' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 
@@ -64,11 +67,13 @@ echo  "<option  value = ''>เลือก  สพท.ก่อน</option>" ;
 echo "</select>";
 echo "</td></tr>";
 
-echo "<tr><td></td><td></td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+//echo "<tr><td></td><td></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+	&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
+
 echo "</form>";
 }
 
@@ -102,14 +107,18 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข เจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='90%' Border= '0' >";
+//echo "<Table width='90%' Border= '0' >";
+
+echo "<div align='center'><table width='40%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
 
 $sql = "select * from book_permission where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
-echo "<Tr align='left'><Td align='right' width='50%'>  สพท.&nbsp;</Td><Td>";
+echo "<Tr align='left'><Td align='right'>  สพท.&nbsp;</Td><Td>";
 echo "<Select  name='khet_code'  id='khet_code' size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
+echo  "<option  value = ''>- - - - เลือก - - - -</option>" ;
 $sql = "select * from  system_khet  order by khet_type,khet_code";
 $dbquery = mysqli_query($connect,$sql);
 While ($khet_result = mysqli_fetch_array($dbquery)){
@@ -122,10 +131,10 @@ While ($khet_result = mysqli_fetch_array($dbquery)){
 }
 echo "</select>";
 echo "</Td></Tr>";
-echo "<Tr><Td align='right'  width='50%'>บุคลากร&nbsp;&nbsp;</Td>";
+echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;</Td>";
 //echo "$khet_result[khet_code]";
 echo "<td align='left'><Select  name='person_id'  id='person_id'  size='1'>";
-echo  "<option  value = ''>เลือก</option>" ;
+echo  "<option  value = ''>- - - - เลือก - - - -</option>" ;
 $khet_id=$khet_result[khet_code];
 //$sql = "select  * from person_khet_main where status='0'  and khet_code='$khet_id' order by name";
 $sql = "select  * from person_khet_main where status='0'  and khet_code='$ref_result[p3]' order by position_code,name";
@@ -158,10 +167,12 @@ while($result = mysqli_fetch_array($query)){
 echo "</select>";
 echo "</td></tr>";
 
-echo "<tr><td></td><td></td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+//echo "<tr><td></td><td></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
+
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "<Input Type=Hidden Name='page' Value='$_GET[page]'>";
@@ -272,8 +283,11 @@ echo "</div>";
 
 $sql = "select book_permission.id,  book_permission.officer, person_khet_main.prename, person_khet_main.name, person_khet_main.surname, book_permission.p3 from book_permission left join person_khet_main on book_permission.person_id=person_khet_main.person_id  where book_permission.p3!='' order by book_permission.id  limit $start,$pagelen";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width=70% border=0 align=center>";
-echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=book&task=permission_sch_khet&index=1\"'</Td></Tr>";
+//echo  "<table width=70% border=0 align=center>";
+echo "<div align='center'><table width='70%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=book&task=permission_sch_khet&index=1\"'</Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>สพท.</Td><Td  align='center'>ชื่อเจ้าหน้าที่</Td><Td align='center' width='180'>ผู้กำหนดเจ้าหน้าที่</Td><Td align='center' width='50'>ลบ</Td><Td align='center'  width='50'>แก้ไข</Td></Tr>";
 $N=(($page-1)*$pagelen)+1;  //*เกี่ยวข้องกับการแยกหน้า
@@ -317,6 +331,8 @@ $M++;
 $N++;  //*เกี่ยวข้องกับการแยกหน้า
 	}
 echo "</Table>";
+echo "</td></tr></table>";
+
 }
 
 ?>

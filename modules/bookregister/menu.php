@@ -37,6 +37,8 @@ $_SESSION['admin_bookregister']="";
 				<li><a href='?option=bookregister&task=permission_de'>กำหนดเจ้าหน้าที่</a></li>
 				<li><a href='?option=bookregister&task=year_de'>กำหนดปีปฏิทิน สำนัก</a></li>
 				<li><a href='?option=bookregister&task=main/office_no'>กำหนดเลขที่หนังสือ</a></li>
+				<li>-----บทบาทกลุ่ม-------</li>
+				<li><a href='?option=bookregister&task=year_g'>กำหนดปีปฏิทิน กลุ่ม</a></li>
 				<!--	//		echo "<li><a href='?option=bookregister&task=main/cer_sign'>กำหนดผู้ลงนามเกียรติบัตร</a></li>";-->
 				<!--	//		echo "<li><a href='?option=bookregister&task=cer_officer'>กำหนดผู้ตรวจสอบการลงทะเบียนเกียรติบัตร</a></li>";-->
 			</ul>
@@ -64,18 +66,10 @@ $_SESSION['admin_bookregister']="";
 	if($result_permission['saraban_status']==3){	//กำหนดสิทธิ์ให้เห็นเมนู  สารบรรณกลุ่ม ?>
 				<li class='dropdown'>
 					<a href='?option=bookregister&task=main/receive_g' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-copy' aria-hidden='true'></span>
-						&nbsp;ทะเบียนหนังสือรับกลุ่ม <span class='caret'></span>
+						&nbsp;ทะเบียนหนังสือรับ/ส่ง กลุ่ม <span class='caret'></span>
 					</a>
 					<ul class='dropdown-menu' role='menu'>
 						<li><a href='?option=bookregister&task=main/receive_g'>ทะเบียนหนังสือรับกลุ่ม</a></li>
-					</ul>
-				</li>
-
-				<li class='dropdown'>
-					<a href='?option=bookregister&task=main/send_g' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'><span class='glyphicon glyphicon-paste' aria-hidden='true'></span>
-						&nbsp;ทะเบียนหนังสือส่งกลุ่ม <span class='caret'></span>
-					</a>
-					<ul class='dropdown-menu' role='menu'>
 						<li><a href='?option=bookregister&task=main/send_g'>ทะเบียนหนังสือส่งกลุ่ม</a></li>
 					</ul>
 				</li>
@@ -91,6 +85,9 @@ $_SESSION['admin_bookregister']="";
 					<ul class='dropdown-menu' role='menu'>
 						<li><a href='?option=bookregister&task=main/receive_de'>ทะเบียนหนังสือรับสำนัก</a></li>
 						<li><a href='?option=bookregister&task=main/send_de'>ทะเบียนหนังสือส่งสำนัก</a></li>
+						<li>-----บทบาทกลุ่ม-------</li>
+						<li><a href='?option=bookregister&task=main/receive_g'>ทะเบียนหนังสือรับกลุ่ม</a></li>
+						<li><a href='?option=bookregister&task=main/send_g'>ทะเบียนหนังสือส่งกลุ่ม</a></li>
 						</ul>
 					</li>
 	<?php }

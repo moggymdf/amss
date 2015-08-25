@@ -13,7 +13,7 @@
       <h3 class="panel-title">เพิ่มบันทึกเสนอ</h3>
     </div>
     <div class="panel-body">
-      <form enctype="multipart/form-data" class="form-horizontal" method="POST" action="?option=ioffice&task=book_manage&action=insert">
+      <form data-toggle="validator" role="form" enctype="multipart/form-data" class="form-horizontal" method="POST" action="?option=ioffice&task=book_manage&action=insert">
         <div class="form-group">
           <label for="bookstatusid" class="col-sm-2 control-label">สถานะบันทึกเสนอ</label>
           <div class="col-sm-3">
@@ -27,7 +27,7 @@
         </div>
         <hr>
         <div class="form-group">
-           <label for="booktypeid" class="col-sm-2 control-label">ประเภทบันทึกเสนอ</label>
+          <label for="booktypeid" class="col-sm-2 control-label">ประเภทบันทึกเสนอ</label>
            <div class="col-sm-3">
              <label class="radio-inline">
                <input type="radio" name="booktypeid" id="booktypeid1" value="1" checked> ปกติ
@@ -38,10 +38,29 @@
            </div>
          </div>
         <hr>
-         <div class="form-group">
-           <label for="bookheader" class="col-sm-2 control-label">เรื่อง</label>
+        <div class="form-group">
+          <label for="bookheader" class="col-sm-2 control-label">เรื่อง</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="bookheader" id="bookheader" placeholder="ส่วนสำหรับพิมพ์ชื่อเรื่อง">
+            <input type="text" class="form-control" name="bookheader" id="bookheader" placeholder="ส่วนสำหรับพิมพ์ชื่อเรื่อง" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="receive_booklevelid" class="col-sm-2 control-label">เรียน</label>
+          <div class="col-sm-3">
+          <select  name='receive_booklevelid' id='receive_booklevelid' class="form-control">
+            <?php
+            $sqlbooklevel = " SELECT
+                              *
+                              FROM ioffice_booklevel
+                              WHERE booklevelid <> 1
+                              ORDER BY booklevelid DESC";
+            $resultbooklevel = mysqli_query($connect, $sqlbooklevel);
+            while ($rowbooklevel = $resultbooklevel->fetch_assoc()){
+              if($rowbooklevel[booklevelid]==5) { $selected = "selected"; }else{ $selected = ""; }
+              echo  "<option  value ='$rowbooklevel[booklevelid]' $selected>".$rowbooklevel[booklevelname]."</option>" ;
+            }
+            ?>
+          </select>
           </div>
         </div>
         <div class="form-group">
@@ -116,5 +135,7 @@
     });
   });
 </script>
+<!-- Validate Form-->
+
 </body>
 </html>

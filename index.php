@@ -34,12 +34,7 @@ if(isset($_POST['user_os'])){
 }
 
 ?>
-<!-- <link rel="stylesheet" href="css/mm_training.css" type="text/css" /> -->
 
-<!-- Beginning of compulsory code below -->
-
-<!-- <link href="css/dropdown/dropdown.css" media="all" rel="stylesheet" type="text/css" /> -->
-<!-- <link href="css/dropdown/themes/adobe.com/default.advanced.css" media="all" rel="stylesheet" type="text/css" /> -->
 <script type="text/javascript" src="main_js.js"></script>
 
 <!-- Bootstrap Include -->
@@ -148,7 +143,7 @@ if(isset($_POST['user_os'])){
               <input id="username" name="username"type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน">
               <input id="pass" name="pass"type="password" class="form-control" placeholder="รหัสผ่าน">
             </div>
-            <button id="login_submit" name="login_submit" type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+            <input id="login_submit" name="login_submit" type="submit" class="btn btn-primary" value="เข้าสู่ระบบ">
           <?php
           }else{
           ?>

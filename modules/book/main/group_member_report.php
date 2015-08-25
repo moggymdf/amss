@@ -8,7 +8,10 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>กลุ่มสถานศึกษา และสมาชิกกลุ่ม (Read only)</Font>";
 echo "</Cener>";
 echo "<br><br>";
-echo "<TABLE width='100%'  boder='0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+//echo "<TABLE width='100%'  boder='0' Bgcolor='#Fcf9d8'>";
 echo "<Tr align='center'><Td align='center' >กลุ่มสถานศึกษา&nbsp;&nbsp;<select name='grp_id' size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql= "select * from book_group order by grp_id desc";
@@ -25,11 +28,16 @@ $sql= "select * from book_group order by grp_id desc";
 	echo "</select>" ;
 echo "&nbsp;&nbsp;<INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton></Td></Tr>";
 echo "</TABLE>";
+echo "</td></tr></table>";
+
 
 
 if($index==1){
 echo "<br/>";
-echo "<table width='55%' CELLSPACING=1 CELLPADDING=2>";
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+//echo "<table width='55%' CELLSPACING=1 CELLPADDING=2>";
 	echo "<tr bgcolor='#000000' height='30'>";
 	echo "<td align='center' width='10%'><b><font color='#FFFFFF'>ที่</td>";
 	echo "<td align='center' width='25%'><b><font color='#FFFFFF'>รหัสสถานศึกษา</td>";
@@ -55,6 +63,8 @@ $sql = "select * from book_group_member left join system_school on book_group_me
 	$n++;
 	}
 echo "</table>";
+echo "</td></tr></table>";
+
 }  //End index1
 echo "</form>";
 ?>

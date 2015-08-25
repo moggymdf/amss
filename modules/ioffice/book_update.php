@@ -9,6 +9,7 @@
         $booktypeid = $row["booktypeid"];
         $bookstatusid = $row["bookstatusid"];
         $bookheader = $row["bookheader"];
+        $receive_booklevelid = $row["receive_booklevelid"];
         $bookdetail = $row["bookdetail"];
         $post_personid = $row["post_personid"];
         $post_subdepartmentid = $row["post_subdepartmentid"];
@@ -35,7 +36,7 @@
       <h3 class="panel-title">แก้ไขบันทึกเสนอ</h3>
     </div>
     <div class="panel-body">
-      <form enctype="multipart/form-data" class="form-horizontal" method="POST" action="?option=ioffice&task=book_manage&action=update">
+      <form data-toggle="validator" role="form" enctype="multipart/form-data" class="form-horizontal" method="POST" action="?option=ioffice&task=book_manage&action=update">
         <div class="form-group">
           <label for="bookid" class="col-sm-2 control-label">เลขที่</label>
           <div class="col-sm-2">
@@ -75,7 +76,26 @@
          <div class="form-group">
             <label for="bookheader" class="col-sm-2 control-label">เรื่อง</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="bookheader" id="bookheader" placeholder="ส่วนสำหรับพิมพ์ชื่อเรื่อง" value="<?php echo $bookheader; ?>">
+            <input type="text" class="form-control" name="bookheader" id="bookheader" placeholder="ส่วนสำหรับพิมพ์ชื่อเรื่อง" value="<?php echo $bookheader; ?>" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="receive_booklevelid" class="col-sm-2 control-label">เรียน</label>
+          <div class="col-sm-3">
+          <select  name='receive_booklevelid' id='receive_booklevelid' class="form-control">
+            <?php
+            $sqlbooklevel = " SELECT
+                              *
+                              FROM ioffice_booklevel
+                              WHERE booklevelid <> 1
+                              ORDER BY booklevelid DESC";
+            $resultbooklevel = mysqli_query($connect, $sqlbooklevel);
+            while ($rowbooklevel = $resultbooklevel->fetch_assoc()){
+              if($rowbooklevel[booklevelid]==$receive_booklevelid) { $selected = "selected"; }else{ $selected = ""; }
+              echo  "<option  value ='$rowbooklevel[booklevelid]' $selected>".$rowbooklevel[booklevelname]."</option>" ;
+            }
+            ?>
+          </select>
           </div>
         </div>
         <div class="form-group">

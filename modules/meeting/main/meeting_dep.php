@@ -319,8 +319,7 @@ echo thai_date_4($rec_date);
     echo ")</Td>";
 
 if($user_permis==1){
-     echo   "<Td align='center'><a href='?option=meeting&task=main/meeting_dep&index=3&id=$id&page=$page' class='btn' data-toggle='confirmation'><img src=images/drop.png border='0' alt='ลบ'></span></a>";
-        //echo "<Td align='center'><a href=?option=meeting&task=main/meeting_dep&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></Td>";
+echo "<Td align='center'><a href=?option=meeting&task=main/meeting_dep&index=2&id=$id&page=$page><img src=images/drop.png border='0' alt='ลบ'></Td>";
 }
 else{
 echo "<td></td>";

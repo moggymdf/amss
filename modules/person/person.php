@@ -115,7 +115,7 @@ function file_upload() {
 
 //ส่วนเพิ่มข้อมูล
 if($index==1){
-echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+echo "<form  method='POST' Enctype = multipart/form-data id='frm1' name='frm1'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มข้อมูลครูและบุคลากร</B></Font>";
 echo "</Cener>";
@@ -224,7 +224,7 @@ $dbquery = mysqli_query($connect,$sql);
 }
 //ส่วนฟอร์มแก้ไขข้อมูล
 if ($index==5){
-echo "<form Enctype = multipart/form-data id='frm1' name='frm1'>";
+echo "<form method='POST' Enctype = multipart/form-data id='frm1' name='frm1'>";
 echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไขข้อมูลบุคลากร</B></Font>";
 echo "</Cener>";
@@ -291,7 +291,7 @@ echo "</Td></Tr>";
 
 echo "<Tr align='left'><Td ></Td><Td align='right'>ตำแหน่งอื่น(ถ้ามี)&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td>";
 echo "<Select  name='position_other_code' id='position_other_code' size='1'>";
-$sql = "select * from system_subdepartment where department='$result[department]' order by sub_department";
+$sql = "select * from system_subdepartment where department='$result[sub_department]' order by sub_department";
 $query_sub = mysqli_query($connect,$sql);
 echo  "<option  value = ''>เลือก</option>" ;
 	if($result['position_other_code']==9999){
@@ -461,7 +461,7 @@ echo "</div>";
 }
 //จบแยกหน้า
 
-echo "<form id='frm1' name='frm1'>";
+echo "<form method='POST' id='frm1' name='frm1'>";
 echo  "<table width='95%' border='0' align='center'>";
 echo "<Tr><Td colspan='9' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มข้อมูล' onclick='location.href=\"?option=person&task=person&index=1\"'></Td><td align='right'>";
 

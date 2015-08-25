@@ -1,10 +1,11 @@
 <script type="text/javascript" src="./css/js/calendarDateInput2.js"></script>
 
-
 <?php
 /** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
-
+if(!isset($_GET["index"])){ $_GET["index"]=""; }
+echo "<br><br><br><br><br><br><br><br><br>";
+$index = $_GET["index"];
 require_once "modules/bookregister/time_inc.php";
 $user=$_SESSION['login_user_id'];
 
@@ -133,9 +134,9 @@ echo "</td>";
 echo "</tr>";
 
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ความลับ&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='secret' value='0' checked><font size='2' color='#006600'>ไม่ลับ</font><span lang='en-us'><font size='2'>&nbsp;
-			</font><input type='radio' name='secret' value='1'><font size='2' color='#FF0000'>ลับ</font></td>";
+echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ชั้นความเร็ว&nbsp;</font></span></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='level' value='0' checked><font size='2' color='#006600'>ปกติ</font><span lang='en-us'><font size='2'>&nbsp;
+			</font><input type='radio' name='level' value='1'><font size='2' color='#FF0000'>ด่วน</font>&nbsp;&nbsp;<input type='radio' name='level' value='2'><font size='2' color='#FF0000'>ด่วนมาก</font>&nbsp;&nbsp;<input type='radio' name='level' value='3'><font size='2' color='#FF0000'>ด่วนที่สุด</font></td>";
 echo "</tr>";
 
 echo "<tr>";
@@ -508,7 +509,7 @@ $register_number_g=$result_number_g['number_max']+1;
 }
 
 
-$sql = "insert into bookregister_send(year, register_number, register_number_de, register_number_g, book_no, signdate, book_from, book_to, subject, department, sub_department, operation, comment, register_date, ref_id, officer, secret) values ('$result_start[year]', '$register_number', '$register_number_de', '$register_number_g', '$book_number', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[sub_department]', '$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user', '$_POST[secret]')";
+$sql = "insert into bookregister_send(year, register_number, register_number_de, register_number_g, book_no, signdate, book_from, book_to, subject, department, sub_department, operation, comment, register_date, ref_id, officer, secret, level) values ('$result_start[year]', '$register_number', '$register_number_de', '$register_number_g', '$book_number', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[sub_department]', '$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user', '$_POST[secret]', '$_POST[level]')";
 $dbquery = mysqli_query($connect,$sql);
 
 if ($myfile1<>"" ) {
@@ -629,18 +630,23 @@ DateInput('signdate', true, 'YYYY-MM-DD' ,Y_date)
 echo "</td>";
 echo "</tr>";
 
-if($result_ref['secret']==1){
-$check_0="";
-$check_1="checked";
+$level = $result_ref[level];
+if ($level=="0") {
+	$check1 = "checked" ;
+} else if ($level=="1") {
+	$check2 = "checked" ;
+} else if ($level=="2") {
+	$check3= "checked" ;
+} else if ($level=="3") {
+	$check4= "checked" ;
 }
-else{
-$check_0="checked";
-$check_1="";
-}
+
 echo "<tr>";
-echo "<td align='right'><span lang='th'><font size='2' color='#0000FF'>ความลับ&nbsp;</font></span></td>";
-echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='secret' value='0' $check_0><font size='2' color='#006600'>ไม่ลับ</font><span lang='en-us'><font size='2'>&nbsp;
-			</font><input type='radio' name='secret' value='1' $check_1><font size='2' color='#FF0000'>ลับ</font></td>";
+echo "<td align='right'><span lang='th'>ระดับความสำคัญ&nbsp;</span></td>";
+echo "<td colspan='3' align='left'>&nbsp;<input type='radio' name='level' value='0' $check1><font size='2' color='#0000'>ปกติ</font>&nbsp;
+			<input type='radio'  name='level' value='1' $check2><font size='2' color='#FF0000'>ด่วน</font>&nbsp;
+			<input type='radio'  name='level' value='2' $check3><font size='2' color='#FF0000'>ด่วนมาก</font>&nbsp;
+			<input type='radio'  name='level' value='3' $check4><font size='2' color='#FF0000'>ด่วนที่สุด</font></td>";
 echo "</tr>";
 
 echo "<tr>";
@@ -790,7 +796,7 @@ if(isset($_POST ['dfile5'])){
 $dfile5 = $_POST ['dfile5'] ;
 }
 
-$sql = "update bookregister_send set book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]', secret='$_POST[secret]'  where ms_id='$_POST[id]' ";
+$sql = "update bookregister_send set book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]', secret='$_POST[secret]', level='$_POST[level]'  where ms_id='$_POST[id]' ";
 $dbquery = mysqli_query($connect,$sql);
 
 $sizelimit = 20000*1024 ;  //ขนาดไฟล์
@@ -1264,7 +1270,7 @@ echo "</td>";
 		</tr>
 </table>
 
-
+&nbsp;&nbsp;<FONT SIZE="2" COLOR="">ระดับความสำคัญ <IMG SRC="modules/book/images/level1.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ปกติ">ปกติ&nbsp;<IMG SRC="modules/book/images/level2.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วน">ด่วน&nbsp;<IMG SRC="modules/book/images/level3.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนมาก">ด่วนมาก&nbsp;<IMG SRC="modules/book/images/level4.gif" WIDTH="20" HEIGHT="11" BORDER="0" ALT="ด่วนที่สุด">ด่วนที่สุด
 <table border="1" width="99%" id="table2" style="border-collapse: collapse" align="center">
 				<tr bgcolor="#99FFFF">
 					<td align="center" width="50">
@@ -1296,7 +1302,7 @@ echo "</td>";
 					<td align="center" width="50">
 					<font face="Tahoma" size="2">แก้ไข</font></td>
 					<td align="center" width="50">
-					<font face="Tahoma" size="2">ส่ง ร.ร.</font></td>
+					<font face="Tahoma" size="2">ส่งหนังสือ</font></td>
 				</tr>
 <?php
 if($_REQUEST['search_index']==1){
@@ -1358,18 +1364,22 @@ if ($file_num==0) {
 	$file_img = "<IMG SRC=\"modules/bookregister/images/file1.gif\" WIDTH=\"13\" HEIGHT=\"10\" BORDER=\"0\" ALT=\"มีไฟล์แนบ\">" ;
 }
 
-if($result['secret']==1){
-$secret_txt="<font color='#FF0000'>[ลับ]</font>";
-}
-else{
-$secret_txt="";
+// ระดับความสำคัญ
+if ($level==0) {
+	$img_level = "<IMG SRC=\"modules/book/images/level1.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ปกติ\">" ;
+}else if ($level==1) {
+	$img_level = "<IMG SRC=\"modules/book/images/level2.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วน\">" ;
+}else if ($level==2) {
+	$img_level = "<IMG SRC=\"modules/book/images/level3.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วนมาก\">" ;
+}else if ($level==3) {
+	$img_level = "<IMG SRC=\"modules/book/images/level4.gif\" WIDTH=\"20\" HEIGHT=\"11\" BORDER=\"0\" ALT=\"ด่วนที่สุด\">" ;
 }
 
 ?>
 			<tr bgcolor="<?php echo $color;?>">
 					<td align="center"><?php echo $register_number_de;?></td>
 					<td align="center"><?php echo $year;?></td>
-					<td align="left">&nbsp;<?php echo $book_no;?></td>
+					<td align="left">&nbsp;<?php echo $book_no;?>&nbsp;<?php echo $img_level;?></td>
 					<td align="center">&nbsp;<?php echo $signdate;?></td>
 					<td align="left"><?php echo $book_from;?></td>
 					<td align="left"><?php echo $book_to;?></td>
@@ -1417,7 +1427,7 @@ $sql_check_book = mysqli_query($connect,"SELECT * FROM  book_main WHERE  ref_id=
 $check_book_num=mysqli_num_rows($sql_check_book);
 
 if(($check_book_num==0) and ($result['officer']==$_SESSION['login_user_id'])){
-echo "<td align='center'><a href=?option=book&task=main/send_de_2&id=$id&index=1><img src=images/next.gif border='0' alt='ส่งโรงเรียน'></td>";
+echo "<td align='center'><a href=?option=book&task=main/send_2&id=$id&index=1><img src=images/next.gif border='0' alt='ส่งหนังสือ'></td>";
 }
 else{
 echo "<td></td>";

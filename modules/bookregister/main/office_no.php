@@ -28,13 +28,17 @@ $result= mysqli_fetch_array($query);
 
 echo "<form id='frm1' name='frm1'>";
 echo "<Br><Br>";
-echo "<Table width='40%' Border='0' align='center'>";
-echo "<Tr><Td align='right'>เลขที่หนังสือของหน่วยงาน&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='office_no' Size='50' maxlength='70' value='$result[office_no]'></Td></Tr>";
+echo "<div align='center'><table width='30%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+//echo "<Table width='40%' Border='0' align='center'>";
+echo "<Tr><Td align='right'>เลขที่หนังสือของหน่วยงาน&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='office_no' Size='20' maxlength='70' value='$result[office_no]'></Td></Tr>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td>&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)'></td></tr>";
+//echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+//echo "<tr><td>&nbsp;</td>";
+echo "<td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)'>&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
 echo "</form>";
 }
 
@@ -62,13 +66,17 @@ $result= mysqli_fetch_array($query);
 
 echo "<br />";
 //echo "<center>$department_name</center>";
-echo  "<table width='30%' border='0' align='center'>";
+echo "<div align='center'><table width='30%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+//echo  "<table width='30%' border='0' align='center'>";
 //echo "<Tr bgcolor='#FFFFFF'><Td align='left'>$department_name</Td></Tr>";
 echo "<Tr bgcolor='#FFCCCC'><Td align='center'>เลขที่หนังสือ</Td><Td align='center' width='70'>แก้ไข</Td></Tr>";
 echo "<Tr><Td align='center'>$result[office_no]</Td>
 		<Td align='center'><a href=?option=bookregister&task=main/office_no&index=5&id=$result[id]><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>
 	</Tr>";
 echo "</Table>";
+echo "</td></tr></table>";
 }
 
 	?>

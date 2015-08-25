@@ -22,10 +22,13 @@ echo "</table>";
 if($index==1){
 echo "<form id='frm1' name='frm1'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</Font>";
+echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+//echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
 echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='person_id'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
@@ -66,16 +69,17 @@ echo "</select>";
 echo "</div></td></tr>";
 
 echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้าหน้าที่&nbsp;&nbsp;</td>";
-echo   "<td align='left'><input  type=radio name='bookregister_permission1' value='1' checked>ใช่&nbsp;&nbsp;<input  type=radio name='bookregister_permission1' value='0'>ไม่ใช่</td></tr>";
+echo   "<td align='left'><input  type=radio name='bookregister_permission1' value='1' checked> ใช่&nbsp;&nbsp;<input  type=radio name='bookregister_permission1' value='0'> ไม่ใช่</td></tr>";
 
 echo   "<tr><td align='right'>กำหนดบทบาทหน้าที่&nbsp;&nbsp;</td>";
-echo   "<td align='left'><input  type=radio name='saraban_status' value='2'>สารบรรณสำนัก&nbsp;&nbsp;<input  type=radio name='saraban_status' value='3'>สารบรรณกลุ่ม</td></tr>";
+echo   "<td align='left'><input  type=radio name='saraban_status' value='2'> สารบรรณสำนัก&nbsp;&nbsp;<input  type=radio name='saraban_status' value='3'> สารบรรณกลุ่ม</td></tr>";
 
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+//echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+	&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table></div>";
 echo "</form>";
 }
 
@@ -111,7 +115,11 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข เจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+//echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
 $sql = "select * from bookregister_permission where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
@@ -187,6 +195,7 @@ echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "</form>";
@@ -205,14 +214,19 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql = "select bookregister_permission.id, bookregister_permission.p1, bookregister_permission.department, bookregister_permission.saraban_status, person_main.name, person_main.surname from bookregister_permission left join person_main on bookregister_permission.person_id=person_main.person_id where bookregister_permission.department =$department_id order by bookregister_permission.id";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width=80% border=0 align=center>";
-echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=bookregister&task=permission_de&index=1\"'</Td></Tr>";
+//echo  "<table width=80% border=0 align=center>";
+
+
+echo "<div align='center'><table width='80%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+echo "<Tr><Td colspan='8' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=bookregister&task=permission_de&index=1\"'</Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center' rowspan='2' >ที่</Td><Td  align='center' rowspan='2' >ชื่อเจ้าหน้าที่</Td>
-  <Td colspan='3'  align='center' >บทบาท</Td>
+  <Td colspan='2'  align='center' >บทบาท</Td>
   <td  align='center'>สิทธิ์</td><Td align='center' rowspan='2' width='50'>ลบ</Td><Td align='center' rowspan='2' width='50'>แก้ไข</Td></Tr>";
 echo "'<tr bgcolor='#CC9900'>
-  <Td  align='center' bgcolor='#FFFFCC' >สารบรรณกลาง สพฐ.</Td>
+
   <Td  align='center' bgcolor='#FFFFCC' >สารบรรณสำนัก</Td>
   <Td  align='center' bgcolor='#FFFFCC' >สารบรรณกลุ่ม</Td>
   <Td  align='center' width='80'>เจ้าหน้าที่</Td></tr>";
@@ -258,7 +272,7 @@ While ($result = mysqli_fetch_array($dbquery))
 	$result_d = mysqli_fetch_array($dbquery_d);
 	$department_name = $result_d['department_name'];
 		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$name $surname ($department_name)</Td>
-  <Td  align='center'>$s1_pic</Td>
+
   <Td  align='center'>$s2_pic</Td>
   <Td  align='center'>$s3_pic</Td>
   <Td align='center'>$p1_pic</Td>
@@ -268,6 +282,7 @@ While ($result = mysqli_fetch_array($dbquery))
 $M++;
 	}
 echo "</Table>";
+echo "</td></tr></table>";
 }
 ?>
 <script>

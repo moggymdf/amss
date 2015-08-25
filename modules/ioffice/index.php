@@ -49,6 +49,11 @@ include("default.php");
 	$('[data-toggle="confirmation"]').confirmation()
 </script>
 
+<!-- Bootstrap Confirmation -->
+<script>
+	$('[data-toggle="validator"]').validator()
+</script>
+
 <?php
 //แปลงเวลาเป็นภาษาไทย
 function ThaiTimeConvert($timestamp="",$full="",$showtime=""){

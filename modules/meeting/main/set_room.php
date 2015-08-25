@@ -95,7 +95,7 @@ echo "</div></td></tr>";
 echo "<Input id='room_code' Type='Hidden' Name='room_code' value='$room_codemax'>";
 /* เฟส2 ค่อยทำ
 echo "<Tr><Td align='right'>ผู้ควบคุมห้อง&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><Input id='room_controller' Type='Text' Name='room_controller' Size='50'>";
+echo "<td><div align='left'><Input id='room_controller' Type='Text' Name='room_controller' Size='30'>";
 echo "</div></td></tr>";
 echo "<Tr><Td align='right'>รูปภาพ&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'>INPUT_IMAGES";
@@ -129,13 +129,13 @@ echo "</td></tr></table>";
 
 //ส่วนลบข้อมูล
 if($getindex==3){
-if(isset($_GET['rid'])){
-$getrid=mysqli_real_escape_string($connect,$_GET['rid']);
-}else {$getrid=""; exit;}
+if(isset($_POST['iddel'])){
+$postiddel=mysqli_real_escape_string($connect,$_POST['iddel']);
+}else {$postiddel=""; exit;}
 
 $sql = "update meeting_room  set active='99' where id=?";
     $dbquery = $connect->prepare($sql);
-    $dbquery->bind_param("i", $getrid);
+    $dbquery->bind_param("i", $postiddel);
     $dbquery->execute();
     $result=$dbquery->get_result();
 echo "<script>document.location.href='?option=meeting&task=main/set_room'; </script>\n";
@@ -286,13 +286,15 @@ While ($result = mysqli_fetch_array($result_dep))
 			else{
 			$active_text="<font color='#FF0033'>ปิดใช้งาน</font>";
 			}
-$color="";
+
+			if(($M%2) == 0)
+			$color="#FFFFC";
+			else $color="#FFFFFF";
 		echo "<Tr bgcolor=$color><Td align='center' width='50'>$M</Td><Td  align='left'>$room_name </Td><Td align='center'>$person_max คน</Td><Td align='center'>$active_text</Td>
 
 		<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=5&id=$id><img src=images/edit.png border='0' alt='แก้ไข'></a></Td>";
-        echo "<Td align='center' width='50' ><a href='?option=meeting&task=main/set_room&index=3&rid=$id' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a></Td>";
-//    echo "<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=2&id=$id></a></Td>
-	echo "</Tr>";
+        echo "<Td align='center' width='50'><a href=?option=meeting&task=main/set_room&index=2&id=$id><img src=images/drop.png border='0' alt='ลบ'></a></Td>
+	</Tr>";
 $M++;
 	}
 echo "</Table>";

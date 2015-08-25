@@ -1,13 +1,21 @@
 <?php
+	// Define Variable
+	if(isset($_POST["searchtext"])){ }else{ $_POST["searchtext"]=""; }
+	if(isset($_SESSION["searchtext"])){ }else{ $_SESSION["searchtext"]=""; }
+	if(isset($_POST["searchbookstatusid"])){ }else{ $_POST["searchbookstatusid"]=""; }
+	if(isset($_SESSION["searchbookstatusid"])){ }else{ $_SESSION["searchbookstatusid"]=""; }
+	if(isset($_POST["searchdepartmentid"])){ }else{ $_POST["searchdepartmentid"]=""; }
+	if(isset($_SESSION["searchdepartmentid"])){ }else{ $_SESSION["searchdepartmentid"]=""; }
 	switch ($_GET["action"]) {
 
 		case 'insert':
 			$booktypeid = $_POST["booktypeid"];
 		    $bookstatusid = $_POST["bookstatusid"];
 		    $bookheader = $_POST["bookheader"];
+		    $receive_booklevelid = $_POST["receive_booklevelid"];
 		    $bookdetail = $_POST["bookdetail"];
 		    $post_personid = $_POST["post_personid"];
-		    $sql = "INSERT INTO ioffice_book(booktypeid,bookstatusid,bookheader,bookdetail,post_personid)VALUES($booktypeid,$bookstatusid,'$bookheader','$bookdetail','$post_personid')";
+		    $sql = "INSERT INTO ioffice_book(booktypeid,bookstatusid,bookheader,receive_booklevelid,bookdetail,post_personid)VALUES($booktypeid,$bookstatusid,'$bookheader','$receive_booklevelid','$bookdetail','$post_personid')";
 			$result = mysqli_query($connect, $sql);
 			$bookid = mysqli_insert_id($connect);
 			// Upload File
@@ -94,11 +102,13 @@
 				$booktypeid = $_POST["booktypeid"];
 		    	$bookstatusid = $_POST["bookstatusid"];
 		    	$bookheader = $_POST["bookheader"];
+		    	$receive_booklevelid = $_POST["receive_booklevelid"];
 		    	$bookdetail = $_POST["bookdetail"];
 				$sql = "UPDATE ioffice_book
 						SET bookstatusid = $bookstatusid,
 							booktypeid = $booktypeid,
 							bookheader = '$bookheader',
+							receive_booklevelid = '$receive_booklevelid',
 							bookdetail = '$bookdetail'
 						WHERE bookid = $bookid";
 				$result = mysqli_query($connect, $sql);
@@ -176,12 +186,13 @@
 	                	$booktypeid = $row["booktypeid"];
 	                	$bookstatusid = 1;
 			    		$bookheader = $row["bookheader"];
+			    		$receive_personid = $row["receive_personid"];
 			    		$bookdetail = $row["bookdetail"];
 			    		$post_personid = $row["post_personid"];
 	                }
 	                // free result set
 	                mysqli_free_result($result);
-	                $sql = "INSERT INTO ioffice_book(booktypeid,bookstatusid,bookheader,bookdetail,post_personid) VALUES($booktypeid,$bookstatusid,'$bookheader','$bookdetail','$post_personid')";
+	                $sql = "INSERT INTO ioffice_book(booktypeid,bookstatusid,bookheader,receive_personid,bookdetail,post_personid) VALUES($booktypeid,$bookstatusid,'$bookheader','$receive_personid','$bookdetail','$post_personid')";
 					//echo $sql;
 					$result = mysqli_query($connect, $sql);
 					$insertid = mysqli_insert_id($connect);
@@ -214,20 +225,22 @@
 						$sql = "INSERT INTO ioffice_bookcomment(bookid,bookstatusid,comment_personid,commentdetail) VALUES($bookid,$bookstatusid,'$comment_personid','$consultdetail')";
 						$result = mysqli_query($connect, $sql);
 						if($_POST["department"]){
-							$sql = "UPDATE ioffice_book SET comment_departmentid = $department";
+							$sql = "UPDATE ioffice_book SET consult_departmentid = $department WHERE bookid = $bookid";
 							$result = mysqli_query($connect, $sql);
 						}
 						if($_POST["sub_department"]){
-							$sql = "UPDATE ioffice_book SET comment_subdepartmentid = $sub_department";
+							$sql = "UPDATE ioffice_book SET consult_subdepartmentid = $sub_department WHERE bookid = $bookid";
 							$result = mysqli_query($connect, $sql);
 						}
 						if($_POST["person"]){
-							$sql = "UPDATE ioffice_book SET comment_personid = $person";
+							$sql = "UPDATE ioffice_book SET consult_personid = '$person' WHERE bookid = $bookid";
 							$result = mysqli_query($connect, $sql);
 						}
 						break;
 					default:
 						$sql = "INSERT INTO ioffice_bookcomment(bookid,bookstatusid,comment_personid,commentdetail) VALUES($bookid,$bookstatusid,'$comment_personid','$commentdetail')";
+						$result = mysqli_query($connect, $sql);
+						$sql = "UPDATE ioffice_book SET consult_personid = null,consult_subdepartmentid = null,consult_departmentid = null WHERE bookid = $bookid";
 						$result = mysqli_query($connect, $sql);
 						break;
 				}
@@ -259,6 +272,29 @@
 			unset($_SESSION["searchdepartmentid"]);
 			break;
 
+		case 'bookpass_clearsearchtext':
+			unset($_SESSION["searchtext"]);
+			break;
+
+		case 'bookpass':
+			if($_POST["personid"]){
+				$personid = $_POST["personid"];
+				$departmentid = $_POST["departmentid"];
+				$sql="DELETE FROM ioffice_bookpass WHERE personid='".$personid."'";
+				$result = mysqli_query($connect, $sql);
+				if(count($departmentid)>0){  // ตรวจสอบ checkbox ว่ามีการเลือกมาอย่างน้อย 1 รายการหรือไม่
+			    	foreach($departmentid as $key=>$value){
+			        // แสดงชุดข้อมูล ที่สอดคล้องกับ checkbox
+			        	//echo $departmentid[$key]."<br>";
+			        	$sqlinsert = "INSERT INTO ioffice_bookpass(departmentid,personid) VALUES(".$departmentid[$key].",'".$personid."')";
+			        	//echo "<br><br><br><br><br>".$sqlinsert;
+			        	$resultinsert = mysqli_query($connect, $sqlinsert);
+			    	}
+				}
+
+			}
+			break;
+
 		default:
 			# code...
 			break;
@@ -287,6 +323,14 @@
 
 		case 'search_clearsearchtext':
     		echo "<script language='javascript'>window.location.href = '?option=ioffice&task=book_search'</script>";
+    		break;
+
+    	case 'bookpass_clearsearchtext':
+    		echo "<script language='javascript'>window.location.href = '?option=ioffice&task=book_bookpass'</script>";
+    		break;
+
+    	case 'bookpass':
+    		echo "<script language='javascript'>window.location.href = '?option=ioffice&task=book_bookpass'</script>";
     		break;
 
     	default:

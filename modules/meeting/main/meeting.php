@@ -126,11 +126,8 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
           </form>
         </div>
       </div>
-      </div>
-    </div>
-  <div class="panel panel-default">
-    <div class="panel-body">
-     <table class="table table-hover table-striped table-condensed table-responsive">
+      <hr>
+      <table class="table table-hover table-striped table-condensed table-responsive">
         <thead>
           <tr>
           	<th>วันที่เริ่ม</th>
@@ -171,6 +168,7 @@ if(!(($getindex==1) or ($getindex==2) or ($getindex==11))){
                 WHERE user_book = '$_SESSION[login_user_id]' ".$sqlroomstatus." and
                       objective like '%$searchtext%'
                 ORDER BY book_date_start desc,room,start_time LIMIT 0,$showmaxlist";
+
 
             if ($result = mysqli_query($connect, $sql)) {
               while ($row = $result->fetch_assoc()) {
@@ -214,7 +212,7 @@ While ($result_depart_name = mysqli_fetch_array($result_qdepart_name))
                     <td><?php echo thai_date_4($row['rec_date']); ?></td>
                     <td class="text-center">
                     <?php if($row['book_person']==$user_id){
-                     echo   "<a href='?option=meeting&task=main/meeting&index=3&id=$row[id]' class='btn btn-danger' data-toggle='confirmation'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>";
+                     echo   "<a href='?option=meeting&task=main/meeting&index=2&id=$row[id]' data-toggle='confirmation' data-placement='top' data-trigger='focus'><span class='glyphicon glyphicon-remove icon-danger icon-size1'></span></a>";
                      }else{ echo ""; } ?>
                     </Td>
                     <td class="text-center">

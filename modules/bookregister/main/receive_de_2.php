@@ -429,6 +429,10 @@ else{
 $register_number_de=$result_number_de['number_max']+1;
 }
 
+//$register_number_g=$_GET['register_number_g'];
+//$register_number_g=$_GET['register_number_g'];
+//$register_number_g=$_GET['register_number_g'];
+
 //$sub_department_id2 = $_POST[sub_department_id2];  //รหัสกลุ่ม
 $sql = "insert into bookregister_receive(year, register_number, register_number_de, register_number_g, book_no, signdate, book_from, book_to, subject, department, sub_department, record_type, operation, comment, register_date, ref_id, officer) values ('$result_start[year]', '$register_number', '$register_number_de', '$register_number_g', '$_POST[book_no]', '$_POST[signdate]', '$_POST[book_from]', '$_POST[book_to]', '$_POST[subject]', '$_POST[department]', '$_POST[sub_department]', '1','$_POST[operation]', '$_POST[comment]', '$day_now', '$ref_id', '$user')";
 $dbquery = mysqli_query($connect,$sql);
@@ -704,6 +708,7 @@ $upfile1=""; $upfile2=""; $upfile3=""; $upfile4=""; $upfile5="";
 $sizelimit1=""; $sizelimit2=""; $sizelimit3=""; $sizelimit4=""; $sizelimit5="";
 
 $sql = "update bookregister_receive set register_number_de=$register_number_de, book_no='$_POST[book_no]', signdate='$_POST[signdate]', book_from='$_POST[book_from]', book_to='$_POST[book_to]', subject='$_POST[subject]', sub_department='$_POST[group]', operation='$_POST[operation]', comment='$_POST[comment]' where ms_id='$_POST[id]' ";
+echo $sql ;
 $dbquery = mysqli_query($connect,$sql);
 
 $sizelimit = 20000*1024 ;  //ขนาดไฟล์

@@ -14,15 +14,17 @@ echo "</table>";
 if($index==1){
 echo "<form id='frm1' name='frm1'>";
 echo "<Center>";
-echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</Font>";
+echo "<Font color='#006666' Size=3><B>เพิ่มเจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
+//echo "<Table width='50%' Border='0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
 
-echo "<Tr><Td align='right' width='50%'>เจ้าหน้าที่สารบรรณกลาง สพฐ.&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><input type='radio' name='ctr_saraban' value='0' checked>ไม่ใช่&nbsp;<input type='radio' name='ctr_saraban' value='1'>ใช่ ";
+echo "<Tr><Td align='right'>เจ้าหน้าที่สารบรรณกลาง สพฐ.&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<td><div align='left'><input type='radio' name='ctr_saraban' value='0' checked> ไม่ใช่&nbsp;<input type='radio' name='ctr_saraban' value='1'> ใช่ ";
 
-echo "<Tr><Td align='right' width='50%'>เจ้าหน้าที่สารบรรณ สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
+echo "<Tr><Td align='right' >เจ้าหน้าที่สารบรรณ สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='saraban_grp'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql = "select  * from system_department order by department";
@@ -34,7 +36,7 @@ While ($result = mysqli_fetch_array($dbquery))
 echo "</select>";
 echo "</div></td></tr>";
 
-echo "<Tr><Td align='right' width='50%'>บุคลากร&nbsp;&nbsp;</Td>";
+echo "<Tr><Td align='right'>บุคลากร&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='person_id'  size='1'>";
 echo  "<option  value = ''>เลือก</option>" ;
 $sql = "select  * from person_main order by position_code";
@@ -49,12 +51,12 @@ While ($result = mysqli_fetch_array($dbquery))
 echo "</select>";
 echo "</div></td></tr>";
 
-echo "<tr><td></td><td></td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
-	&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
+//echo "<tr><td></td><td></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+	&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
-echo "</form>";
+echo "</td></tr></table>";
 }
 
 //ส่วนยืนยันการลบข้อมูล
@@ -89,7 +91,10 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข เจ้าหน้าที่</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+//echo "<Table width='50%' Border= '0' Bgcolor='#Fcf9d8'>";
 $sql = "select * from book_permission where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
@@ -104,7 +109,7 @@ $ctr_saraban_check1="";
 }
 
 echo "<Tr><Td align='right' width='50%'>เจ้าหน้าที่สารบรรณกลาง สพฐ.&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
-echo "<td><div align='left'><input type='radio' name='ctr_saraban' value='0' $ctr_saraban_check0>ไม่ใช่&nbsp;<input type='radio' name='ctr_saraban' value='1' $ctr_saraban_check1>ใช่ ";
+echo "<td><div align='left'><input type='radio' name='ctr_saraban' value='0' $ctr_saraban_check0> ไม่ใช่&nbsp;<input type='radio' name='ctr_saraban' value='1' $ctr_saraban_check1> ใช่ ";
 
 echo "<Tr><Td align='right' width='50%'>เจ้าหน้าที่สารบรรณ สำนัก&nbsp;&nbsp;&nbsp;&nbsp;</Td>";
 echo "<td><div align='left'><Select  name='saraban_grp'  size='1'>";
@@ -151,12 +156,14 @@ echo "</div></td></tr>";
 			$p1_check2="checked";
 			}
 echo   "<tr><td align='right'>อนุญาตให้เป็นเจ้าหน้าที่ได้&nbsp;&nbsp;</td>";
-echo   "<td align='left'>ใช่<input  type=radio name='book_permission1' value='1' $p1_check1>&nbsp;&nbsp;ไม่ใช่<input  type=radio name='book_permission1' value='0' $p1_check2></td></tr>";
+echo   "<td align='left'> <input  type=radio name='book_permission1' value='1' $p1_check1> ใช่&nbsp;&nbsp; <input  type=radio name='book_permission1' value='0' $p1_check2> ไม่ใช่</td></tr>";
 
-echo "<tr><td></td><td></td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+//echo "<tr><td></td><td></td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
+
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "</form>";
@@ -182,10 +189,14 @@ $office_name_ar[$row_work_group['department']]=$row_work_group['department_name'
 
 $sql = "select book_permission.id, book_permission.p1, book_permission.p2, person_main.prename, person_main.name, person_main.surname from book_permission left join person_main on book_permission.person_id=person_main.person_id where person_main.status>='0' order by book_permission.id";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width=50% border=0 align=center>";
-echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=book&task=permission&index=1\"'</Td></Tr>";
+//echo  "<table width=50% border=0 align=center>";
+echo "<div align='center'><table width='70%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
 
-echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>ชื่อเจ้าหน้าที่</Td><td  align='center'>สารบรรณกลาง<br>สพฐ.</td></Td><td  align='center'>สารบรรณสำนัก</td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
+
+echo "<Tr><Td colspan='6' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มเจ้าหน้าที่' onclick='location.href=\"?option=book&task=permission&index=1\"'</Td></Tr>";
+
+echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>ชื่อเจ้าหน้าที่</Td><td  align='center'>สารบรรณกลางสพฐ.</td></Td><td  align='center'>สารบรรณสำนัก</td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
 $M=1;
 While ($result = mysqli_fetch_array($dbquery))
 	{
@@ -209,6 +220,8 @@ While ($result = mysqli_fetch_array($dbquery))
 $M++;
 	}
 echo "</Table>";
+echo "</td></tr></table>";
+
 }
 
 echo "<br>";

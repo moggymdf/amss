@@ -92,6 +92,8 @@ echo "</td></tr></table>";
 if($getindex==3){
 $sql = "delete from meeting_main where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
+    echo "<script>document.location.href='?option=meeting&task=main/officer'; </script>\n";
+
 }
 
 //ส่วนบันทึกข้อมูล
@@ -115,6 +117,8 @@ $_POST['allchk']="";
         $result=$dbquery->get_result();
 		}
 	}
+    echo "<script>document.location.href='?option=meeting&task=main/officer'; </script>\n";
+
 }
 
 //ใส่เหตุผลการไม่อนุญาต หรือแก้ไขเป็นอนุญาต
@@ -239,6 +243,7 @@ $date_time_now = date("Y-m-d H:i:s");
         $dbquery->bind_param("isssi", $postapprove,$postreason,$login_user_id,$date_time_now,$postid);
         $dbquery->execute();
         $result=$dbquery->get_result();
+    echo "<script>document.location.href='?option=meeting&task=main/officer'; </script>\n";
 }
 
 //ส่วนแสดงผล

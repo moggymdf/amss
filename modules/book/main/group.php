@@ -17,14 +17,18 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มกลุ่มผู้รับ</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='40%' Border='0' Bgcolor='#Fcf9d8'>";
+//echo "<Table width='40%' Border='0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='30%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
 
 echo   "<tr><td align='right'>ชื่อกลุ่มผู้รับ&nbsp;&nbsp;</td>";
 echo   "<td align='left'><INPUT TYPE='text' NAME='grp_name'></td></tr>";
-echo "<tr><td align='right'></td>";
-echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
+//echo "<tr><td align='right'></td>";
+echo "<td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url(1)' class=entrybutton>
 	&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
+
 echo "</form>";
 }
 
@@ -57,16 +61,21 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>แก้ไข กลุ่มผู้รับบุคลากร</B></Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='40%' Border= '0' Bgcolor='#Fcf9d8'>";
+//echo "<Table width='40%' Border= '0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='40%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
 $sql = "select * from book_group where grp_id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
 $ref_result = mysqli_fetch_array($dbquery);
 echo   "<tr><td align='right'>ชื่อกลุ่มผู้รับ&nbsp;&nbsp;</td>";
-echo   "<td align='left'><INPUT TYPE='text' NAME='grp_name' value='$ref_result[grp_name]'></td></tr>";
+echo   "<td align='left'><INPUT TYPE='text' NAME='grp_name' value='$ref_result[grp_name]' size='30'></td></tr>";
 
-echo "<tr><td align='right'></td>";
-echo "<td align='left'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
+//echo "<tr><td align='right'></td>";
+echo "<td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)' class=entrybutton>&nbsp;&nbsp;&nbsp;<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)' class=entrybutton'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
+
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "</form>";
@@ -85,7 +94,10 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 
 $sql = "select * from book_group";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width='50%' border='0' align='center'>";
+//echo  "<table width='50%' border='0' align='center'>";
+echo "<div align='center'><table width='50%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
 echo "<Tr><Td colspan='4' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มกลุ่มผู้รับ' onclick='location.href=\"?option=book&task=main/group&index=1\"'</Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>ชื่อกลุ่มผู้รับ</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
@@ -105,6 +117,8 @@ While ($result = mysqli_fetch_array($dbquery))
 $M++;
 	}
 echo "</Table>";
+echo "</td></tr></table>";
+
 }
 
 ?>

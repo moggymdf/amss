@@ -59,6 +59,7 @@ echo "<td width='94' align='right'>ถึง&nbsp;</span></td>";
 echo "<td colspan='3' align='left'>&nbsp;&nbsp;<input type='radio' value='all' name='sendto'>&nbsp;สพท.ทุกแห่ง";
 echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_2.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;สพท.บางแห่ง";
 echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_3.php?sd_index=some','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;หน่วยงาน / รร.สังกัด สำนักบริหารงานการศึกษาพิเศษ";
+echo "<br>&nbsp;&nbsp;<input type='radio' value='some' name='sendto' required onClick=\"window.open('modules/book/main/select_send_5.php?sd_index=2','PopUp','width=700,height=600,scrollbars,status'); \">&nbsp;สำนักใน สพฐ.";
 
 	$sql_group= "select * from book_group";
 	$dbquery_group = mysqli_query($connect,$sql_group);
@@ -156,8 +157,8 @@ $file3=$file2[0];
 }
 
 echo "<tr>";
-echo "<td width='371' align='right' colspan='2'><p align='center'><font size='2' color='#800000'>ไฟล์แนบ</td>";
-echo "<td width='238' align='center' colspan='2'><p align='center'><font size='2' color='#800000'>คำอธิบายไฟล์</td>";
+echo "<td width='371' align='right' colspan='2'><p align='center'>ไฟล์แนบ</td>";
+echo "<td width='238' align='center' colspan='2'><p align='center'>คำอธิบายไฟล์</td>";
 echo "</tr>";
 
 echo "<tr>";

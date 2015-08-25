@@ -32,7 +32,7 @@ $result = mysqli_fetch_array($dbquery);
 	<td>&nbsp;</td>
 		<td align='right'><b>รหัสผ่านใหม่(อีกครั้ง)&nbsp;&nbsp;</td><td align='left'><input type="password" name="renewpasswd"/></td>
 	</tr>
-	<tr align="center"><td colspan="2"  align="right"><input type="button" value="ตกลง" onclick="goto_url(1)"&nbsp;&nbsp;></td><td align="left"><INPUT TYPE="button" name="back" value="ย้อนกลับ" onclick="goto_url(0)" ></td></tr>
+	<tr align="center"><td colspan="2"  align="right"><br><input class='btn btn-primary' type="button" value="ตกลง" onclick="goto_url(1)"&nbsp;&nbsp;></td><td align="left"><br>&nbsp;<INPUT class='btn btn-default' TYPE="button" name="back" value="ย้อนกลับ" onclick="goto_url(0)" ></td></tr>
 	<tr><td colspan=3 height=10></td></tr>
 </table>
 </form>

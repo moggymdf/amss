@@ -1,16 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>AMSS++</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" href="../../css/mm_training.css" type="text/css" />
-<style type="text/css">
-<!--
-.style1 {font-size: 14px}
--->
-</style>
 <?php
-/** ensure this file is being included by a parent file */
+$login_group=mysqli_real_escape_string($connect,$_SESSION['login_group']);
+if(!($login_group<=1)){
+exit();
+}/** ensure this file is being included by a parent file */
 defined( '_VALID_' ) or die( 'Direct Access to this location is not allowed.' );
 //if(!($_SESSION['login_status']<=5)){
 $login_status=mysqli_real_escape_string($connect,$_SESSION['login_status']);

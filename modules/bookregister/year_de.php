@@ -26,7 +26,9 @@ echo "<Center>";
 echo "<Font color='#006666' Size=3><B>เพิ่มปีปฏิทิน</Font>";
 echo "</Cener>";
 echo "<Br><Br>";
-echo "<Table width='300' Border='0' Bgcolor='#Fcf9d8'>";
+//echo "<Table width='300' Border='0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='30%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
 
 echo "<Tr><Td align='right'>ปีปฏิทิน&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='year' id='year' Size='4' maxlength='4' onkeydown='integerOnly()'> เช่น 2558</Td></Tr>";
 echo "<Tr><Td align='right'>เลขทะเบียนหนังสือรับเริ่มต้น&nbsp;&nbsp;&nbsp;&nbsp;</Td><Td align='left'><Input Type='Text' Name='start_receive_num' id='start_receive_num' Size='5' maxlength='5' onkeydown='integerOnly()' value=1></Td></Tr>";
@@ -48,6 +50,7 @@ echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง'
 	&nbsp;&nbsp;&nbsp;</td>";
 echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url(0)'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
 echo "</form>";
 }
 
@@ -86,7 +89,9 @@ echo "<Font color='#006666' Size=3><B>แก้ไขปีปฏิทิน</B
 echo "</Cener>";
 echo "<Br><Br>";
 
-echo "<Table width='300' Border= '0' Bgcolor='#Fcf9d8'>";
+//echo "<Table width='300' Border= '0' Bgcolor='#Fcf9d8'>";
+echo "<div align='center'><table width='30%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
 
 $sql = "select * from bookregister_year where id='$_GET[id]'";
 $dbquery = mysqli_query($connect,$sql);
@@ -115,10 +120,11 @@ echo  "<option value = '1' $select1>ใช่</option>";
 echo  "<option value = '0' $select2>ไม่ใช่</option>";
 echo "</select>";
 echo "</div></td></tr>";
-echo "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr><td align='right'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-echo "<td align='left'><INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'></td></tr>";
+//echo "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
+echo "<tr><td align='center' colspan='2'><INPUT TYPE='button' name='smb' value='ตกลง' onclick='goto_url_update(1)'>&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<INPUT TYPE='button' name='back' value='ย้อนกลับ' onclick='goto_url_update(0)'></td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
 echo "<Br>";
 echo "<Input Type=Hidden Name='id' Value='$_GET[id]'>";
 echo "</form>";
@@ -164,8 +170,11 @@ if(!(($index==1) or ($index==2) or ($index==5))){
 $sql = "select * from  bookregister_year where department = '$department_id'  order by year ";
 //$sql = "select * from  bookregister_year where school_code is null order by year ";
 $dbquery = mysqli_query($connect,$sql);
-echo  "<table width='70%' border='0' align='center'>";
-echo "<Tr><Td colspan='5' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มปีปฏิทิน' onclick='location.href=\"?option=bookregister&task=year_de&index=1\"'</Td></Tr>";
+//echo  "<table width='70%' border='0' align='center'>";
+echo "<div align='center'><table width='70%'><tr><td>";
+echo "<table class='table table-bordered' width='100%' style='background-color:rgba(255,255,255,0.9)'>";
+
+echo "<Tr><Td colspan='8' align='left'><INPUT TYPE='button' name='smb' value='เพิ่มปีปฏิทิน' onclick='location.href=\"?option=bookregister&task=year_de&index=1\"'</Td></Tr>";
 
 echo "<Tr bgcolor='#FFCCCC'><Td  align='center'>ที่</Td><Td  align='center'>ปีปฏิทิน</Td><Td  align='center'>ปีทะเบียนปัจจุบัน</Td><Td  align='center' width='150'>เลขหนังสือรับเริ่มต้น</Td><Td  align='center' width='150'>เลขหนังสือส่งเริ่มต้น</Td><Td  align='center' width='150'>เลขคำสั่งเริ่มต้น</Td><Td align='center' width='50'>ลบ</Td><Td align='center' width='50'>แก้ไข</Td></Tr>";
 $N=1;  //*เกี่ยวข้องกับการแยกหน้า
@@ -201,6 +210,7 @@ $N++;  //*เกี่ยวข้องกับการแยกหน้า
 echo "<tr><Td align='left' colspan='9'>&nbsp;</Td></tr>";
 echo "<tr><Td align='left' colspan='9'>&nbsp;<b>กรณี</b>&nbsp;ต้องการปิดการใช้งานทะเบียนใด ให้กำหนดค่าเริ่มต้นทะเบียนนั้นเป็นศูนย์ (0)</Td></tr>";
 echo "</Table>";
+echo "</td></tr></table>";
 }
 
 ?>

@@ -106,6 +106,7 @@
           	<th>เลขที่</th>
             <th>ประเภท</th>
           	<th>เรื่อง</th>
+            <th>เรียน</th>
             <th>เมื่อ</th>
             <th>โดย</th>
             <th>กลุ่มงาน</th>
@@ -117,6 +118,45 @@
         <tbody>
 
           <?php
+            // Check User
+            if(!isset($_SESSION['login_user_id'])) { $_SESSION['login_user_id']=''; }
+            $sqluser = "SELECT * FROM person_main WHERE person_id = '$_SESSION[login_user_id]'";
+            if($resultuser = mysqli_query($connect, $sqluser)) {
+              $rowuser = $resultuser->fetch_assoc();
+              $user_positionid = $rowuser["position_code"];
+              $user_position_other_code = $rowuser["position_other_code"];
+              $user_subdepartment = $rowuser["sub_department"];
+              $user_department = $rowuser["department"];
+            }else{
+              $user_positionid = "";
+              $user_position_other_code = "";
+              $user_subdepartment = "";
+              $user_department = "";
+            }
+            // เจ้าหน้าที่
+            $sqlpass = "post_subdepartmentid = $user_subdepartment and ";
+            // หัวหน้ากลุ่มงาน
+            if($user_position_other_code>0){
+              $sqlpass = "post_subdepartmentid = $user_subdepartment and ";
+            }
+            // ผอ.สำนัก
+            if($user_positionid==9){
+              $sqlpass = "post_departmentid = $user_department and ";
+            }
+            // รองเลขา
+            if($user_positionid==2){
+              if($_SESSION["system_delegate"]==1) {
+                // กรณีรักษาราชการแทน
+                $sqlpass = "";
+              }else{
+                // กรณีปกติ
+                $sqlpass = "post_departmentid IN(SELECT departmentid FROM ioffice_bookpass WHERE personid = '".$_SESSION[login_user_id]."')";
+              }
+            }
+            // เลขา
+            if($user_positionid==1){
+              $sqlpass = "";
+            }
             // Select Book
             if(($searchbookstatusid==999) or ($searchbookstatusid=="")){
               $sqlbookstatus = "";
@@ -135,22 +175,24 @@
                   ioffice_book.*,
                   ioffice_booktype.booktypename,
                   ioffice_bookstatus.bookstatusname,
-                  person_main.prename,
-                  person_main.name,
-                  person_main.surname,
-                  system_department.department_name,
-                  system_department.department_precis,
-                  system_subdepartment.sub_department_name
+                  pm1.prename as post_prename,
+                  pm1.name as post_name,
+                  pm1.surname as post_surname,
+                  sd1.department_name as post_department_name,
+                  sd1.department_precis as post_department_precis,
+                  system_subdepartment.sub_department_name,
+                  ibl.booklevelname
                 FROM
                   ioffice_book
                   LEFT JOIN ioffice_bookstatus ON ioffice_book.bookstatusid = ioffice_bookstatus.bookstatusid
                   LEFT JOIN ioffice_booktype ON ioffice_book.booktypeid = ioffice_booktype.booktypeid
-                  LEFT JOIN person_main ON ioffice_book.post_personid = person_main.person_id
-                  LEFT JOIN system_department ON system_department.department = ioffice_book.post_departmentid
+                  LEFT JOIN person_main pm1 ON ioffice_book.post_personid = pm1.person_id
+                  LEFT JOIN system_department sd1 ON sd1.department = ioffice_book.post_departmentid
                   LEFT JOIN system_subdepartment ON system_subdepartment.sub_department = ioffice_book.post_subdepartmentid
-                WHERE ".$sqlbookstatus.$sqldepartment." ((bookheader like '%$searchtext%') or (person_main.name like '%$searchtext%'))
+                  LEFT JOIN ioffice_booklevel ibl ON ioffice_book.receive_booklevelid = ibl.booklevelid
+                WHERE ".$sqlbookstatus.$sqldepartment." ".$sqlpass." ((bookheader like '%$searchtext%') or (pm1.name like '%$searchtext%'))
                 ORDER BY bookid DESC";
-                //echo $sql;
+                //echo "<div class='well'>".$sql."</div>";
             if ($result = mysqli_query($connect, $sql)) {
               while ($row = $result->fetch_assoc()) {
                 switch ($row["bookstatusid"]) {
@@ -164,7 +206,7 @@
                     $tr_class = "class = 'danger'";
                     break;
                   case '4':
-                    $tr_class = "class = 'info'";
+                    $tr_class = "class = 'warning'";
                     break;
                   case '20':
                     $tr_class = "class = 'success'";
@@ -202,10 +244,11 @@
                     <td><?php echo $row['bookid']; ?></td>
                     <td><?php echo $booktype_show; ?></td>
                     <td><?php echo $row['bookheader']; ?></td>
+                    <td><?php echo $row['booklevelname']; ?></td>
                     <td><?php echo ThaiTimeConvert(strtotime($row['postdate']),"","2"); ?></td>
-                    <td><?php echo $row['prename'].$row['name']." ".$row['surname']; ?></td>
+                    <td><?php echo $row['post_prename'].$row['post_name']." ".$row['post_surname']; ?></td>
                     <td><?php echo $row["sub_department_name"]; ?></td>
-                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="หน่วยงาน" data-content="<?php echo $row["department_name"]; ?>"><?php echo $row["department_precis"]; ?></a></td>
+                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="หน่วยงาน" data-content="<?php echo $row["post_department_name"]; ?>"><?php echo $row["post_department_precis"]; ?></a></td>
                     <?php
                       $sqllastcomment = " SELECT * FROM ioffice_bookcomment b
                                           LEFT JOIN person_main pm ON(b.comment_personid=pm.person_id)
@@ -213,7 +256,6 @@
                       $resultlastcomment = mysqli_query($connect, $sqllastcomment);
                       $rowlastcomment = mysqli_fetch_assoc($resultlastcomment);
                     ?>
-                    <td><a tabindex="0" class="btn btn-default" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
                     <td>
                       <!-- Modal for Read -->
                       <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal<?php echo $row['bookid']; ?>">อ่าน</button>
@@ -222,12 +264,13 @@
                           <div class="modal-content">
                             <div class="modal-header">
                               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                              <h4 class="modal-title" id="myModalLabel">เรื่อง <?php echo $row["bookheader"]; ?></h4>
-                            </div>
-                            <div class="modal-body">
                               <a href="#" class="btn btn-default">ประเภท&nbsp;:&nbsp;<?php echo $booktype_show; ?></a>
                               <a href="#" class="btn btn-default">สถานะ&nbsp;:&nbsp;<?php echo $row["bookstatusname"]; ?></a>
                               <hr>
+                              <h4 class="modal-title" id="myModalLabel">เรื่อง <?php echo $row["bookheader"]; ?></h4>
+                              <h4 class="modal-title" id="myModalLabel">เรียน <?php echo $row['booklevelname']; ?></h4>
+                            </div>
+                            <div class="modal-body">
                               <?php echo $row["bookdetail"]; ?>
                               <hr>
                               <h4>เอกสารแนบ</h4>
@@ -241,7 +284,7 @@
                               ?>
                               <hr>
                               <div class="well well-sm">
-                              <h5>โดย&nbsp;<?php echo $row['prename'].$row['name']." ".$row['surname']; ?></h5>
+                              <h5>โดย&nbsp;<?php echo $row['post_prename'].$row['post_name']." ".$row['post_surname']; ?></h5>
                               <h5>เมื่อ&nbsp;<?php echo ThaiTimeConvert(strtotime($row['postdate']),"","2"); ?></h5>
                               </h5>
                               </div>
@@ -290,6 +333,41 @@
                         </div>
                       </div>
                     </td>
+                    <?php
+                    switch ($row["bookstatusid"]) {
+                          case '1':
+                            $bookstatusclass = "default";
+                            break;
+                          case '2':
+                            $bookstatusclass = "warning";
+                            break;
+                          case '3':
+                            $bookstatusclass = "danger";
+                            break;
+                          case '4':
+                            $bookstatusclass = "warning";
+                            break;
+                          case '20':
+                            $bookstatusclass = "success";
+                            break;
+                          case '21':
+                            $bookstatusclass = "success";
+                            break;
+                          case '22':
+                            $bookstatusclass = "success";
+                            break;
+                          case '30':
+                            $bookstatusclass = "danger";
+                            break;
+                          case '40':
+                            $bookstatusclass = "info";
+                            break;
+                        default:
+                          # code...
+                          break;
+                      }
+                    ?>
+                    <td><a tabindex="0" class="btn btn-<?php echo $bookstatusclass; ?>" role="button" data-toggle="popover" data-placement="top" data-trigger="focus" title="ความเห็นล่าสุด" data-content="<?php echo $rowlastcomment["prename"].$rowlastcomment["name"]." ".$rowlastcomment["surname"]." : ".$rowlastcomment["commentdetail"]; ?>"><?php echo $row['bookstatusname']; ?></a></td>
                   </tr>
                 <?php
               }
